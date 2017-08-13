@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="error_loading_shops_size">60dp</dimen>
+    <dimen name="error_arrow_down">30dp</dimen>
+    <dimen name="error_loading_refresh">60dp</dimen>
+</resources>

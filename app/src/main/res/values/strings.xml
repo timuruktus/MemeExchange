@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Биржа Мемов</string>
+
+    <string name="error_loading_shops">Отсутствует подключение к интернету.</string>
+</resources>
