@@ -6,10 +6,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -40,15 +44,39 @@ public class DataManager implements IDataManager {
         }
     }
 
+    @Override
+    public String getAuthorNameByLogin(String login){
+        BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
+//        backendlessAPI.getUserByCondition(login).enqueue(new Callback<User>() {
+//        // TODO
+//        @Override
+//        public void onResponse(Call<User> call, Response<User> response) {
+//
+//        }
+//
+//        @Override
+//        public void onFailure(Call<User> call, Throwable t) {
+//
+//        }
+//    });
+        return null;
+    }
+
     /*
     Only presenter can work with the error. Don't handle errors here.
      */
     @Override
     public Observable<List<Meme>> loadMemesFromWeb() {
         Log.d(DEFAULT_TAG, "Try to load from web");
+        return  downloadAndCacheMemesFromWeb().replay(3600, TimeUnit.SECONDS);
+    }
+
+
+
+    private Observable<List<Meme>> downloadAndCacheMemesFromWeb(){
         final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
-        Observable<List<Meme>> shopsList = backendlessAPI
+        return backendlessAPI
                 .listMemes()
                 .timeout(LOAD_SHOPS_TIMEOUT, TimeUnit.SECONDS)
                 .retry(RETRY_COUNT)
@@ -58,8 +86,6 @@ public class DataManager implements IDataManager {
                     databaseHelper.cacheMemes(memes);
                     return memes;
                 });
-
-        return shopsList;
     }
 
     @Override
@@ -67,5 +93,25 @@ public class DataManager implements IDataManager {
         Log.d(DEFAULT_TAG, "Try to load from cache");
         final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
         return databaseHelper.getMemes(realm);
+    }
+
+    @Override
+    public Observable<List<Meme>> loadPopularGroups() {
+        return null;
+    }
+
+    @Override
+    public Observable<List<Meme>> loadPopularMemesByMonth() {
+        return null;
+    }
+
+    @Override
+    public Observable<List<Meme>> loadPopularMemesByWeek() {
+        return null;
+    }
+
+    @Override
+    public Observable<List<Meme>> loadPopularMemesToday() {
+        return null;
     }
 }

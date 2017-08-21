@@ -2,7 +2,19 @@ package ru.timuruktus.memeexchange;
 
 import org.junit.Test;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import ru.timuruktus.memeexchange.REST.BackendlessAPI;
+import rx.functions.Action1;
+
 import static org.junit.Assert.*;
+import static ru.timuruktus.memeexchange.REST.BackendlessAPI.BASE_URL;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -13,5 +25,62 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void testApiCurrentTime() throws Exception {
+        Retrofit backendlessRetrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
+        System.out.println(backendlessAPI.currentServerTime().execute().body());
+
+    }
+
+    @Test
+    public void testApiGetUsernameByLogin() throws Exception {
+        Retrofit backendlessRetrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
+        System.out.println(backendlessAPI.getUserByCondition("login='timuruktus'", null).execute().body().get(0).getEmail());
+//        backendlessAPI.getUserByCondition("timuruktus").enqueue(new Callback<String>() {
+//            @Override
+//            public void onResponse(Call<String> call, Response<String> response) {
+//                System.out.println(response.body());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<String> call, Throwable t) {
+//
+//            }
+//        });
+
+    }
+
+    @Test
+    public void testApiGetMemes() throws Exception{
+        Retrofit backendlessRetrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
+        backendlessAPI.listMemes().subscribe(memes -> System.out.println(memes.get(0).getTimestamp()));
+    }
+
+    @Test
+    public void testApiMemesAuthor(){
+        Retrofit backendlessRetrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
+        backendlessAPI.listMemes().subscribe(memes -> System.out.println(memes.get(0).getAuthor().getEmail()));
     }
 }

@@ -10,4 +10,9 @@ public interface IDataManager {
 
     Observable<List<Meme>> loadMemesFromWeb();
     Observable<List<Meme>> loadMemesFromCache(Realm realm);
+    Observable<List<Meme>> loadPopularGroups();
+    Observable<List<Meme>> loadPopularMemesByMonth();
+    Observable<List<Meme>> loadPopularMemesByWeek();
+    Observable<List<Meme>> loadPopularMemesToday();
+    String getAuthorNameByLogin(String login);
 }

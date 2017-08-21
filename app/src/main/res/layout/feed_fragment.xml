@@ -5,15 +5,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/shopsList"
+    <com.softw4re.views.InfiniteListView
+        android:id="@+id/infiniteListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/gray"
+        app:dividerVisible="true"
+        app:scrollbarVisible="true"
+        app:swipeRefreshIndicatorColor="@color/colorAccent" />
 
     <RelativeLayout
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/gray">
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -29,6 +34,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:background="@color/gray"
         android:visibility="gone">
 
         <ImageView

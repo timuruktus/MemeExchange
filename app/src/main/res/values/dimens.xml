@@ -3,4 +3,6 @@
     <dimen name="error_loading_shops_size">60dp</dimen>
     <dimen name="error_arrow_down">30dp</dimen>
     <dimen name="error_loading_refresh">60dp</dimen>
+    <dimen name="actionsContainerHeight">60dp</dimen>
+    <dimen name="like_button_size">50dp</dimen>
 </resources>

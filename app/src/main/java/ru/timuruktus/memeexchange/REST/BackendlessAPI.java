@@ -3,16 +3,18 @@ package ru.timuruktus.memeexchange.REST;
 import java.util.List;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.POJO.User;
 import rx.Observable;
 
 public interface BackendlessAPI {
@@ -35,6 +37,13 @@ public interface BackendlessAPI {
             @Part MultipartBody.Part file,
             @Path("fileName") String fileName
     );
+
+    @GET("services/api/currenttime")
+    Call<Long> currentServerTime();
+
+    // TODO
+    @GET("data/Users")
+    Call<List<User>> getUserByCondition(@Query("where") String condition, @Header("user-token") String userToken);
 
 
 }
