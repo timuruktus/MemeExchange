@@ -10,8 +10,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static org.junit.Assert.*;
 import static ru.timuruktus.memeexchange.REST.BackendlessAPI.BASE_URL;
@@ -70,7 +72,18 @@ public class ExampleUnitTest {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
-        backendlessAPI.listMemes().subscribe(memes -> System.out.println(memes.get(0).getTimestamp()));
+        backendlessAPI.listMemes().map(new Func1<List<Meme>, List<Meme>>(){
+            @Override
+            public List<Meme> call(List<Meme> memes){
+                for(Meme meme : memes){
+                    System.out.println("Text: " + meme.getText());
+                    System.out.println("Author: " + meme.getAuthor());
+                    System.out.println("Likes: " + meme.getLikes());
+                    System.out.println("Image: " + meme.getImage());
+                }
+                return null;
+            }
+        }).subscribe();
     }
 
     @Test

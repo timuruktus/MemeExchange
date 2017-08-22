@@ -2,6 +2,8 @@ package ru.timuruktus.memeexchange.Model;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
+import ru.timuruktus.memeexchange.Utils.MemeDateComparator;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -68,7 +71,13 @@ public class DataManager implements IDataManager {
     @Override
     public Observable<List<Meme>> loadMemesFromWeb() {
         Log.d(DEFAULT_TAG, "Try to load from web");
-        return  downloadAndCacheMemesFromWeb().replay(3600, TimeUnit.SECONDS);
+        return  downloadAndCacheMemesFromWeb()
+                .map(unsortedList -> {
+                    List<Meme> sortedList = new ArrayList<>(unsortedList.size());
+                    Collections.copy(sortedList, unsortedList);
+                    Collections.sort(sortedList, new MemeDateComparator());
+                    return sortedList;
+        });
     }
 
 

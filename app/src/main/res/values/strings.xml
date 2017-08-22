@@ -2,4 +2,6 @@
     <string name="app_name">Биржа Мемов</string>
 
     <string name="error_loading_shops">Отсутствует подключение к интернету.</string>
+
+    <string name="likes_count">Лайков</string>
 </resources>

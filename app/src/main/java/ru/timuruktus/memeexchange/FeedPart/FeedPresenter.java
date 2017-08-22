@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.softw4re.views.InfiniteListView;
 
 import java.util.List;
 
@@ -13,21 +14,31 @@ import ru.timuruktus.memeexchange.POJO.Meme;
 import rx.Observer;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.realm;
 
 @InjectViewState
 public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPresenter  {
 
 
     private DataManager dataManager;
-    private Realm realm;
+    private FeedAdapter infiniteListView;
 
-    public FeedPresenter(IFeedView feedView) {
-        dataManager = DataManager.getInstance();
+    public FeedPresenter() {
     }
 
     @Override
-    public void loadFeed() {
-        getViewState().showLoadingIndicator(true);
+    protected void onFirstViewAttach() {
+        super.onFirstViewAttach();
+        Log.d(TESTING_TAG, "onFirstViewAttach() in FeedPresenter");
+        loadFeed();
+    }
+
+    @Override
+    public void loadFeed(boolean showLoading){
+        getViewState().showError(false);
+        if(showLoading) {
+            getViewState().showLoadingIndicator(true);
+        }
         dataManager.loadMemesFromWeb()
                 .subscribe(new Observer<List<Meme>>() {
                     @Override
@@ -38,7 +49,6 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
                     @Override
                     public void onError(Throwable e) {
 //                        e.printStackTrace();
-                        Log.d(TESTING_TAG, "onError() in loadShops()");
                         getViewState().showMessageNoInternetConnection();
                         loadFeedFromCache();
                     }
@@ -51,17 +61,23 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
     }
 
     @Override
+    public void loadFeed() {
+        loadFeed(true);
+    }
+
+    @Override
     public void loadFeedFromCache() {
         dataManager.loadMemesFromCache(realm)
                 .subscribe(new Observer<List<Meme>>() {
                     @Override
                     public void onCompleted() {
                         getViewState().showLoadingIndicator(false);
+                        Log.d(TESTING_TAG, "onCompleted() in loadShopsFromCache()");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+//                        e.printStackTrace();
                         getViewState().showLoadingIndicator(false);
                         getViewState().showError(true);
                         Log.d(TESTING_TAG, "onError() in loadShopsFromCache()");
@@ -81,16 +97,33 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
     @Override
     public void onCreateView() {
-        if(realm == null){
-            realm = Realm.getDefaultInstance();
+        Log.d(TESTING_TAG, "onCreateView() in feedPresenter");
+        if(dataManager == null){
+            dataManager = DataManager.getInstance();
         }
     }
 
     @Override
     public void onDestroyView() {
-        if(realm != null){
-            realm.close();
+
+    }
+
+    @Override
+    public void onDestroyFragment(){
+        Log.d(TESTING_TAG, "onDestroyFragment() in feedPresenter");
+        if(dataManager != null){
+            dataManager = null;
         }
+    }
+
+    @Override
+    public void saveAdapter(FeedAdapter feedAdapter) {
+        this.infiniteListView = feedAdapter;
+    }
+
+    @Override
+    public FeedAdapter getSavedAdapter() {
+        return infiniteListView;
     }
 
 

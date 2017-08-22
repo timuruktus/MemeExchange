@@ -1,108 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:elevation="0dp"
+              android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/authorContainer"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp">
-
-        <ImageView
-            android:id="@+id/authorImage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
-            android:background="@color/gray" />
-
-        <TextView
-            android:id="@+id/authorName"
-            fontPath="fonts/Roboto-Bold.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="false"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/authorImage"
-            android:maxLines="1"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/likesCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/authorImage" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/textContainer"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="100dp"
-        android:padding="10dp">
+        android:layout_marginTop="10dp"
+        android:background="@android:color/white"
+        android:elevation="3dp"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/memeText"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/authorContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxHeight="100dp"
-            android:maxLines="5" />
-    </RelativeLayout>
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
 
-    <RelativeLayout
-        android:id="@+id/imageContainer"
-        android:layout_width="match_parent"
-        android:layout_height="300dp">
+            <ImageView
+                android:id="@+id/authorImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                />
 
-        <ImageView
-            android:id="@+id/memeImage"
+            <TextView
+                android:id="@+id/authorName"
+                fontPath="fonts/Roboto-Bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="false"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/authorImage"
+                android:maxLines="1"
+                android:textColor="@color/textColor"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/likes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/authorName"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/authorImage"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/textContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/gray" />
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:maxHeight="100dp">
 
-    <RelativeLayout
-        android:id="@+id/actionsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/actionsContainerHeight"
-        android:layout_marginTop="10dp">
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="100dp">
 
-        <ImageView
-            android:id="@+id/moreButton"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            app:srcCompat="@drawable/ic_more" />
+                <TextView
+                    android:id="@+id/memeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:isScrollContainer="true"
+                    android:nestedScrollingEnabled="true"
+                    android:overScrollMode="ifContentScrolls"
+                    android:textSize="18sp"/>
+            </ScrollView>
 
-        <ImageView
-            android:id="@+id/likeButton"
-            android:layout_width="100dp"
-            android:layout_height="@dimen/like_button_size"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/ic_not_yet_like" />
+        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/bottomDivider"
+        <RelativeLayout
+            android:id="@+id/imageContainer"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:alpha="0.5"
-            android:foreground="@color/darkGray"
-            android:orientation="horizontal"></LinearLayout>
+            android:layout_height="wrap_content"
+            android:maxHeight="300dp"
+            android:maxWidth="300dp">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/memeImage"
+                android:layout_width="390dp"
+                android:layout_height="390dp"
+                android:layout_centerHorizontal="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/actionsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/moreButton"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="false"
+                android:layout_marginRight="35dp"
+                android:layout_marginTop="5dp"
+                app:srcCompat="@drawable/ic_more"/>
+
+            <ImageView
+                android:id="@+id/likeButton"
+                android:layout_width="100dp"
+                android:layout_height="@dimen/like_button_size"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/ic_not_yet_like"/>
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
 </LinearLayout>

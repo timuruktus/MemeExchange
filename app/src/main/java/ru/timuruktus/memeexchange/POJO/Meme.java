@@ -3,15 +3,17 @@ package ru.timuruktus.memeexchange.POJO;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class Meme extends RealmObject {
 
     @SerializedName("created")
     private long timestamp;
-    private String url;
-    private long likesCount;
+    private String image;
+    private long likes;
     private String text;
     private boolean userLiked;
+    @PrimaryKey
     private String objectId;
     private User author;
 
@@ -19,10 +21,10 @@ public class Meme extends RealmObject {
 
     }
 
-    public Meme(long timestamp, String url, long likesCount, String text, boolean userLiked, String objectId, User author) {
+    public Meme(long timestamp, String image, long likes, String text, boolean userLiked, String objectId, User author) {
         this.timestamp = timestamp;
-        this.url = url;
-        this.likesCount = likesCount;
+        this.image = image;
+        this.likes = likes;
         this.text = text;
         this.userLiked = userLiked;
         this.objectId = objectId;
@@ -38,20 +40,20 @@ public class Meme extends RealmObject {
         this.timestamp = timestamp;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImage() {
+        return image;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public long getLikesCount() {
-        return likesCount;
+    public long getLikes() {
+        return likes;
     }
 
-    public void setLikesCount(long likesCount) {
-        this.likesCount = likesCount;
+    public void setLikes(long likes) {
+        this.likes = likes;
     }
 
     public String getText() {

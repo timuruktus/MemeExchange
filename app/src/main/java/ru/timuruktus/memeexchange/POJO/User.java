@@ -9,16 +9,18 @@ public class User extends RealmObject {
     private String name;
     private String objectId;
     private String email;
+    private String avatar; // Image URL
 
     public User() {
     }
 
-    public User(String login, String vkId, String name, String objectId, String email) {
+    public User(String login, String vkId, String name, String objectId, String email, String avatar) {
         this.login = login;
         this.vkId = vkId;
         this.name = name;
         this.objectId = objectId;
         this.email = email;
+        this.avatar = avatar;
     }
 
 
@@ -61,6 +63,15 @@ public class User extends RealmObject {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
 
 
 }

@@ -2,39 +2,45 @@ package ru.timuruktus.memeexchange.MainPart;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+
+import io.realm.Realm;
+import ru.timuruktus.memeexchange.FeedPart.FeedFragment;
 import ru.timuruktus.memeexchange.R;
+import ru.timuruktus.memeexchange.Utils.Settings;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class MainActivity extends AppCompatActivity implements IMainActivity {
+import static ru.timuruktus.memeexchange.FeedPart.FeedFragment.FEED_FRAGMENT_TAG;
+
+public class MainActivity extends MvpAppCompatActivity implements IMainActivity {
 
 
-    private IMainPresenter mainPresenter;
+    @InjectPresenter
+    MainPresenter mainPresenter;
     public static final String DEFAULT_TAG = "DefaultTag";
     public static final String TESTING_TAG = "TestingTag";
+    public static Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        if(getLastNonConfigurationInstance() != null ||
-                !(getSupportFragmentManager() instanceof IMainPresenter)) {
-            mainPresenter = (IMainPresenter) getLastNonConfigurationInstance();
-        }else{
-            // Most likely this is the first launch
-            mainPresenter = new MainPresenter(this);
-            mainPresenter.onCreate();
+        if(realm == null){
+            Realm.init(getApplicationContext());
+            realm = Realm.getDefaultInstance();
         }
+        super.onCreate(savedInstanceState);
+        mainPresenter.initPresenter(getSupportFragmentManager(), getApplicationContext());
+        setContentView(R.layout.activity_main);
+        Log.d(TESTING_TAG, "onCreate() in MainActivity");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh presenter's link to this activity.
-        // Because onResume() starts after onCreate(), mainPresenter != null
-        // so we can refresh link and always hold link to the newest MainActivity in presenter
-        mainPresenter.refreshActivityLink(this);
     }
 
     @Override
@@ -44,19 +50,14 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        Log.d(TESTING_TAG, "onDestroy() in MainActivity");
+        if(realm != null){
+            realm.close();
+        }
         mainPresenter.onDestroy();
+        super.onDestroy();
+
     }
 
-    /**
-     * Do not change this method. Before activity re-creation, we should save our link to
-     * main presenter. If so, we can take it again in onCreate(), and if it's the first
-     * app run, in onCreate() we create new MainPresenter instance.
-     * @return
-     */
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        return mainPresenter;
-    }
 
 }

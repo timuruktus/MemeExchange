@@ -4,8 +4,8 @@ package ru.timuruktus.memeexchange.MainPart;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 
-public interface IMainActivity {
+import com.arellomobile.mvp.MvpView;
 
-    FragmentManager getSupportFragmentManager();
-    Context getApplicationContext();
+public interface IMainActivity extends MvpView {
+
 }

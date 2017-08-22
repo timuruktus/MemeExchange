@@ -3,11 +3,11 @@ package ru.timuruktus.memeexchange.FeedPart;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +27,9 @@ import butterknife.Unbinder;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.R;
 
+import static android.view.View.VISIBLE;
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
+
 public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
 
     @Nullable @BindView(R.id.infiniteListView) InfiniteListView infiniteListView;
@@ -42,28 +45,27 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
     private Context context;
     @InjectPresenter
     public FeedPresenter feedPresenter;
+    public static final String FEED_FRAGMENT_TAG = "feedFragmentTag";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        feedPresenter.onCreateView();
+        Log.d(TESTING_TAG, "onCreateView() in FeedFragment");
         View view = inflater.inflate(
                 R.layout.feed_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-        feedPresenter.onCreateView();
         return view;
 
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Log.d(TESTING_TAG, "onViewCreated() in FeedFragment");
         super.onViewCreated(view, savedInstanceState);
         this.rootView = view;
         context = view.getContext();
-        feedPresenter.loadFeed();
-//        Glide.with(this)
-//                .load(BASE_URL)
-//                .apply(RequestOptions.circleCropTransform())
-//                .into(imageView);
+//        feedPresenter.loadFeed();
     }
 
     @OnClick(R.id.refreshIcon)
@@ -73,14 +75,19 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
 
     @Override
     public void showPosts(List<Meme> memes) {
+        infiniteListView.setVisibility(VISIBLE);
+        Log.d(TESTING_TAG, "showPosts() in FeedFragment");
         FeedAdapter shopsAdapter = new FeedAdapter(getActivity(), R.layout.meme_layout, (ArrayList<Meme>) memes, this);
+        infiniteListView.stopLoading();
+        infiniteListView.setKeepScreenOn(true);
         infiniteListView.setAdapter(shopsAdapter);
     }
 
     @Override
     public void showError(boolean show) {
+        Log.d(TESTING_TAG, "showError() in FeedFragment");
         if (show) {
-            errorLayout.setVisibility(View.VISIBLE);
+            errorLayout.setVisibility(VISIBLE);
         } else {
             errorLayout.setVisibility(View.GONE);
         }
@@ -89,9 +96,10 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
 
     @Override
     public void showLoadingIndicator(boolean show) {
-        if (show) {
-            loadingLayout.setVisibility(View.VISIBLE);
-        } else {
+        Log.d(TESTING_TAG, "showLoadingIndicator() in FeedFragment");
+        if(show) {
+            loadingLayout.setVisibility(VISIBLE);
+        }else {
             loadingLayout.setVisibility(View.GONE);
         }
     }
@@ -99,6 +107,28 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
     @Override
     public void showMessageNoInternetConnection() {
         Toast.makeText(context, R.string.error_loading_shops, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void adapterRefreshCall() {
+        feedPresenter.loadFeed(false);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
     }
 
     @Override
