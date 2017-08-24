@@ -10,7 +10,6 @@ import ru.timuruktus.memeexchange.POJO.Meme;
 import rx.Observable;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.DEFAULT_TAG;
-import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
 public class DatabaseHelper implements IDatabaseHelper {
 
@@ -49,19 +48,22 @@ public class DatabaseHelper implements IDatabaseHelper {
     }
 
     @Override
-    public Observable<List<Meme>> getMemes(Realm realm) {
-
-        Log.d(TESTING_TAG, "We are in getMemes() in DatabaseHelper ");
-        RealmResults<Meme> results = realm.where(Meme.class)
-                .findAll();
-        Log.d(DEFAULT_TAG, "Cache size is " + results.size());
-        return Observable.from(results).toList();
+    public Observable<List<Meme>> getMemes() {
+        Realm realm = Realm.getDefaultInstance();
+        List<Meme> memes = realm.copyFromRealm(realm.where(Meme.class).findAll());
+        realm.close();
+        Log.d(DEFAULT_TAG, "Cache size is " + memes.size());
+        return Observable.from(memes).toList();
     }
-
-    @Override
-    public Observable<Meme> getMemeById(Realm realm, String id) {
-        RealmResults<Meme> results = realm.where(Meme.class).contains(ID, id).findAll();
-        return Observable.from(results);
+    @Override public Observable<Meme> getMemeById(String id) {
+        Realm realm = Realm.getDefaultInstance();
+        Meme meme = null;
+        Meme realmMeme = realm.where(Meme.class).equalTo("objectId", id).findFirst();
+        if (realmMeme != null) {
+            meme = realm.copyFromRealm(realmMeme);
+        }
+        realm.close();
+        return Observable.just(meme);
     }
 
 

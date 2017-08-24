@@ -4,15 +4,11 @@ import org.junit.Test;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static org.junit.Assert.*;

@@ -4,11 +4,9 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.softw4re.views.InfiniteListView;
 
 import java.util.List;
 
-import io.realm.Realm;
 import ru.timuruktus.memeexchange.Model.DataManager;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import rx.Observer;
@@ -48,7 +46,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
                     @Override
                     public void onError(Throwable e) {
-//                        e.printStackTrace();
+                        e.printStackTrace();
                         getViewState().showMessageNoInternetConnection();
                         loadFeedFromCache();
                     }
@@ -67,7 +65,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
     @Override
     public void loadFeedFromCache() {
-        dataManager.loadMemesFromCache(realm)
+        dataManager.loadMemesFromCache()
                 .subscribe(new Observer<List<Meme>>() {
                     @Override
                     public void onCompleted() {
@@ -77,7 +75,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
                     @Override
                     public void onError(Throwable e) {
-//                        e.printStackTrace();
+                        e.printStackTrace();
                         getViewState().showLoadingIndicator(false);
                         getViewState().showError(true);
                         Log.d(TESTING_TAG, "onError() in loadShopsFromCache()");

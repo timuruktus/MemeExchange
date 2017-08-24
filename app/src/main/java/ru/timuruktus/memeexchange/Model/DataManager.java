@@ -7,15 +7,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.realm.Realm;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.timuruktus.memeexchange.POJO.Meme;
-import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
 import ru.timuruktus.memeexchange.Utils.MemeDateComparator;
 import rx.Observable;
@@ -23,6 +18,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.DEFAULT_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.REST.BackendlessAPI.BASE_URL;
 
 public class DataManager implements IDataManager {
@@ -73,10 +69,8 @@ public class DataManager implements IDataManager {
         Log.d(DEFAULT_TAG, "Try to load from web");
         return  downloadAndCacheMemesFromWeb()
                 .map(unsortedList -> {
-                    List<Meme> sortedList = new ArrayList<>(unsortedList.size());
-                    Collections.copy(sortedList, unsortedList);
-                    Collections.sort(sortedList, new MemeDateComparator());
-                    return sortedList;
+                    Collections.sort(unsortedList, new MemeDateComparator());
+                    return unsortedList;
         });
     }
 
@@ -98,10 +92,14 @@ public class DataManager implements IDataManager {
     }
 
     @Override
-    public Observable<List<Meme>> loadMemesFromCache(Realm realm) {
+    public Observable<List<Meme>> loadMemesFromCache() {
         Log.d(DEFAULT_TAG, "Try to load from cache");
         final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
-        return databaseHelper.getMemes(realm);
+        return databaseHelper.getMemes()
+                .map(unsortedList -> {
+            Collections.sort(unsortedList, new MemeDateComparator());
+            return unsortedList;
+        });
     }
 
     @Override

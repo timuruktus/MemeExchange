@@ -10,16 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.softw4re.views.InfiniteListAdapter;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ru.timuruktus.memeexchange.MainPart.GlideApp;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.R;
@@ -65,14 +66,32 @@ public class FeedAdapter extends InfiniteListAdapter<Meme>{
         }
         Meme meme = itemList.get(position);
 
-        Log.d(TESTING_TAG, "getView() in FeedAdapter");
         viewHolder.authorName.setText(meme.getAuthor().getName());
         String likes = activity.getResources().getQuantityString(R.plurals.likes,
                 (int) meme.getLikes(), meme.getLikes());
         viewHolder.likesCount.setText(likes);
 
-        viewHolder.memeText.setText(meme.getText());
 
+        Log.d(TESTING_TAG, "getView() meme test: " + meme.getText());
+        if(meme.getText() != null){
+            viewHolder.memeText.setVisibility(View.VISIBLE);
+            Log.d(TESTING_TAG, "getView() meme text != null");
+            viewHolder.memeText.setText(meme.getText());
+            viewHolder.memeText.setMovementMethod(new ScrollingMovementMethod());
+        }else{
+            Log.d(TESTING_TAG, "getView() meme text == null");
+            viewHolder.memeText.setVisibility(GONE);
+        }
+
+        if(viewHolder.memeText.getLineCount() >= 5){
+            viewHolder.memeText.setMaxLines(5);
+            viewHolder.textExpandButton.setVisibility(View.VISIBLE);
+            // TODO: Сделать видимой стрелку вниз
+        }else{
+            viewHolder.memeText.setMaxLines(Integer.MAX_VALUE);
+            viewHolder.textExpandButton.setVisibility(GONE);
+            // TODO: Сделать стрелку вниз невидимой
+        }
 
 
         GlideApp.with(getContext())
@@ -116,6 +135,18 @@ public class FeedAdapter extends InfiniteListAdapter<Meme>{
 
     }
 
+//    // OBJECT == NULL
+//    public void addNewItem(ListView listView, Meme newItem, Object object) {
+//        this.itemList.add(newItem);
+//        this.notifyDataSetChanged();
+//    }
+//
+//    // OBJECT == NULL
+//    public void clearList(ListView listView, Object object) {
+//        this.itemList.clear();
+//        this.notifyDataSetChanged();
+//    }
+
     static class ViewHolder{
         @BindView(R.id.authorImage) ImageView authorImage;
         @BindView(R.id.authorName) TextView authorName;
@@ -125,6 +156,13 @@ public class FeedAdapter extends InfiniteListAdapter<Meme>{
         @BindView(R.id.moreButton) ImageView moreButton;
         @BindView(R.id.likeButton) ImageView likeButton;
         @BindView(R.id.textContainer) RelativeLayout textContainer;
+        @BindView(R.id.textExpandButton) ImageView textExpandButton;
+
+        @OnClick(R.id.textExpandButton)
+        void onExpandClick(){
+            memeText.setMaxLines(Integer.MAX_VALUE);
+            textExpandButton.setVisibility(GONE);
+        }
 
         ViewHolder(View view){
             ButterKnife.bind(this, view);

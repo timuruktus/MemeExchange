@@ -6,14 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.softw4re.views.InfiniteListView
-        android:id="@+id/infiniteListView"
+    <ListView
+        android:id="@+id/feedListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/brightGray"
-        android:visibility="gone"
-        app:scrollbarVisible="true"
-        app:swipeRefreshIndicatorColor="@color/colorAccent"/>
+        android:layout_height="match_parent"/>
 
     <RelativeLayout
         android:id="@+id/loadingLayout"

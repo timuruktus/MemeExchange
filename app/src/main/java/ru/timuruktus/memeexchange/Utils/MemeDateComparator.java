@@ -8,12 +8,6 @@ public class MemeDateComparator implements Comparator<Meme>{
 
     @Override
     public int compare(Meme o1, Meme o2){
-        if(o1.getTimestamp() > o2.getTimestamp()){
-            return 1;
-        } else if(o1.getTimestamp() < o2.getTimestamp()){
-            return -1;
-        } else{
-            return 0;
-        }
+        return o1.getTimestamp() > o2.getTimestamp() ? -1 : o1.getTimestamp() < o2.getTimestamp() ? 1 : 0;
     }
 }

@@ -2,12 +2,15 @@ package ru.timuruktus.memeexchange.FeedPart;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,13 +29,14 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.R;
+import ru.timuruktus.memeexchange.Utils.EndlessScrollListener;
 
 import static android.view.View.VISIBLE;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
 public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
 
-    @Nullable @BindView(R.id.infiniteListView) InfiniteListView infiniteListView;
+    @Nullable @BindView(R.id.feedListView) ListView feedListView;
     @Nullable @BindView(R.id.progressBar) ProgressBar progressBar;
     @Nullable @BindView(R.id.loadingLayout) RelativeLayout loadingLayout;
     @Nullable @BindView(R.id.errorIcon) ImageView errorIcon;
@@ -40,18 +44,21 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
     @Nullable @BindView(R.id.refreshIcon) ImageView refreshIcon;
     @Nullable @BindView(R.id.errorLayout) RelativeLayout errorLayout;
 
+    @InjectPresenter
+    public FeedPresenter feedPresenter;
+
     Unbinder unbinder;
     private View rootView;
     private Context context;
-    @InjectPresenter
-    public FeedPresenter feedPresenter;
+    private static int listViewPosition;
+    private static final String LIST_VIEW_POSITION = "key";
+
     public static final String FEED_FRAGMENT_TAG = "feedFragmentTag";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         feedPresenter.onCreateView();
-        Log.d(TESTING_TAG, "onCreateView() in FeedFragment");
         View view = inflater.inflate(
                 R.layout.feed_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -61,7 +68,6 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.d(TESTING_TAG, "onViewCreated() in FeedFragment");
         super.onViewCreated(view, savedInstanceState);
         this.rootView = view;
         context = view.getContext();
@@ -75,17 +81,30 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
 
     @Override
     public void showPosts(List<Meme> memes) {
-        infiniteListView.setVisibility(VISIBLE);
-        Log.d(TESTING_TAG, "showPosts() in FeedFragment");
-        FeedAdapter shopsAdapter = new FeedAdapter(getActivity(), R.layout.meme_layout, (ArrayList<Meme>) memes, this);
-        infiniteListView.stopLoading();
-        infiniteListView.setKeepScreenOn(true);
-        infiniteListView.setAdapter(shopsAdapter);
+        feedListView.setVisibility(VISIBLE);
+        FeedAdapter feedAdapter = new FeedAdapter(getActivity(), R.layout.meme_layout, (ArrayList<Meme>) memes, this);
+        feedListView.stopLoading();
+        feedListView.setAdapter(feedAdapter);
+    }
+
+    private void configureListView(){
+        feedListView.setOnScrollListener(new EndlessScrollListener(){
+
+            // Defines the process for actually loading more data based on page
+            // Returns true if more data is being loaded; returns false if there is no more data to load.
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount){
+                return false;
+            }
+        });
+    }
+
+    void onNewLoadRequired(){
+
     }
 
     @Override
     public void showError(boolean show) {
-        Log.d(TESTING_TAG, "showError() in FeedFragment");
         if (show) {
             errorLayout.setVisibility(VISIBLE);
         } else {
@@ -96,7 +115,6 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
 
     @Override
     public void showLoadingIndicator(boolean show) {
-        Log.d(TESTING_TAG, "showLoadingIndicator() in FeedFragment");
         if(show) {
             loadingLayout.setVisibility(VISIBLE);
         }else {
@@ -120,15 +138,27 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+//        if(infiniteListView != null){
+//            outState.putInt(LIST_VIEW_POSITION, infiniteListView.getScrollY());
+//            Log.d(TESTING_TAG, "onSaveInstanceState() in FeedFragment. infiniteListView.getScrollY() = " + infiniteListView.getScrollY());
+//        }else{
+//            outState.putInt(LIST_VIEW_POSITION, 0);
+//            Log.d(TESTING_TAG, "onSaveInstanceState() in FeedFragment. infiniteListView == null");
+//        }
     }
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState){
+        super.onViewStateRestored(savedInstanceState);
+//        if(savedInstanceState != null){
+//            listViewPosition = savedInstanceState.getInt(LIST_VIEW_POSITION);
+//            Log.d(TESTING_TAG, "onViewStateRestored() in FeedFragment. listViewPosition = " + listViewPosition);
+//        }else{
+//            listViewPosition = 0;
+//        }
     }
 
     @Override

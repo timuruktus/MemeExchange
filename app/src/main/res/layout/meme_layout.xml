@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@android:color/white"
         android:elevation="3dp"
         android:orientation="vertical">
@@ -56,23 +56,26 @@
             android:id="@+id/textContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxHeight="100dp"
             android:padding="10dp"
-            android:maxHeight="100dp">
+            >
 
-            <ScrollView
+            <TextView
+                android:id="@+id/memeText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxHeight="100dp">
+                android:ellipsize="end"
+                android:maxLines="5"
+                android:scrollbars="vertical"
+                android:textSize="18sp"/>
 
-                <TextView
-                    android:id="@+id/memeText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:isScrollContainer="true"
-                    android:nestedScrollingEnabled="true"
-                    android:overScrollMode="ifContentScrolls"
-                    android:textSize="18sp"/>
-            </ScrollView>
+            <ImageView
+                android:id="@+id/textExpandButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/memeText"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/ic_arrow_down_in_round"/>
 
         </RelativeLayout>
 
