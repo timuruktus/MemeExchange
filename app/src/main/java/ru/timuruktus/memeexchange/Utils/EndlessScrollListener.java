@@ -38,7 +38,9 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
         if (totalItemCount < previousTotalItemCount) {
             this.currentPage = this.startingPageIndex;
             this.previousTotalItemCount = totalItemCount;
-            if (totalItemCount == 0) { this.loading = true; }
+            if (totalItemCount == 0) {
+                this.loading = true;
+            }
         }
         // If it's still loading, we check to see if the dataset count has
         // changed, if so we conclude it has finished loading and update the current page
@@ -59,7 +61,7 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
 
     // Defines the process for actually loading more data based on page
     // Returns true if more data is being loaded; returns false if there is no more data to load.
-    public abstract boolean onLoadMore(int page, int totalItemsCount);
+    public abstract boolean onLoadMore(int page, int offset);
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {

@@ -2,6 +2,7 @@ package ru.timuruktus.memeexchange.FeedPart;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
@@ -14,7 +15,7 @@ public interface IFeedView extends MvpView {
 
 
     @StateStrategyType(SingleStateStrategy .class)
-    void showPosts(List<Meme> memes);
+    void showPosts(List<Meme> memes, int offset);
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showError(boolean show);
     //Maybe OneExecutionStateStrategy
@@ -22,5 +23,5 @@ public interface IFeedView extends MvpView {
     void showLoadingIndicator(boolean show);
     @StateStrategyType(SkipStrategy.class)
     void showMessageNoInternetConnection();
-    void adapterRefreshCall();
+
 }

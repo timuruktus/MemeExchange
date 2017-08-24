@@ -32,6 +32,7 @@ public class DataManager implements IDataManager {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     private static DataManager dataManager;
+    public final static int DEFAULT_PAGE_SIZE = 5;
 
 
     public static DataManager getInstance(){
@@ -65,9 +66,9 @@ public class DataManager implements IDataManager {
     Only presenter can work with the error. Don't handle errors here.
      */
     @Override
-    public Observable<List<Meme>> loadMemesFromWeb() {
+    public Observable<List<Meme>> loadMemesFromWeb(int pageSize, int offset) {
         Log.d(DEFAULT_TAG, "Try to load from web");
-        return  downloadAndCacheMemesFromWeb()
+        return  downloadAndCacheMemesFromWeb(pageSize, offset)
                 .map(unsortedList -> {
                     Collections.sort(unsortedList, new MemeDateComparator());
                     return unsortedList;
@@ -76,11 +77,11 @@ public class DataManager implements IDataManager {
 
 
 
-    private Observable<List<Meme>> downloadAndCacheMemesFromWeb(){
+    private Observable<List<Meme>> downloadAndCacheMemesFromWeb(int pageSize, int offset){
         final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
         return backendlessAPI
-                .listMemes()
+                .listMemes(pageSize, offset)
                 .timeout(LOAD_SHOPS_TIMEOUT, TimeUnit.SECONDS)
                 .retry(RETRY_COUNT)
                 .subscribeOn(Schedulers.io())
@@ -108,17 +109,17 @@ public class DataManager implements IDataManager {
     }
 
     @Override
-    public Observable<List<Meme>> loadPopularMemesByMonth() {
+    public Observable<List<Meme>> loadPopularMemesByMonth(int pageSize, int offset) {
         return null;
     }
 
     @Override
-    public Observable<List<Meme>> loadPopularMemesByWeek() {
+    public Observable<List<Meme>> loadPopularMemesByWeek(int pageSize, int offset) {
         return null;
     }
 
     @Override
-    public Observable<List<Meme>> loadPopularMemesToday() {
+    public Observable<List<Meme>> loadPopularMemesToday(int pageSize, int offset) {
         return null;
     }
 }

@@ -29,12 +29,16 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.R;
+import ru.timuruktus.memeexchange.Utils.CustomEndlessScrollListener;
 import ru.timuruktus.memeexchange.Utils.EndlessScrollListener;
 
 import static android.view.View.VISIBLE;
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.DEFAULT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
+import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
 
-public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
+public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
+        CustomEndlessScrollListener.ScrollEventListener{
 
     @Nullable @BindView(R.id.feedListView) ListView feedListView;
     @Nullable @BindView(R.id.progressBar) ProgressBar progressBar;
@@ -48,10 +52,12 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
     public FeedPresenter feedPresenter;
 
     Unbinder unbinder;
-    private View rootView;
     private Context context;
     private static int listViewPosition;
     private static final String LIST_VIEW_POSITION = "key";
+    private FeedAdapter feedAdapter;
+    private static ArrayList<Meme> memeData;
+    private static int offset;
 
     public static final String FEED_FRAGMENT_TAG = "feedFragmentTag";
 
@@ -62,44 +68,41 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
         View view = inflater.inflate(
                 R.layout.feed_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
+        context = view.getContext();
+//        feedListView.
         return view;
 
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        this.rootView = view;
-        context = view.getContext();
-//        feedPresenter.loadFeed();
-    }
-
     @OnClick(R.id.refreshIcon)
     void onRefreshClick() {
-        feedPresenter.loadFeed();
+        feedPresenter.loadFeed(0);
     }
 
     @Override
-    public void showPosts(List<Meme> memes) {
+    public void showPosts(List<Meme> memes, int offset) {
+        if(offset <= DEFAULT_PAGE_SIZE){
+            // TODO: ПЕРЕРАБОТАТЬ ЗДЕСЬ ВСЕ НАХЕР!!!
+        }
+        Log.d(TESTING_TAG, "showPosts() in FeedFragment.");
         feedListView.setVisibility(VISIBLE);
-        FeedAdapter feedAdapter = new FeedAdapter(getActivity(), R.layout.meme_layout, (ArrayList<Meme>) memes, this);
-        feedListView.stopLoading();
-        feedListView.setAdapter(feedAdapter);
-    }
-
-    private void configureListView(){
-        feedListView.setOnScrollListener(new EndlessScrollListener(){
-
-            // Defines the process for actually loading more data based on page
-            // Returns true if more data is being loaded; returns false if there is no more data to load.
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount){
-                return false;
-            }
-        });
-    }
-
-    void onNewLoadRequired(){
+        feedListView.setOnScrollListener(new CustomEndlessScrollListener(this));
+        if(offset == 0){
+            memeData = new ArrayList<>();
+            FeedFragment.offset = 0;
+        }else{
+            FeedFragment.offset += offset;
+        }
+        memeData.addAll(memes);
+        if(feedAdapter == null){
+            Log.d(TESTING_TAG, "showPosts() in FeedFragment. feedAdapter == null");
+            feedAdapter = new FeedAdapter(getActivity(), memeData);
+            feedListView.setAdapter(feedAdapter);
+        }else{
+            Log.d(TESTING_TAG, "showPosts() in FeedFragment. feedAdapter != null");
+            feedAdapter.notifyDataSetChanged();
+        }
+        //TODO: осмыслить
 
     }
 
@@ -127,38 +130,10 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
         Toast.makeText(context, R.string.error_loading_shops, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void adapterRefreshCall() {
-        feedPresenter.loadFeed(false);
-    }
 
     @Override
     public void onPause() {
         super.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState){
-        super.onSaveInstanceState(outState);
-//        if(infiniteListView != null){
-//            outState.putInt(LIST_VIEW_POSITION, infiniteListView.getScrollY());
-//            Log.d(TESTING_TAG, "onSaveInstanceState() in FeedFragment. infiniteListView.getScrollY() = " + infiniteListView.getScrollY());
-//        }else{
-//            outState.putInt(LIST_VIEW_POSITION, 0);
-//            Log.d(TESTING_TAG, "onSaveInstanceState() in FeedFragment. infiniteListView == null");
-//        }
-    }
-
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState){
-        super.onViewStateRestored(savedInstanceState);
-//        if(savedInstanceState != null){
-//            listViewPosition = savedInstanceState.getInt(LIST_VIEW_POSITION);
-//            Log.d(TESTING_TAG, "onViewStateRestored() in FeedFragment. listViewPosition = " + listViewPosition);
-//        }else{
-//            listViewPosition = 0;
-//        }
     }
 
     @Override
@@ -169,5 +144,14 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView {
         loadingLayout = null;
         unbinder.unbind();
         feedPresenter.onDestroyView();
+    }
+
+    // Defines the process for actually loading more data based on page
+    // Returns true if more data is being loaded; returns false if there is no more data to load.
+    @Override
+    public boolean onLoadMore(int page, int offset){
+        Log.d(TESTING_TAG, "onLoadMore() in FeedFragment. Page = " + page + " offset = " + offset);
+        feedPresenter.loadFeed(offset);
+        return false;
     }
 }

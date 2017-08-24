@@ -13,6 +13,7 @@ import rx.Observer;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.realm;
+import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
 
 @InjectViewState
 public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPresenter  {
@@ -27,17 +28,26 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        Log.d(TESTING_TAG, "onFirstViewAttach() in FeedPresenter");
-        loadFeed();
+        loadFeed(0);
     }
 
     @Override
-    public void loadFeed(boolean showLoading){
+    public void loadFeed(int offset) {
+        loadFeed(true, offset);
+    }
+
+    @Override
+    public void loadFeed(boolean showLoading, int offset){
+        loadFeed(showLoading, offset, DEFAULT_PAGE_SIZE);
+    }
+
+    @Override
+    public void loadFeed(boolean showLoading, int offset, int pageSize){
         getViewState().showError(false);
         if(showLoading) {
             getViewState().showLoadingIndicator(true);
         }
-        dataManager.loadMemesFromWeb()
+        dataManager.loadMemesFromWeb(pageSize, offset)
                 .subscribe(new Observer<List<Meme>>() {
                     @Override
                     public void onCompleted() {
@@ -48,20 +58,45 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         getViewState().showMessageNoInternetConnection();
-                        loadFeedFromCache();
+                        if(offset == 0){
+                            loadFeedFromCache();
+                        }else{
+                            getViewState().showLoadingIndicator(false);
+                            getViewState().showError(true);
+                        }
                     }
 
                     @Override
                     public void onNext(List<Meme> memesList) {
-                        getViewState().showPosts(memesList);
+                        getViewState().showPosts(memesList, offset);
                     }
                 });
     }
 
     @Override
-    public void loadFeed() {
-        loadFeed(true);
+    public void loadMoreFeed(int offset, int pageSize){
+        getViewState().showError(false);
+        getViewState().showLoadingIndicator(true);
+        dataManager.loadMemesFromWeb(pageSize, offset)
+                .subscribe(new Observer<List<Meme>>() {
+                    @Override
+                    public void onCompleted() {
+                        getViewState().showLoadingIndicator(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        getViewState().showMessageNoInternetConnection();
+                    }
+
+                    @Override
+                    public void onNext(List<Meme> memesList) {
+                        getViewState().showPosts(memesList, offset);
+                    }
+                });
     }
+
 
     @Override
     public void loadFeedFromCache() {
@@ -70,7 +105,6 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
                     @Override
                     public void onCompleted() {
                         getViewState().showLoadingIndicator(false);
-                        Log.d(TESTING_TAG, "onCompleted() in loadShopsFromCache()");
                     }
 
                     @Override
@@ -78,16 +112,14 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
                         e.printStackTrace();
                         getViewState().showLoadingIndicator(false);
                         getViewState().showError(true);
-                        Log.d(TESTING_TAG, "onError() in loadShopsFromCache()");
                     }
 
                     @Override
                     public void onNext(List<Meme> memesList) {
-                        Log.d(TESTING_TAG, "onNext() in loadShopsFromCache()");
                         if (memesList.size() == 0) {
                             onError(new Throwable("Empty cache"));
                         }else {
-                            getViewState().showPosts(memesList);
+                            getViewState().showPosts(memesList, 0);
                         }
                     }
                 });
@@ -95,7 +127,6 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
     @Override
     public void onCreateView() {
-        Log.d(TESTING_TAG, "onCreateView() in feedPresenter");
         if(dataManager == null){
             dataManager = DataManager.getInstance();
         }
@@ -108,7 +139,6 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
     @Override
     public void onDestroyFragment(){
-        Log.d(TESTING_TAG, "onDestroyFragment() in feedPresenter");
         if(dataManager != null){
             dataManager = null;
         }

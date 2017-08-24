@@ -27,7 +27,13 @@ public interface BackendlessAPI {
     String IMAGES_URL = BASE_URL + "files/" + IMAGES_FOLDER + "/";
 
     @GET("data/Meme")
-    Observable<List<Meme>> listMemes();
+    Observable<List<Meme>> listMemes(@Query("pageSize") int pageSize, @Query("offset") int offset);
+
+    @GET("data/Meme")
+    Observable<List<Meme>> listMemesFromGroup(@Query("pageSize") int pageSize,
+                                              @Query("offset") int offset
+                                              //@Query("groupId") int or maybe String related to group ID
+    );
 
     @Multipart
     @Headers({"Content-Type: multipart/form-data"})

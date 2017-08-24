@@ -7,11 +7,11 @@ import rx.Observable;
 
 public interface IDataManager {
 
-    Observable<List<Meme>> loadMemesFromWeb();
+    Observable<List<Meme>> loadMemesFromWeb(int pageSize, int offset);
     Observable<List<Meme>> loadMemesFromCache();
     Observable<List<Meme>> loadPopularGroups();
-    Observable<List<Meme>> loadPopularMemesByMonth();
-    Observable<List<Meme>> loadPopularMemesByWeek();
-    Observable<List<Meme>> loadPopularMemesToday();
+    Observable<List<Meme>> loadPopularMemesByMonth(int pageSize, int offset);
+    Observable<List<Meme>> loadPopularMemesByWeek(int pageSize, int offset);
+    Observable<List<Meme>> loadPopularMemesToday(int pageSize, int offset);
     String getAuthorNameByLogin(String login);
 }
