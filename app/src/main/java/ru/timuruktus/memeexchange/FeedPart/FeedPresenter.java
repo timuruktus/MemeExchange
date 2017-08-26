@@ -16,23 +16,23 @@ import static ru.timuruktus.memeexchange.MainPart.MainActivity.realm;
 import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
 
 @InjectViewState
-public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPresenter  {
+public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPresenter{
 
 
     private DataManager dataManager;
     private FeedAdapter infiniteListView;
 
-    public FeedPresenter() {
+    public FeedPresenter(){
     }
 
     @Override
-    protected void onFirstViewAttach() {
+    protected void onFirstViewAttach(){
         super.onFirstViewAttach();
         loadFeed(0);
     }
 
     @Override
-    public void loadFeed(int offset) {
+    public void loadFeed(int offset){
         loadFeed(true, offset);
     }
 
@@ -44,96 +44,92 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
     @Override
     public void loadFeed(boolean showLoading, int offset, int pageSize){
         getViewState().showError(false);
-        if(showLoading) {
+        if(showLoading){
             getViewState().showLoadingIndicator(true);
         }
         dataManager.loadMemesFromWeb(pageSize, offset)
-                .subscribe(new Observer<List<Meme>>() {
+                .subscribe(new Observer<List<Meme>>(){
                     @Override
-                    public void onCompleted() {
+                    public void onCompleted(){
                         getViewState().showLoadingIndicator(false);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(Throwable e){
                         e.printStackTrace();
                         getViewState().showMessageNoInternetConnection();
-                        if(offset == 0){
-                            loadFeedFromCache();
-                        }else{
-                            getViewState().showLoadingIndicator(false);
-                            getViewState().showError(true);
-                        }
+                        loadFeedFromCache();
                     }
 
                     @Override
-                    public void onNext(List<Meme> memesList) {
-                        getViewState().showPosts(memesList, offset);
+                    public void onNext(List<Meme> memesList){
+                        getViewState().showPosts(memesList);
                     }
                 });
     }
 
     @Override
     public void loadMoreFeed(int offset, int pageSize){
+        Log.d(TESTING_TAG, "loadMoreFeed() in FeedPresenter. pageSize = " + pageSize + " offset = " + offset);
         getViewState().showError(false);
-        getViewState().showLoadingIndicator(true);
+        getViewState().showLoadingIndicator(false);
         dataManager.loadMemesFromWeb(pageSize, offset)
-                .subscribe(new Observer<List<Meme>>() {
+                .subscribe(new Observer<List<Meme>>(){
                     @Override
-                    public void onCompleted() {
+                    public void onCompleted(){
                         getViewState().showLoadingIndicator(false);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(Throwable e){
                         e.printStackTrace();
                         getViewState().showMessageNoInternetConnection();
                     }
 
                     @Override
-                    public void onNext(List<Meme> memesList) {
-                        getViewState().showPosts(memesList, offset);
+                    public void onNext(List<Meme> memesList){
+                        getViewState().showMorePosts(memesList, offset);
                     }
                 });
     }
 
 
     @Override
-    public void loadFeedFromCache() {
+    public void loadFeedFromCache(){
         dataManager.loadMemesFromCache()
-                .subscribe(new Observer<List<Meme>>() {
+                .subscribe(new Observer<List<Meme>>(){
                     @Override
-                    public void onCompleted() {
+                    public void onCompleted(){
                         getViewState().showLoadingIndicator(false);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(Throwable e){
                         e.printStackTrace();
                         getViewState().showLoadingIndicator(false);
                         getViewState().showError(true);
                     }
 
                     @Override
-                    public void onNext(List<Meme> memesList) {
-                        if (memesList.size() == 0) {
+                    public void onNext(List<Meme> memesList){
+                        if(memesList.size() == 0){
                             onError(new Throwable("Empty cache"));
-                        }else {
-                            getViewState().showPosts(memesList, 0);
+                        } else{
+                            getViewState().showPosts(memesList);
                         }
                     }
                 });
     }
 
     @Override
-    public void onCreateView() {
+    public void onCreateView(){
         if(dataManager == null){
             dataManager = DataManager.getInstance();
         }
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroyView(){
 
     }
 
@@ -145,12 +141,12 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
     }
 
     @Override
-    public void saveAdapter(FeedAdapter feedAdapter) {
+    public void saveAdapter(FeedAdapter feedAdapter){
         this.infiniteListView = feedAdapter;
     }
 
     @Override
-    public FeedAdapter getSavedAdapter() {
+    public FeedAdapter getSavedAdapter(){
         return infiniteListView;
     }
 

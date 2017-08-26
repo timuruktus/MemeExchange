@@ -68,7 +68,7 @@ public class ExampleUnitTest {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
-        backendlessAPI.listMemes().map(new Func1<List<Meme>, List<Meme>>(){
+        backendlessAPI.listNewestMemes().map(new Func1<List<Meme>, List<Meme>>(){
             @Override
             public List<Meme> call(List<Meme> memes){
                 for(Meme meme : memes){
@@ -90,6 +90,6 @@ public class ExampleUnitTest {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
-        backendlessAPI.listMemes().subscribe(memes -> System.out.println(memes.get(0).getAuthor().getEmail()));
+        backendlessAPI.listNewestMemes().subscribe(memes -> System.out.println(memes.get(0).getAuthor().getEmail()));
     }
 }

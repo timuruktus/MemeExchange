@@ -8,6 +8,7 @@ import rx.Observable;
 public interface IDataManager {
 
     Observable<List<Meme>> loadMemesFromWeb(int pageSize, int offset);
+    Observable<List<Meme>> loadMemesFromWeb(int pageSize, int offset, String sortBy);
     Observable<List<Meme>> loadMemesFromCache();
     Observable<List<Meme>> loadPopularGroups();
     Observable<List<Meme>> loadPopularMemesByMonth(int pageSize, int offset);

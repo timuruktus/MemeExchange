@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,106 +35,47 @@ import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
  * We should retrieve User (author) and get author username and image
  * separately with meme retrieving
  */
-public class FeedAdapter extends BaseAdapter{
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
 
     private Activity activity;
     private ArrayList<Meme> itemList;
+    private PostEventListener postEventListener;
 
-    public FeedAdapter(Activity activity, ArrayList<Meme> itemList){
-        this.itemList = itemList;
-        this.activity = activity;
+    public interface PostEventListener{
+        void onLiked(Meme meme);
     }
 
+    public FeedAdapter(Activity activity, ArrayList<Meme> itemList, PostEventListener postEventListener){
+        this.itemList = itemList;
+        this.activity = activity;
+        this.postEventListener = postEventListener;
+        setHasStableIds(true);
+    }
 
     @Override
-    public int getCount(){
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        LayoutInflater li = activity.getLayoutInflater();
+        View view = li.inflate(R.layout.meme_layout, parent, false);
+        return new ViewHolder(view, postEventListener);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position){
+        holder.setData(itemList.get(position));
+    }
+
+    @Override
+    public int getItemCount(){
         return itemList.size();
     }
 
     @Override
-    public Object getItem(int position){
-        return itemList.get(position);
-    }
-
-    @Override
-    @Deprecated
     public long getItemId(int position){
-        return 0;
+        return itemList.get(position).getObjectId().hashCode();
     }
 
-    @NonNull
-    @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup viewGroup){
-        ViewHolder viewHolder;
+    static class ViewHolder extends RecyclerView.ViewHolder{
 
-        if(convertView == null){
-            LayoutInflater inflater = (LayoutInflater) activity
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.meme_layout, viewGroup, false);
-            viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else{
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-        Meme meme = itemList.get(position);
-
-        configureAuthorContainer(viewHolder, meme);
-        setMemeText(viewHolder, meme.getText());
-        setLongTextExpand(viewHolder);
-        setLikeButtonImage(viewHolder, meme);
-        loadImages(viewHolder, meme);
-
-        return convertView;
-    }
-
-    private void configureAuthorContainer(ViewHolder viewHolder, Meme meme){
-        viewHolder.authorName.setText(meme.getAuthor().getName());
-        String likes = activity.getResources().getQuantityString(R.plurals.likes,
-                (int) meme.getLikes(), meme.getLikes());
-        viewHolder.likesCount.setText(likes);
-    }
-
-    private void setMemeText(ViewHolder viewHolder, String text){
-        if(text != null){
-            viewHolder.memeText.setVisibility(View.VISIBLE);
-            viewHolder.memeText.setText(text);
-        }else{
-            viewHolder.memeText.setVisibility(GONE);
-        }
-    }
-
-    private void loadImages(ViewHolder viewHolder, Meme meme){
-        GlideApp.with(activity.getBaseContext())
-                .load(meme.getImage())
-                .centerCrop()
-                .into(viewHolder.memeImage);
-
-        GlideApp.with(activity.getBaseContext())
-                .load(meme.getAuthor().getAvatar())
-                .circleCrop()
-                .into(viewHolder.authorImage);
-    }
-
-    private void setLikeButtonImage(ViewHolder viewHolder, Meme meme){
-        if(meme.isUserLiked()){
-            viewHolder.likeButton.setImageResource(R.drawable.ic_like);
-        } else{
-            viewHolder.likeButton.setImageResource(R.drawable.ic_not_yet_like);
-        }
-    }
-
-    private void setLongTextExpand(ViewHolder viewHolder){
-
-        if(viewHolder.memeText.getLineCount() >= 5){
-            viewHolder.memeText.setMaxLines(5);
-            viewHolder.textExpandButton.setVisibility(View.VISIBLE);
-        }else{
-            viewHolder.memeText.setMaxLines(Integer.MAX_VALUE);
-            viewHolder.textExpandButton.setVisibility(GONE);
-        }
-    }
-
-    static class ViewHolder{
         @BindView(R.id.authorImage) ImageView authorImage;
         @BindView(R.id.authorName) TextView authorName;
         @BindView(R.id.likes) TextView likesCount;
@@ -143,6 +85,9 @@ public class FeedAdapter extends BaseAdapter{
         @BindView(R.id.likeButton) ImageView likeButton;
         @BindView(R.id.textContainer) RelativeLayout textContainer;
         @BindView(R.id.textExpandButton) ImageView textExpandButton;
+        private View view;
+        private PostEventListener postEventListener;
+        private Meme meme;
 
         @OnClick(R.id.textExpandButton)
         void onExpandClick(){
@@ -150,7 +95,72 @@ public class FeedAdapter extends BaseAdapter{
             textExpandButton.setVisibility(GONE);
         }
 
-        ViewHolder(View view){
+        @OnClick(R.id.likeButton)
+        void onLikeClicked(){
+            postEventListener.onLiked(meme);
+            setLikeButtonImage(meme);
+        }
+
+        void setData(Meme meme){
+            this.meme = meme;
+            configureAuthorContainer(meme);
+            setMemeText(meme.getText());
+            setLongTextExpand();
+            setLikeButtonImage(meme);
+            loadImages(meme);
+        }
+
+        private void configureAuthorContainer(Meme meme){
+            authorName.setText(meme.getAuthor().getName());
+            String likes = view.getResources().getQuantityString(R.plurals.likes,
+                    (int) meme.getLikes(), meme.getLikes());
+            likesCount.setText(likes);
+        }
+
+        private void setMemeText(String text){
+            if(text != null){
+                memeText.setVisibility(View.VISIBLE);
+                memeText.setText(text);
+            }else{
+                memeText.setVisibility(GONE);
+            }
+        }
+
+        private void loadImages(Meme meme){
+            GlideApp.with(view.getContext())
+                    .load(meme.getImage())
+                    .centerCrop()
+                    .into(memeImage);
+
+            GlideApp.with(view.getContext())
+                    .load(meme.getAuthor().getAvatar())
+                    .circleCrop()
+                    .into(authorImage);
+        }
+
+        private void setLikeButtonImage(Meme meme){
+            if(meme.isUserLiked()){
+                likeButton.setImageResource(R.drawable.ic_like);
+            } else{
+                likeButton.setImageResource(R.drawable.ic_not_yet_like);
+            }
+        }
+
+        private void setLongTextExpand(){
+
+            if(memeText.getLineCount() >= 5){
+                memeText.setMaxLines(5);
+                textExpandButton.setVisibility(View.VISIBLE);
+            }else{
+                memeText.setMaxLines(Integer.MAX_VALUE);
+                textExpandButton.setVisibility(GONE);
+            }
+        }
+
+        ViewHolder(View view, PostEventListener postEventListener){
+            super(view);
+            this.postEventListener = postEventListener;
+            this.view = view;
             ButterKnife.bind(this, view);
         }
     }

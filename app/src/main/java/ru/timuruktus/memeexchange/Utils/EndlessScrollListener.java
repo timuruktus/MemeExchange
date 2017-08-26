@@ -1,70 +1,87 @@
 package ru.timuruktus.memeexchange.Utils;
 
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.AbsListView;
 
-public abstract class EndlessScrollListener implements AbsListView.OnScrollListener {
-
-    // The minimum number of items to have below your current scroll position
-    // before loading more.
+public abstract class EndlessScrollListener extends RecyclerView.OnScrollListener{
+    // Минимальное количество оставшихся элементов в адаптере, после достижения
+    // первого элемента из которых начнется загрузка данных (<a href="#threshold">threshold</a>)
     private int visibleThreshold = 5;
-    // The current offset index of data you have loaded
+    // Текущий индекс в коллекции загруженных данных
     private int currentPage = 0;
-    // The total number of items in the dataset after the last load
+    // Общее количество элементов после предыдущей подгрузки новых данных
     private int previousTotalItemCount = 0;
-    // True if we are still waiting for the last set of data to load.
+    // True - если мы в ожидании загрузки свежей порции данных
     private boolean loading = true;
-    // Sets the starting page index
+    // Индекс стартовой страницы, с которой начинается загрузка данных
     private int startingPageIndex = 0;
 
-    public EndlessScrollListener() {
+    // это поле также используется когда EndlessRecyclerViewScrollListener используется для GridLayoutManager
+    private LinearLayoutManager linearLayoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
+
+    public EndlessScrollListener(LinearLayoutManager layoutManager){
+        this.linearLayoutManager = layoutManager;
     }
 
-    public EndlessScrollListener(int visibleThreshold) {
-        this.visibleThreshold = visibleThreshold;
-    }
-
-    public EndlessScrollListener(int visibleThreshold, int startPage) {
-        this.visibleThreshold = visibleThreshold;
-        this.startingPageIndex = startPage;
-        this.currentPage = startPage;
-    }
-
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-    {
-        // If the total item count is zero and the previous isn't, assume the
-        // list is invalidated and should be reset back to initial state
-        if (totalItemCount < previousTotalItemCount) {
-            this.currentPage = this.startingPageIndex;
-            this.previousTotalItemCount = totalItemCount;
-            if (totalItemCount == 0) {
-                this.loading = true;
+    public int getLastVisibleItem(int[] lastVisibleItemPositions){
+        int maxSize = 0;
+        for(int i = 0; i < lastVisibleItemPositions.length; i++){
+            if(i == 0){
+                maxSize = lastVisibleItemPositions[i];
+            } else if(lastVisibleItemPositions[i] > maxSize){
+                maxSize = lastVisibleItemPositions[i];
             }
         }
-        // If it's still loading, we check to see if the dataset count has
-        // changed, if so we conclude it has finished loading and update the current page
-        // number and total item count.
-        if (loading && (totalItemCount > previousTotalItemCount)) {
-            loading = false;
+        return maxSize;
+    }
+
+    // Этот метод вызывается каждый раз когда пользователь скроллит список.
+    @Override
+    public void onScrolled(RecyclerView view, int dx, int dy){
+        int lastVisibleItemPosition = 0;
+        int totalItemCount = 0;
+
+        // Получаем актуальное количество элементов в списке и позицию последнего видимого элемента
+        // в зависимости от используемого LayoutManager
+        if(linearLayoutManager != null){
+            totalItemCount = linearLayoutManager.getItemCount();
+            lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
+        }
+        // Если до сих пор состояние загрузки, значит следует проверить изменилось ли количество элементов
+        // в списке, и если изменилось - значит загрузка закончилась и следует обновить номер текущей страницы
+        // и общее количество элементов
+        if(totalItemCount < previousTotalItemCount){
+            currentPage = this.startingPageIndex;
             previousTotalItemCount = totalItemCount;
-            currentPage++;
+            if(totalItemCount == 0){
+                loading = true;
+            }
         }
 
-        // If it isn't currently loading, we check to see if we have breached
+        // Если до сих пор состояние загрузки, значит следует проверить - изменилось ли количество элементов
+        // в списке, и если изменилось - значит загрузка закончилась и следует обновить номер текущей страницы
+        // и общее количество элементов
+        if(loading && (totalItemCount > previousTotalItemCount)){
+            loading = false;
+            previousTotalItemCount = totalItemCount;
+        }
+
+        // If it isn’t currently loading, we check to see if we have breached
         // the visibleThreshold and need to reload more data.
         // If we do need to reload some more data, we execute onLoadMore to fetch the data.
-        if (!loading && (firstVisibleItem + visibleItemCount + visibleThreshold) >= totalItemCount ) {
-            loading = onLoadMore(currentPage + 1, totalItemCount);
+        // threshold should reflect how many total columns there are too
+        if(!loading && (lastVisibleItemPosition + visibleThreshold > totalItemCount)){
+            currentPage++;
+            onLoadMore(currentPage, totalItemCount);
+            loading = true;
         }
     }
 
     // Defines the process for actually loading more data based on page
-    // Returns true if more data is being loaded; returns false if there is no more data to load.
-    public abstract boolean onLoadMore(int page, int offset);
+    public abstract void onLoadMore(int page, int totalItemsCount);
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        // Don't take any action on changed
-    }
 }

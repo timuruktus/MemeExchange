@@ -3,18 +3,15 @@ package ru.timuruktus.memeexchange.MainPart;
 
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 
 import com.arellomobile.mvp.MvpPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import io.realm.Realm;
 import ru.timuruktus.memeexchange.FeedPart.FeedFragment;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.Settings;
 
-import static ru.timuruktus.memeexchange.FeedPart.FeedFragment.FEED_FRAGMENT_TAG;
-import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
+import static ru.timuruktus.memeexchange.FeedPart.FeedFragment.NEWEST_FEED_TAG;
 
 public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainPresenter {
 
@@ -31,10 +28,10 @@ public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainP
 
     private void loadFirstFragment(){
         if(Settings.isFirstOpen()){
-            fm.beginTransaction().add(R.id.container, new FeedFragment(), FEED_FRAGMENT_TAG).commit();
+            fm.beginTransaction().add(R.id.container, new FeedFragment(), NEWEST_FEED_TAG).commit();
             // TODO: open welcome screen
         }else{
-            fm.beginTransaction().add(R.id.container, new FeedFragment(), FEED_FRAGMENT_TAG).commit();
+            fm.beginTransaction().add(R.id.container, new FeedFragment(), NEWEST_FEED_TAG).commit();
             // TODO: open feed
         }
     }

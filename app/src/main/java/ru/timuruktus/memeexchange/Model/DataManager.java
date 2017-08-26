@@ -2,7 +2,6 @@ package ru.timuruktus.memeexchange.Model;
 
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +17,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.DEFAULT_TAG;
-import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.REST.BackendlessAPI.BASE_URL;
 
 public class DataManager implements IDataManager {
@@ -32,7 +30,8 @@ public class DataManager implements IDataManager {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     private static DataManager dataManager;
-    public final static int DEFAULT_PAGE_SIZE = 5;
+    public final static int DEFAULT_PAGE_SIZE = 10;
+    public static final String SORT_BY_CREATED_TIME = "created desc";
 
 
     public static DataManager getInstance(){
@@ -62,26 +61,24 @@ public class DataManager implements IDataManager {
         return null;
     }
 
-    /*
-    Only presenter can work with the error. Don't handle errors here.
-     */
     @Override
-    public Observable<List<Meme>> loadMemesFromWeb(int pageSize, int offset) {
+    public Observable<List<Meme>> loadMemesFromWeb(int pageSize, int offset){
+        return loadMemesFromWeb(pageSize, offset, SORT_BY_CREATED_TIME);
+    }
+
+    @Override
+    public Observable<List<Meme>> loadMemesFromWeb(int pageSize, int offset, String sortBy) {
         Log.d(DEFAULT_TAG, "Try to load from web");
-        return  downloadAndCacheMemesFromWeb(pageSize, offset)
-                .map(unsortedList -> {
-                    Collections.sort(unsortedList, new MemeDateComparator());
-                    return unsortedList;
-        });
+        return  downloadAndCacheMemesFromWeb(pageSize, offset, sortBy);
     }
 
 
 
-    private Observable<List<Meme>> downloadAndCacheMemesFromWeb(int pageSize, int offset){
+    private Observable<List<Meme>> downloadAndCacheMemesFromWeb(int pageSize, int offset, String sortBy){
         final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
         return backendlessAPI
-                .listMemes(pageSize, offset)
+                .listNewestMemes(pageSize, offset, sortBy)
                 .timeout(LOAD_SHOPS_TIMEOUT, TimeUnit.SECONDS)
                 .retry(RETRY_COUNT)
                 .subscribeOn(Schedulers.io())

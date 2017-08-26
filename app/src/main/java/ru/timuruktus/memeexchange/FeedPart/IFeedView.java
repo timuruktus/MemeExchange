@@ -15,7 +15,7 @@ public interface IFeedView extends MvpView {
 
 
     @StateStrategyType(SingleStateStrategy .class)
-    void showPosts(List<Meme> memes, int offset);
+    void showPosts(List<Meme> memes);
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showError(boolean show);
     //Maybe OneExecutionStateStrategy
@@ -23,5 +23,6 @@ public interface IFeedView extends MvpView {
     void showLoadingIndicator(boolean show);
     @StateStrategyType(SkipStrategy.class)
     void showMessageNoInternetConnection();
-
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showMorePosts(List<Meme> memesList, int offset);
 }
