@@ -7,8 +7,11 @@ import rx.Observable;
 
 public interface IDatabaseHelper {
 
-    void cacheMeme(Meme shop);
-    void cacheMemes(List<Meme> shops);
+    void cacheMeme(Meme meme);
+    void cacheMemes(List<Meme> memes);
+    void updateMeme(Meme meme);
+    void updateMemes(List<Meme> memes);
     Observable<List<Meme>> getMemes();
     Observable<Meme> getMemeById(String id);
+
 }

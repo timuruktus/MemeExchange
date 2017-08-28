@@ -1,23 +1,16 @@
 package ru.timuruktus.memeexchange.FeedPart;
 
 import android.app.Activity;
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.softw4re.views.InfiniteListAdapter;
+import com.fujiyuu75.sequent.Sequent;
 
 import java.util.ArrayList;
 
@@ -25,11 +18,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.timuruktus.memeexchange.MainPart.GlideApp;
+import ru.timuruktus.memeexchange.Model.DatabaseHelper;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.R;
 
 import static android.view.View.GONE;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
+import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
 
 /**
  * We should retrieve User (author) and get author username and image
@@ -40,9 +35,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
     private Activity activity;
     private ArrayList<Meme> itemList;
     private PostEventListener postEventListener;
+    public static final int REFRESH_BOTTOM_OFFSET = 4; // Items under the last visible item, needed to refresh
+    public static boolean neededToRefresh = true;
 
     public interface PostEventListener{
         void onLiked(Meme meme);
+        void onLoadMore(int offset);
     }
 
     public FeedAdapter(Activity activity, ArrayList<Meme> itemList, PostEventListener postEventListener){
@@ -74,6 +72,23 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
         return itemList.get(position).getObjectId().hashCode();
     }
 
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        int layoutPosition = holder.getLayoutPosition();
+        if(itemList.size() - layoutPosition <= REFRESH_BOTTOM_OFFSET && neededToRefresh){
+            postEventListener.onLoadMore(layoutPosition);
+        }
+        setNeededToRefresh(false);
+
+    }
+
+
+    public void setNeededToRefresh(boolean neededToRefresh){
+        FeedAdapter.neededToRefresh = neededToRefresh;
+    }
+
+
     static class ViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.authorImage) ImageView authorImage;
@@ -83,6 +98,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
         @BindView(R.id.memeImage) ImageView memeImage;
         @BindView(R.id.moreButton) ImageView moreButton;
         @BindView(R.id.likeButton) ImageView likeButton;
+        @BindView(R.id.likeContainer) RelativeLayout likeContainer;
         @BindView(R.id.textContainer) RelativeLayout textContainer;
         @BindView(R.id.textExpandButton) ImageView textExpandButton;
         private View view;
@@ -97,8 +113,21 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
 
         @OnClick(R.id.likeButton)
         void onLikeClicked(){
+            if(meme.isUserLiked()){
+                meme.setLikes(meme.getLikes() - 1);
+            }else{
+                meme.setLikes(meme.getLikes() + 1);
+            }
+            meme.setUserLiked(!meme.isUserLiked());
+            DatabaseHelper.getInstance().updateMeme(meme);
+            Sequent.origin(likeContainer)
+                    .anim(view.getContext(), R.anim.fade_in)
+                    .delay(0)
+                    .duration(50)
+                    .start();
             postEventListener.onLiked(meme);
             setLikeButtonImage(meme);
+            configureAuthorContainer(meme);
         }
 
         void setData(Meme meme){

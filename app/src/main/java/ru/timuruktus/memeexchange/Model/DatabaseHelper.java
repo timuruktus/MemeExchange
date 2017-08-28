@@ -48,6 +48,30 @@ public class DatabaseHelper implements IDatabaseHelper {
     }
 
     @Override
+    public void updateMeme(Meme meme){
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction(){
+            @Override
+            public void execute(Realm realm){
+                realm.insertOrUpdate(meme);
+            }
+        });
+        realm.close();
+    }
+
+    @Override
+    public void updateMemes(List<Meme> memes){
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction(){
+            @Override
+            public void execute(Realm realm){
+                realm.insertOrUpdate(memes);
+            }
+        });
+        realm.close();
+    }
+
+    @Override
     public Observable<List<Meme>> getMemes() {
         Realm realm = Realm.getDefaultInstance();
         List<Meme> memes = realm.copyFromRealm(realm.where(Meme.class).findAll());
@@ -55,6 +79,7 @@ public class DatabaseHelper implements IDatabaseHelper {
         Log.d(DEFAULT_TAG, "Cache size is " + memes.size());
         return Observable.from(memes).toList();
     }
+
     @Override public Observable<Meme> getMemeById(String id) {
         Realm realm = Realm.getDefaultInstance();
         Meme meme = null;

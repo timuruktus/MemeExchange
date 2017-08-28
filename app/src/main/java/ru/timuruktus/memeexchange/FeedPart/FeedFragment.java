@@ -59,7 +59,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     Parcelable layoutManagerState;
     private static int offset;
     private LinearLayoutManager llm = new LinearLayoutManager(context);
-    private CustomFeedListenerListener listener = new CustomFeedListenerListener(llm, this);
+    private CustomFeedListenerListener listener = new CustomFeedListenerListener(this);
 
     public static String currentTag;
     public static final String BUNDLE_TAG = "bundleTag";
@@ -102,10 +102,11 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         errorLayout.setVisibility(GONE);
 
         swipeContainer.setOnRefreshListener(listener);
-        feedList.addOnScrollListener(listener);
+//        feedList.addOnScrollListener(listener);
 
 
         feedAdapter = new FeedAdapter(getActivity(), memeData, this);
+        feedAdapter.setNeededToRefresh(true);
         feedList.setAdapter(feedAdapter);
         feedList.setLayoutManager(llm);
     }
@@ -141,7 +142,14 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         errorLayout.setVisibility(GONE);
         memeData.addAll(memeList);
         FeedFragment.offset = offset;
+        feedList.getRecycledViewPool().clear();
         feedAdapter.notifyItemRangeChanged(offset, memeList.size());
+        if(memeList.size() < DEFAULT_PAGE_SIZE){
+            feedAdapter.setNeededToRefresh(false);
+        }else{
+            feedAdapter.setNeededToRefresh(true);
+        }
+
     }
 
     @Override
@@ -159,11 +167,6 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         feedPresenter.onDestroyView();
     }
 
-    @Override
-    public void onLoadMore(int page, int offset){
-        Log.d(TESTING_TAG, "onLoadMore() in FeedFragment. Page = " + page + " offset = " + offset);
-        feedPresenter.loadMoreFeed(offset, DEFAULT_PAGE_SIZE);
-    }
 
     @Override
     public void onRefresh(){
@@ -200,8 +203,20 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         }
     }
 
+
+//    @Override
+//    public void onLoadMore(int page, int offset){
+//        Log.d(TESTING_TAG, "onLoadMore() in FeedFragment. Page = " + page + " offset = " + offset);
+//        feedPresenter.loadMoreFeed(offset, DEFAULT_PAGE_SIZE);
+//    }
+
     @Override
     public void onLiked(Meme meme){
-        meme.setUserLiked(!meme.isUserLiked());
+
+    }
+
+    @Override
+    public void onLoadMore(int offset){
+        feedPresenter.loadMoreFeed(offset, DEFAULT_PAGE_SIZE);
     }
 }

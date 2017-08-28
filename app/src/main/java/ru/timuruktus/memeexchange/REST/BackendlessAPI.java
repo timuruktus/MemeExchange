@@ -27,7 +27,7 @@ public interface BackendlessAPI {
     String IMAGES_URL = BASE_URL + "files/" + IMAGES_FOLDER + "/";
 
     @GET("data/Meme")
-    Observable<List<Meme>> listNewestMemes(@Query("pageSize") int pageSize, @Query("offset") int offset, @Query("sortBy") String created);
+    Observable<List<Meme>> listNewestMemes(@Query("pageSize") int pageSize, @Query("offset") int offset, @Query("sortBy") String sortBy);
 
     @GET("data/Meme")
     Observable<List<Meme>> listMemesFromGroup(@Query("pageSize") int pageSize,
