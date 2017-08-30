@@ -1,5 +1,7 @@
 package ru.timuruktus.memeexchange.FeedPart;
 
+import android.support.v7.widget.LinearLayoutManager;
+
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
@@ -15,7 +17,7 @@ public interface IFeedView extends MvpView {
 
 
     @StateStrategyType(SingleStateStrategy .class)
-    void showPosts(List<Meme> memes);
+    void showNewPosts(List<Meme> memes);
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showError(boolean show);
     //Maybe OneExecutionStateStrategy

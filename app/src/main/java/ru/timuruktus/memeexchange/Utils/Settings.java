@@ -8,20 +8,60 @@ public class Settings implements ISettings {
 
     private static final String APP_PREFERENCES = "mySettings";
     private static final String FIRST_OPEN = "firstOpen";
+    private static final String USER_TOKEN = "token";
+    private static final String USER_OBJECT_ID = "objectId";
+    public static final int MEMES_CACHE_MAX_SIZE = 50; //Memes
 
     private static SharedPreferences settings;
 
-    public static void initSettings(Context con){
-        settings = con.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+    public static ISettings getInstance(Context con){
+        if(settings == null){
+            settings = con.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        }
+        return new Settings();
     }
 
-    public static boolean isFirstOpen() {
+    public static void closeSettings(){
+        settings = null;
+    }
+
+
+
+    @Override
+    public boolean isFirstOpen() {
         return getBooleanValue(FIRST_OPEN, true);
     }
 
-    public static void setFirstOpen(boolean firstSign) {
+    @Override
+    public void setFirstOpen(boolean firstSign) {
         writeBooleanValue(FIRST_OPEN, firstSign);
     }
+
+    @Override
+    public boolean isUserLoggedIn(){
+        return !FieldsValidator.isStringEmpty(getStringValue(USER_TOKEN));
+    }
+
+    @Override
+    public String getUserToken(){
+        return getStringValue(USER_TOKEN);
+    }
+
+    @Override
+    public void setUserToken(String token){
+        writeStringValue(USER_TOKEN, token);
+    }
+
+    @Override
+    public String getUserObjectId(){
+        return getStringValue(USER_OBJECT_ID);
+    }
+
+    @Override
+    public void setUserObjectId(String objectId){
+        writeStringValue(USER_OBJECT_ID, objectId);
+    }
+
 
     /**
      * UNDER THIS LINE- 1-LVL METHODS

@@ -14,7 +14,9 @@
         android:theme="@style/AppTheme"
         android:name="ru.timuruktus.memeexchange.MainPart.MyApp">
 
-        <activity android:name=".MainPart.MainActivity">
+        <activity android:name=".MainPart.MainActivity"
+            android:windowSoftInputMode="adjustPan">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

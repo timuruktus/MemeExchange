@@ -2,13 +2,19 @@ package ru.timuruktus.memeexchange;
 
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.timuruktus.memeexchange.Model.DataManager;
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.POJO.POSTLogin;
+import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
+import rx.Observer;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static org.junit.Assert.*;
@@ -45,7 +51,8 @@ public class ExampleUnitTest {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
-        System.out.println(backendlessAPI.getUserByCondition("login='timuruktus'", null).execute().body().get(0).getEmail());
+        // OLD! Now retrieve Observable
+//        System.out.println(backendlessAPI.getUserByCondition("login='timuruktus'", null).execute().body().get(0).getEmail());
 //        backendlessAPI.getUserByCondition("timuruktus").enqueue(new Callback<String>() {
 //            @Override
 //            public void onResponse(Call<String> call, Response<String> response) {
@@ -91,5 +98,54 @@ public class ExampleUnitTest {
                 .build();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
         backendlessAPI.listNewestMemes(0, 0, null).subscribe(memes -> System.out.println(memes.get(0).getAuthor().getEmail()));
+    }
+
+    // We should save objectId and user-token both
+    @Test
+    public void testLoginApi(){
+        Retrofit backendlessRetrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
+        POSTLogin body = new POSTLogin("timuruktus", "qwerty");
+        System.out.println(backendlessAPI.loginUser(body).subscribe(new Observer<User>(){
+            @Override
+            public void onCompleted(){
+
+            }
+
+            @Override
+            public void onError(Throwable e){
+                System.out.println(e.getMessage());
+            }
+
+            @Override
+            public void onNext(User user){
+                System.out.println(user.getToken());
+            }
+        }));
+    }
+
+    @Test
+    public void testLoginDataManagerApi(){
+        DataManager.getInstance().loginUser("s", "qwerty").subscribe(new Observer<User>(){
+            @Override
+            public void onCompleted(){
+
+            }
+
+            @Override
+            public void onError(Throwable e){
+                System.out.println(e.getMessage());
+            }
+
+            @Override
+            public void onNext(User user){
+                System.out.println(user.getToken());
+            }
+        });
+
     }
 }

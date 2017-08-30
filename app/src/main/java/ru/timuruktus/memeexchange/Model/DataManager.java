@@ -10,8 +10,10 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.POJO.POSTLogin;
+import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
-import ru.timuruktus.memeexchange.Utils.MemeDateComparator;
+import ru.timuruktus.memeexchange.Utils.NewestMemeComparator;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -62,6 +64,19 @@ public class DataManager implements IDataManager {
     }
 
     @Override
+    public Observable<User> loginUser(String login, String password){
+        IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+        BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
+        POSTLogin body = new POSTLogin(login, password);
+        return backendlessAPI.loginUser(body)
+                .timeout(LOAD_SHOPS_TIMEOUT, TimeUnit.SECONDS)
+                .retry(RETRY_COUNT)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
     public Observable<List<Meme>> loadMemesFromWeb(int pageSize, int offset){
         return loadMemesFromWeb(pageSize, offset, SORT_BY_CREATED_TIME);
     }
@@ -95,7 +110,7 @@ public class DataManager implements IDataManager {
         final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
         return databaseHelper.getMemes()
                 .map(unsortedList -> {
-            Collections.sort(unsortedList, new MemeDateComparator());
+            Collections.sort(unsortedList, new NewestMemeComparator());
             return unsortedList;
         });
     }

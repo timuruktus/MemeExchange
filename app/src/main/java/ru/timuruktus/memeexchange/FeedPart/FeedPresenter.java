@@ -5,14 +5,15 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.timuruktus.memeexchange.Model.DataManager;
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.Utils.EndlessScrollListener;
 import rx.Observer;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
-import static ru.timuruktus.memeexchange.MainPart.MainActivity.realm;
 import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
 
 @InjectViewState
@@ -21,6 +22,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
     private DataManager dataManager;
     private FeedAdapter infiniteListView;
+    private static ArrayList<Meme> memeData = new ArrayList<>();
 
     public FeedPresenter(){
     }
@@ -28,12 +30,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
     @Override
     protected void onFirstViewAttach(){
         super.onFirstViewAttach();
-        loadFeed(0);
-    }
-
-    @Override
-    public void loadFeed(int offset){
-        loadFeed(true, offset);
+        loadFeed(true, 0);
     }
 
     @Override
@@ -43,10 +40,10 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
     @Override
     public void loadFeed(boolean showLoading, int offset, int pageSize){
+        // Clear previous data
+        memeData.clear();
         getViewState().showError(false);
-        if(showLoading){
-            getViewState().showLoadingIndicator(true);
-        }
+        getViewState().showLoadingIndicator(showLoading);
         dataManager.loadMemesFromWeb(pageSize, offset)
                 .subscribe(new Observer<List<Meme>>(){
                     @Override
@@ -63,14 +60,14 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
                     @Override
                     public void onNext(List<Meme> memesList){
-                        getViewState().showPosts(memesList);
+                        memeData.addAll(memesList);
+                        getViewState().showNewPosts(getNewestMemeData());
                     }
                 });
     }
 
     @Override
     public void loadMoreFeed(int offset, int pageSize){
-        Log.d(TESTING_TAG, "loadMoreFeed() in FeedPresenter. pageSize = " + pageSize + " offset = " + offset);
         getViewState().showError(false);
         getViewState().showLoadingIndicator(false);
         dataManager.loadMemesFromWeb(pageSize, offset)
@@ -88,6 +85,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
                     @Override
                     public void onNext(List<Meme> memesList){
+                        memeData.addAll(memesList);
                         getViewState().showMorePosts(memesList, offset);
                     }
                 });
@@ -115,14 +113,14 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
                         if(memesList.size() == 0){
                             onError(new Throwable("Empty cache"));
                         } else{
-                            getViewState().showPosts(memesList);
+                            getViewState().showNewPosts(memesList);
                         }
                     }
                 });
     }
 
     @Override
-    public void onCreateView(){
+    public void onCreateView(String tag){
         if(dataManager == null){
             dataManager = DataManager.getInstance();
         }
@@ -141,14 +139,16 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
     }
 
     @Override
-    public void saveAdapter(FeedAdapter feedAdapter){
-        this.infiniteListView = feedAdapter;
+    public void refreshAllData(boolean showLoading){
+        loadFeed(showLoading, 0);
     }
 
     @Override
-    public FeedAdapter getSavedAdapter(){
-        return infiniteListView;
+    public ArrayList<Meme> getNewestMemeData(){
+        return memeData;
     }
+
+
 
 
 }

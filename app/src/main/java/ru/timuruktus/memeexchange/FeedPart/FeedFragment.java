@@ -29,7 +29,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.R;
-import ru.timuruktus.memeexchange.Utils.CustomFeedListenerListener;
+import ru.timuruktus.memeexchange.Utils.EndlessScrollListener;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -37,9 +37,10 @@ import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
 
 public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
-        CustomFeedListenerListener.ScrollEventListener, FeedAdapter.PostEventListener{
+        FeedAdapter.AdapterEventListener,
+        SwipeRefreshLayout.OnRefreshListener{
 
-    @Nullable @BindView(R.id.feedList) RecyclerView feedList;
+    @Nullable @BindView(R.id.feedList) RecyclerView recyclerView;
     @Nullable @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
     @Nullable @BindView(R.id.progressBar) ProgressBar progressBar;
     @Nullable @BindView(R.id.loadingLayout) RelativeLayout loadingLayout;
@@ -53,82 +54,100 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
 
     Unbinder unbinder;
     private Context context;
-    private static final String RECYCLER_VIEW_STATE = "recyclerViewPosition";
+    private static final String RECYCLER_VIEW_STATE = "recyclerViewState";
     private FeedAdapter feedAdapter;
-    private static ArrayList<Meme> memeData = new ArrayList<>();
+
     Parcelable layoutManagerState;
-    private static int offset;
     private LinearLayoutManager llm = new LinearLayoutManager(context);
-    private CustomFeedListenerListener listener = new CustomFeedListenerListener(this);
 
     public static String currentTag;
     public static final String BUNDLE_TAG = "bundleTag";
     public static final String NEWEST_FEED_TAG = "newestFeedTag";
 
+    public static FeedFragment getInstance(String tag){
+        FeedFragment feedFragment = new FeedFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(BUNDLE_TAG, tag);
+        feedFragment.setArguments(bundle);
+        return feedFragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-        feedPresenter.onCreateView();
+
         View view = inflater.inflate(
                 R.layout.feed_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         context = view.getContext();
-        feedList.setHasFixedSize(false);
-        // TODO: При новом тэге обнулям данные (memeData) и оффсет
-
+        recyclerView.setHasFixedSize(false);
+        String newTag = getArguments().getString(BUNDLE_TAG);
+        feedPresenter.onCreateView(newTag);
+        currentTag = newTag;
         return view;
 
     }
 
+    /**
+     * Used only when user clicked on refresh button
+     * For example, when user doesn't have an internet connection
+     */
     @OnClick(R.id.refreshIcon)
     void onRefreshClick(){
-        memeData.clear();
-        feedPresenter.loadFeed(0);
+        feedPresenter.refreshAllData(true);
     }
 
+    /**
+     * Used when user swipe down in the top of the list.
+     * Refresh RecycleView listener
+     */
     @Override
-    public void showPosts(List<Meme> memes){
-//        memeData.clear();
-        Log.d(TESTING_TAG, "showPosts() in FeedFragment.");
+    public void onRefresh(){
+        feedPresenter.refreshAllData(false);
+    }
 
-
-        if(memeData.size() == 0){
-            memeData.addAll(memes);
-        }
-
+    /**
+     * Used ONLY on RecyclerView refresh and on first view attach
+     *
+     * @param memes - data, needed to be shown
+     */
+    @Override
+    public void showNewPosts(List<Meme> memes){
+        Log.d(TESTING_TAG, "showNewPosts() in FeedFragment");
         swipeContainer.setRefreshing(false);
         swipeContainer.setVisibility(VISIBLE);
-        loadingLayout.setVisibility(GONE);
-        errorLayout.setVisibility(GONE);
+        swipeContainer.setOnRefreshListener(this);
 
-        swipeContainer.setOnRefreshListener(listener);
-//        feedList.addOnScrollListener(listener);
-
-
-        feedAdapter = new FeedAdapter(getActivity(), memeData, this);
-        feedAdapter.setNeededToRefresh(true);
-        feedList.setAdapter(feedAdapter);
-        feedList.setLayoutManager(llm);
+        // Change this after adding footer/header
+        feedAdapter = new FeedAdapter(getActivity(), (ArrayList<Meme>) memes, this);
+        recyclerView.setAdapter(feedAdapter);
+        recyclerView.addOnScrollListener(getRecyclerViewScrollListener());
+        recyclerView.setLayoutManager(llm);
     }
 
+    /**
+     * Shows an error
+     *
+     * @param show
+     */
     @Override
     public void showError(boolean show){
         if(show){
-            swipeContainer.setVisibility(GONE);
-            loadingLayout.setVisibility(GONE);
             errorLayout.setVisibility(VISIBLE);
         } else{
             errorLayout.setVisibility(GONE);
         }
     }
 
-
+    /**
+     * Shows loading indicator
+     *
+     * @param show
+     */
     @Override
     public void showLoadingIndicator(boolean show){
         if(show){
-            swipeContainer.setVisibility(GONE);
             loadingLayout.setVisibility(VISIBLE);
-            errorLayout.setVisibility(GONE);
         } else{
             loadingLayout.setVisibility(GONE);
         }
@@ -136,19 +155,8 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
 
     @Override
     public void showMorePosts(List<Meme> memeList, int offset){
-        Log.d(TESTING_TAG, "showMorePosts() in FeedFragment. memeSize = " + memeList.size() + " offset = " + offset);
         swipeContainer.setVisibility(VISIBLE);
-        loadingLayout.setVisibility(GONE);
-        errorLayout.setVisibility(GONE);
-        memeData.addAll(memeList);
-        FeedFragment.offset = offset;
-        feedList.getRecycledViewPool().clear();
         feedAdapter.notifyItemRangeChanged(offset, memeList.size());
-        if(memeList.size() < DEFAULT_PAGE_SIZE){
-            feedAdapter.setNeededToRefresh(false);
-        }else{
-            feedAdapter.setNeededToRefresh(true);
-        }
 
     }
 
@@ -169,17 +177,11 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
 
 
     @Override
-    public void onRefresh(){
-        memeData.clear();
-        feedPresenter.loadFeed(false, 0);
-    }
-
-
-    @Override
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
+        //If we catch an exception, it means that recyclerView is not yet created.
         try{
-            outState.putParcelable(RECYCLER_VIEW_STATE, feedList.getLayoutManager().onSaveInstanceState());
+            outState.putParcelable(RECYCLER_VIEW_STATE, recyclerView.getLayoutManager().onSaveInstanceState());
         } catch(Exception ex){
             ex.printStackTrace();
         }
@@ -188,6 +190,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState){
         super.onViewStateRestored(savedInstanceState);
+        //If we catch an exception, it means that recyclerView is not yet created.
         try{
             layoutManagerState = savedInstanceState.getParcelable(RECYCLER_VIEW_STATE);
         } catch(Exception ex){
@@ -198,25 +201,33 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Override
     public void onResume(){
         super.onResume();
-        if(layoutManagerState != null){
-            feedList.getLayoutManager().onRestoreInstanceState(layoutManagerState);
+        if(layoutManagerState != null &&
+                recyclerView != null &&
+                recyclerView.getLayoutManager() != null){
+            recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerState);
         }
     }
 
-
-//    @Override
-//    public void onLoadMore(int page, int offset){
-//        Log.d(TESTING_TAG, "onLoadMore() in FeedFragment. Page = " + page + " offset = " + offset);
-//        feedPresenter.loadMoreFeed(offset, DEFAULT_PAGE_SIZE);
-//    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        if(layoutManagerState != null && recyclerView != null){
+            layoutManagerState = recyclerView.getLayoutManager().onSaveInstanceState();
+        }
+    }
 
     @Override
     public void onLiked(Meme meme){
 
     }
 
-    @Override
-    public void onLoadMore(int offset){
-        feedPresenter.loadMoreFeed(offset, DEFAULT_PAGE_SIZE);
+    public EndlessScrollListener getRecyclerViewScrollListener(){
+        return new EndlessScrollListener(llm){
+            @Override
+            public void onLoadMore(int offset){
+                feedPresenter.loadMoreFeed(offset, DEFAULT_PAGE_SIZE);
+            }
+        };
     }
+
 }

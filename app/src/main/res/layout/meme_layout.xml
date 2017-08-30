@@ -102,20 +102,13 @@
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp">
 
-            <RelativeLayout
-                android:id="@+id/likeContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true">
-
-                <ImageView
-                    android:id="@+id/likeButton"
-                    android:layout_width="100dp"
-                    android:layout_height="@dimen/like_button_size"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    app:srcCompat="@drawable/ic_not_yet_like"/>
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/likeButton"
+                android:layout_width="100dp"
+                android:layout_height="@dimen/like_button_size"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/ic_not_yet_like"/>
 
             <ImageView
                 android:id="@+id/moreButton"

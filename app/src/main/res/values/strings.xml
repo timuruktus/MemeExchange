@@ -1,7 +1,24 @@
 <resources>
     <string name="app_name">Биржа Мемов</string>
+    <string name="app_name_transferred">Биржа \nМемов</string>
 
     <string name="error_loading_shops">Отсутствует подключение к интернету.</string>
 
     <string name="likes_count">Лайков</string>
+    <string name="welcome">Добро пожаловать!</string>
+    <string name="please_login_first">Пожалуйста, войдите в систему</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="join">Войти</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="not_yet_registered">Ещё не зарегистрированы? \nНе может быть!</string>
+
+    <string name="easter_egg_1">Эта пасхалка выпадает нечасто</string>
+    <string name="easter_egg_3">Биржа \nПасхалок</string>
+
+    <string name="login_error">Неверный логин</string>
+    <string name="password_error">Неверный пароль</string>
+
+    <string name="wrong_login_or_password">Неверный логин или пароль</string>
+
 </resources>

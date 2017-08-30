@@ -3,6 +3,7 @@ package ru.timuruktus.memeexchange.Model;
 import java.util.List;
 
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.POJO.User;
 import rx.Observable;
 
 public interface IDataManager {
@@ -15,4 +16,5 @@ public interface IDataManager {
     Observable<List<Meme>> loadPopularMemesByWeek(int pageSize, int offset);
     Observable<List<Meme>> loadPopularMemesToday(int pageSize, int offset);
     String getAuthorNameByLogin(String login);
+    Observable<User> loginUser(String login, String password);
 }

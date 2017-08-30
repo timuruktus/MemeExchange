@@ -23,4 +23,12 @@
         <item name="android:width">50dp</item>
         <item name="android:src">@color/colorAccent</item>
     </style>
+
+
+    <style name="CustomActionButton" parent="Base.Widget.AppCompat.Button">
+        <item name="background">@color/colorAccent</item>
+
+    </style>
+
+
 </resources>

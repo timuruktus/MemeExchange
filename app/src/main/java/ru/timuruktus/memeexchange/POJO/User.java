@@ -1,5 +1,7 @@
 package ru.timuruktus.memeexchange.POJO;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 
 public class User extends RealmObject {
@@ -11,16 +13,20 @@ public class User extends RealmObject {
     private String email;
     private String avatar; // Image URL
 
+    @SerializedName("user-token")
+    private String token;
+
     public User() {
     }
 
-    public User(String login, String vkId, String name, String objectId, String email, String avatar) {
+    public User(String login, String vkId, String name, String objectId, String email, String avatar, String token){
         this.login = login;
         this.vkId = vkId;
         this.name = name;
         this.objectId = objectId;
         this.email = email;
         this.avatar = avatar;
+        this.token = token;
     }
 
 
@@ -71,6 +77,15 @@ public class User extends RealmObject {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
+    public String getToken(){
+        return token;
+    }
+
+    public void setToken(String token){
+        this.token = token;
+    }
+
 
 
 
