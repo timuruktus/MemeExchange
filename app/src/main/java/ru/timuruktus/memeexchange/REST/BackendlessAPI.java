@@ -16,6 +16,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.POJO.POSTLogin;
+import ru.timuruktus.memeexchange.POJO.POSTRegister;
 import ru.timuruktus.memeexchange.POJO.User;
 import rx.Observable;
 
@@ -55,6 +56,10 @@ public interface BackendlessAPI {
     @POST("users/login")
     @Headers({"Content-Type:application/json"})
     Observable<User> loginUser(@Body POSTLogin body);
+
+    @POST("users/register")
+    @Headers({"Content-Type:application/json"})
+    Observable<User> registerUser(@Body POSTRegister body);
 
 
 }

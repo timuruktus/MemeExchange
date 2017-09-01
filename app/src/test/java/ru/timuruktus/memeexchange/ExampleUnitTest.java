@@ -148,4 +148,26 @@ public class ExampleUnitTest {
         });
 
     }
+
+
+    @Test
+    public void testRegisterApi(){
+        DataManager dataManager = DataManager.getInstance();
+        dataManager.registerUser("timuruktus", "qwerty", "keks@keks.keks").subscribe(new Observer<User>(){
+            @Override
+            public void onCompleted(){
+                System.out.println("OnComplete");
+            }
+
+            @Override
+            public void onError(Throwable e){
+                System.out.println(e.getMessage());
+            }
+
+            @Override
+            public void onNext(User user){
+                System.out.println("Registered!");
+            }
+        });
+    }
 }

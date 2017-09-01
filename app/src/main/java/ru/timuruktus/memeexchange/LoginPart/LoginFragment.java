@@ -66,7 +66,7 @@ public class LoginFragment extends MvpAppCompatFragment implements ILoginView{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(
-                R.layout.login_screen, container, false);
+                R.layout.login_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         context = view.getContext();
         loginPresenter.onCreateView(getActivity().getApplicationContext());

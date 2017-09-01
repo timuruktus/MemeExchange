@@ -12,6 +12,7 @@ import ru.timuruktus.memeexchange.MainPart.MainPresenter;
 import ru.timuruktus.memeexchange.Model.DataManager;
 import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.R;
+import ru.timuruktus.memeexchange.RegisterPart.RegisterFragment;
 import ru.timuruktus.memeexchange.Utils.FieldsValidator;
 import ru.timuruktus.memeexchange.Utils.ISettings;
 import ru.timuruktus.memeexchange.Utils.Settings;
@@ -21,12 +22,14 @@ import static ru.timuruktus.memeexchange.FeedPart.FeedFragment.NEWEST_FEED_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.DEFAULT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_BACKSTACK_TAG;
+import static ru.timuruktus.memeexchange.RegisterPart.RegisterFragment.REGISTER_TAG;
 
 
 @InjectViewState
 public class LoginPresenter extends MvpPresenter<ILoginView> implements ILoginPresenter{
 
     public static final String WRONG_LOGIN_OR_PASSWORD_MESSAGE = "HTTP 401 Unauthorized";
+
     private Context context;
 
     public void onCreateView(Context context){
@@ -61,9 +64,7 @@ public class LoginPresenter extends MvpPresenter<ILoginView> implements ILoginPr
             @Override
             public void onError(Throwable e){
                 getViewState().showLoadingIndicator(false);
-                Log.d(DEFAULT_TAG, "Error = " + e.getMessage());
                 if(e.getMessage().equals(WRONG_LOGIN_OR_PASSWORD_MESSAGE)){
-                    Log.d(TESTING_TAG, "Inside");
                     getViewState().clearLoginField();
                     getViewState().clearPasswordField();
                     getViewState().showWrongDataError();
@@ -99,7 +100,7 @@ public class LoginPresenter extends MvpPresenter<ILoginView> implements ILoginPr
         FragmentManager fragmentManager = MainPresenter.fm;
         fragmentManager
                 .beginTransaction()
-                .add(R.id.container, FeedFragment.getInstance(NEWEST_FEED_TAG), FEED_BACKSTACK_TAG)
+                .add(R.id.container, RegisterFragment.getInstance(), REGISTER_TAG)
                 .commit();
     }
 }

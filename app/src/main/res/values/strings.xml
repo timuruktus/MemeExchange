@@ -9,6 +9,7 @@
     <string name="please_login_first">Пожалуйста, войдите в систему</string>
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
+    <string name="email">Почта</string>
     <string name="join">Войти</string>
     <string name="register">Зарегистрироваться</string>
     <string name="not_yet_registered">Ещё не зарегистрированы? \nНе может быть!</string>
@@ -18,7 +19,15 @@
 
     <string name="login_error">Неверный логин</string>
     <string name="password_error">Неверный пароль</string>
+    <string name="email_error">Неверная почта</string>
+    <string name="email_taken_error">Логин уже занят</string>
+    <string name="login_taken_error">Почта уже занята</string>
 
     <string name="wrong_login_or_password">Неверный логин или пароль</string>
+    <string name="registration_title">Регистрация на поездку в Орландо</string>
 
+    <!--REGISTRATION HINTS-->
+    <string name="login_hint">Используйте только латинские символы и цифры.</string>
+    <string name="password_hint">Не менее шести символов. Только цифры и латинские символы.</string>
+    <string name="email_hint">Настоящую почту плиз! На неё придет подтверждение.</string>
 </resources>

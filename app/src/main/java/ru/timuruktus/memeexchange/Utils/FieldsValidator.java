@@ -12,7 +12,18 @@ public class FieldsValidator{
     }
 
     public static boolean isRegisterPasswordValid(String password){
-        boolean onlyLatinAlphabet = password.matches("^[a-zA-Z0-9]+$");
-        return isJoinPasswordValid(password) && !password.contains(" ") && onlyLatinAlphabet;
+        return isJoinPasswordValid(password) && !password.contains(" ") && onlyLatinAlphabet(password);
+    }
+
+    public static boolean isRegisterEmailValid(String email){
+        return !isStringEmpty(email) && !email.contains(" ") && onlyLatinAlphabet(email) && email.contains("@") && email.contains(".");
+    }
+
+    public static boolean isRegisterLoginValid(String login){
+        return !isStringEmpty(login) && !login.contains(" ") && onlyLatinAlphabet(login);
+    }
+
+    public static boolean onlyLatinAlphabet(String string){
+       return string.matches("^[a-zA-Z0-9]+$");
     }
 }

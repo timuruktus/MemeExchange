@@ -1,27 +1,26 @@
-package ru.timuruktus.memeexchange.LoginPart;
+package ru.timuruktus.memeexchange.RegisterPart;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
-public interface ILoginView extends MvpView{
+public interface IRegisterView extends MvpView{
 
-    @StateStrategyType(OneExecutionStateStrategy.class)
-    void startAnimations();
+
     @StateStrategyType(OneExecutionStateStrategy.class)
     void showLoginError();
     @StateStrategyType(OneExecutionStateStrategy.class)
     void showPasswordError();
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showEmailError();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showEmailTakenError();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showLoginTakenError();
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showLoadingIndicator(boolean show);
-
-    @StateStrategyType(OneExecutionStateStrategy.class)
-    void clearLoginField();
-    @StateStrategyType(OneExecutionStateStrategy.class)
-    void clearPasswordField();
-
-    @StateStrategyType(OneExecutionStateStrategy.class)
-    void showWrongDataError();
 }

@@ -11,6 +11,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.POJO.POSTLogin;
+import ru.timuruktus.memeexchange.POJO.POSTRegister;
 import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
 import ru.timuruktus.memeexchange.Utils.NewestMemeComparator;
@@ -65,7 +66,7 @@ public class DataManager implements IDataManager {
 
     @Override
     public Observable<User> loginUser(String login, String password){
-        IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+        final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
         POSTLogin body = new POSTLogin(login, password);
         return backendlessAPI.loginUser(body)
@@ -73,6 +74,19 @@ public class DataManager implements IDataManager {
                 .retry(RETRY_COUNT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<User> registerUser(String login, String password, String email){
+        final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+        BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
+        POSTRegister body = new POSTRegister(login, password, email);
+        return backendlessAPI.registerUser(body)
+                .timeout(LOAD_SHOPS_TIMEOUT, TimeUnit.SECONDS)
+                .retry(RETRY_COUNT)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+                ;
     }
 
 
@@ -86,6 +100,7 @@ public class DataManager implements IDataManager {
         Log.d(DEFAULT_TAG, "Try to load from web");
         return  downloadAndCacheMemesFromWeb(pageSize, offset, sortBy);
     }
+
 
 
 
