@@ -6,16 +6,16 @@ import android.support.v4.app.FragmentManager;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import ru.timuruktus.memeexchange.FeedPart.FeedFragment;
+import ru.timuruktus.memeexchange.LoginPart.LoginFragment;
 import ru.timuruktus.memeexchange.MainPart.MainPresenter;
+import ru.timuruktus.memeexchange.MainPart.MyApp;
 import ru.timuruktus.memeexchange.Model.DataManager;
 import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.FieldsValidator;
 import rx.Observer;
 
-import static ru.timuruktus.memeexchange.FeedPart.FeedFragment.NEWEST_FEED_TAG;
-import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_BACKSTACK_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
 
 @InjectViewState
 public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements IRegisterPresenter{
@@ -43,22 +43,21 @@ public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements I
             @Override
             public void onCompleted(){
                 getViewState().showLoadingIndicator(false);
-                FragmentManager fragmentManager = MainPresenter.fm;
-                fragmentManager
-                        .beginTransaction()
-                        .add(R.id.container, FeedFragment.getInstance(NEWEST_FEED_TAG), FEED_BACKSTACK_TAG)
-                        .commit();
+                getViewState().showConfirmEmailMessage();
+                MyApp.INSTANCE.getRouter().newRootScreen(FEED_FRAGMENT_TAG);
             }
 
             @Override
             public void onError(Throwable e){
                 getViewState().showLoadingIndicator(false);
                 String message = e.getMessage();
+                e.printStackTrace();
                 if(message.equals(EMAIL_IS_UNAVAILABLE_MESSAGE)){
                     getViewState().showEmailTakenError();
-                }
-                if(message.equals(LOGIN_IS_UNAVAILABLE_MESSAGE)){
+                }else if(message.equals(LOGIN_IS_UNAVAILABLE_MESSAGE)){
                     getViewState().showLoginTakenError();
+                }else{
+                    getViewState().showSomeError();
                 }
 
             }
@@ -72,7 +71,7 @@ public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements I
     }
 
     private boolean isFieldsValid(String login, String password, String email){
-        if(FieldsValidator.isRegisterLoginValid(login)){
+        if(!FieldsValidator.isRegisterLoginValid(login)){
             getViewState().showLoginError();
             return false;
         }

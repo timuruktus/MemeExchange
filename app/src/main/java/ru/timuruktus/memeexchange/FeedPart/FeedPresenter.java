@@ -1,20 +1,29 @@
 package ru.timuruktus.memeexchange.FeedPart;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.timuruktus.memeexchange.Events.OpenFragment;
+import ru.timuruktus.memeexchange.MainPart.MainPresenter;
 import ru.timuruktus.memeexchange.Model.DataManager;
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.EndlessScrollListener;
+import ru.timuruktus.memeexchange.Utils.SoundUtils;
 import rx.Observer;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
+import static ru.timuruktus.memeexchange.Utils.SoundUtils.MEDIUM_PRIORITY_SOUND;
 
 @InjectViewState
 public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPresenter{
@@ -23,6 +32,9 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
     private DataManager dataManager;
     private FeedAdapter infiniteListView;
     private static ArrayList<Meme> memeData = new ArrayList<>();
+    private static String currentTag;
+    public static final String BUNDLE_TAG = "bundleTag";
+    public static final String NEWEST_FEED_TAG = "newestFeedTag";
 
     public FeedPresenter(){
     }
@@ -73,9 +85,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
         dataManager.loadMemesFromWeb(pageSize, offset)
                 .subscribe(new Observer<List<Meme>>(){
                     @Override
-                    public void onCompleted(){
-                        getViewState().showLoadingIndicator(false);
-                    }
+                    public void onCompleted(){}
 
                     @Override
                     public void onError(Throwable e){
@@ -120,10 +130,15 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
     }
 
     @Override
-    public void onCreateView(String tag){
+    public void onCreateView(String newTag){
         if(dataManager == null){
             dataManager = DataManager.getInstance();
         }
+        if(currentTag != null && !currentTag.equals(newTag)){
+            loadFeed(true, 0);
+        }
+        currentTag = newTag;
+        EventBus.getDefault().post(new OpenFragment(FEED_FRAGMENT_TAG));
     }
 
     @Override
@@ -140,6 +155,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
 
     @Override
     public void refreshAllData(boolean showLoading){
+        getViewState().clearRecyclerViewPool();
         loadFeed(showLoading, 0);
     }
 

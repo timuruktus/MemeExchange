@@ -9,10 +9,17 @@ public interface ILoginView extends MvpView{
 
     @StateStrategyType(OneExecutionStateStrategy.class)
     void startAnimations();
+
     @StateStrategyType(OneExecutionStateStrategy.class)
     void showLoginError();
     @StateStrategyType(OneExecutionStateStrategy.class)
     void showPasswordError();
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showWrongDataError();
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showMaybeEmailNotConfirmedError();
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showNoInternetConnectionError();
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showLoadingIndicator(boolean show);
@@ -22,6 +29,5 @@ public interface ILoginView extends MvpView{
     @StateStrategyType(OneExecutionStateStrategy.class)
     void clearPasswordField();
 
-    @StateStrategyType(OneExecutionStateStrategy.class)
-    void showWrongDataError();
+
 }

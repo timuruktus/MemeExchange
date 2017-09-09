@@ -1,5 +1,7 @@
 package ru.timuruktus.memeexchange.FeedPart;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 import ru.timuruktus.memeexchange.POJO.Meme;

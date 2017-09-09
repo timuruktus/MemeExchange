@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -91,11 +92,23 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
     @Override
     public void showEmailTakenError(){
         emailEditText.setError(emailTakenErrorText);
+        Toast.makeText(context, R.string.email_taken_error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showLoginTakenError(){
         loginEditText.setError(loginTakenErrorText);
+        Toast.makeText(context, R.string.login_taken_error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showSomeError(){
+        Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showConfirmEmailMessage(){
+        Toast.makeText(context, R.string.confirm_email, Toast.LENGTH_SHORT).show();
     }
 
     @Override

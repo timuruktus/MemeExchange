@@ -69,7 +69,6 @@ public class LoginFragment extends MvpAppCompatFragment implements ILoginView{
                 R.layout.login_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         context = view.getContext();
-        loginPresenter.onCreateView(getActivity().getApplicationContext());
         return view;
     }
 
@@ -157,6 +156,16 @@ public class LoginFragment extends MvpAppCompatFragment implements ILoginView{
     @Override
     public void showWrongDataError(){
         Toast.makeText(context, R.string.wrong_login_or_password, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showMaybeEmailNotConfirmedError(){
+        Toast.makeText(context, R.string.email_maybe_not_confirmed, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showNoInternetConnectionError(){
+        Toast.makeText(context, R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
     }
 
     @Override

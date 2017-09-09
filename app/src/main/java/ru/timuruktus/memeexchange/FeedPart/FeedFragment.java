@@ -33,6 +33,7 @@ import ru.timuruktus.memeexchange.Utils.EndlessScrollListener;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static ru.timuruktus.memeexchange.FeedPart.FeedPresenter.BUNDLE_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
 
@@ -60,9 +61,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     Parcelable layoutManagerState;
     private LinearLayoutManager llm = new LinearLayoutManager(context);
 
-    public static String currentTag;
-    public static final String BUNDLE_TAG = "bundleTag";
-    public static final String NEWEST_FEED_TAG = "newestFeedTag";
+
 
     public static FeedFragment getInstance(String tag){
         FeedFragment feedFragment = new FeedFragment();
@@ -83,7 +82,6 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         recyclerView.setHasFixedSize(false);
         String newTag = getArguments().getString(BUNDLE_TAG);
         feedPresenter.onCreateView(newTag);
-        currentTag = newTag;
         return view;
 
     }
@@ -121,6 +119,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         // Change this after adding footer/header
         feedAdapter = new FeedAdapter(getActivity(), (ArrayList<Meme>) memes, this);
         recyclerView.setAdapter(feedAdapter);
+        recyclerView.clearOnScrollListeners();
         recyclerView.addOnScrollListener(getRecyclerViewScrollListener());
         recyclerView.setLayoutManager(llm);
     }
@@ -158,6 +157,12 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         swipeContainer.setVisibility(VISIBLE);
         feedAdapter.notifyItemRangeChanged(offset, memeList.size());
 
+    }
+
+    @Override
+    public void clearRecyclerViewPool(){
+        recyclerView.getRecycledViewPool().clear();
+        feedAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -6,5 +6,7 @@ public interface IMainPresenter {
 
     void onCreate();
     void onDestroy();
+    void setCurrentFragmentTag(String currentFragmentTag);
+    String getCurrentFragmentTag();
 //    void loadFirstFragment();
 }

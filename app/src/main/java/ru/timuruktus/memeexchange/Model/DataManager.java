@@ -84,8 +84,8 @@ public class DataManager implements IDataManager {
         return backendlessAPI.registerUser(body)
                 .timeout(LOAD_SHOPS_TIMEOUT, TimeUnit.SECONDS)
                 .retry(RETRY_COUNT)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 ;
     }
 

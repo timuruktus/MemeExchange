@@ -27,4 +27,6 @@ public interface IFeedView extends MvpView {
     void showMessageNoInternetConnection();
     @StateStrategyType(OneExecutionStateStrategy.class)
     void showMorePosts(List<Meme> memesList, int offset);
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void clearRecyclerViewPool();
 }
