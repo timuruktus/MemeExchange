@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import ru.timuruktus.memeexchange.Events.OpenFragment;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.EndlessScrollListener;
@@ -35,6 +38,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static ru.timuruktus.memeexchange.FeedPart.FeedPresenter.BUNDLE_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
 
 public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
@@ -82,6 +87,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         recyclerView.setHasFixedSize(false);
         String newTag = getArguments().getString(BUNDLE_TAG);
         feedPresenter.onCreateView(newTag);
+        EventBus.getDefault().post(new OpenFragment(FEED_FRAGMENT_TAG));
         return view;
 
     }
@@ -116,7 +122,6 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         swipeContainer.setVisibility(VISIBLE);
         swipeContainer.setOnRefreshListener(this);
 
-        // Change this after adding footer/header
         feedAdapter = new FeedAdapter(getActivity(), (ArrayList<Meme>) memes, this);
         recyclerView.setAdapter(feedAdapter);
         recyclerView.clearOnScrollListeners();

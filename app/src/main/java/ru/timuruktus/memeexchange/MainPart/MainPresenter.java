@@ -56,7 +56,6 @@ public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainP
         if(MainPresenter.currentFragmentTag == null || !MainPresenter.currentFragmentTag.equals(currentFragmentTag)){
             Log.d(TESTING_TAG, "New tag is setted");
             MainPresenter.currentFragmentTag = currentFragmentTag;
-
         }
         Log.d(TESTING_TAG, "New tag isnt started setted");
     }

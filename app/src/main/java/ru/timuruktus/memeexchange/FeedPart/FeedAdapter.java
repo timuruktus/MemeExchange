@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.appolica.flubber.Flubber;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import java.util.ArrayList;
 
@@ -30,10 +31,10 @@ import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
  * We should retrieve User (author) and get author username and image
  * separately with meme retrieving
  */
-class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
 
 
-    FeedAdapter(Activity activity, ArrayList<Meme> itemList, AdapterEventListener adapterEventListener){
+    public FeedAdapter(Activity activity, ArrayList<Meme> itemList, AdapterEventListener adapterEventListener){
         this.activity = activity;
         this.itemList = itemList;
         this.adapterEventListener = adapterEventListener;
@@ -77,21 +78,15 @@ class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
         @BindView(R.id.authorImage) ImageView authorImage;
         @BindView(R.id.authorName) TextView authorName;
         @BindView(R.id.likes) TextView likesCount;
-        @BindView(R.id.memeText) TextView memeText;
+        @BindView(R.id.memeText) ExpandableTextView memeText;
         @BindView(R.id.memeImage) ImageView memeImage;
         @BindView(R.id.moreButton) ImageView moreButton;
         @BindView(R.id.likeButton) ImageView likeButton;
         @BindView(R.id.textContainer) RelativeLayout textContainer;
-        @BindView(R.id.textExpandButton) TextView textExpandButton;
         private View view;
         private AdapterEventListener adapterEventListener;
         private Meme meme;
 
-        @OnClick(R.id.textExpandButton)
-        void onExpandClick(){
-            memeText.setMaxLines(Integer.MAX_VALUE);
-            textExpandButton.setVisibility(GONE);
-        }
 
         @OnClick(R.id.likeButton)
         void onLikeClicked(){
@@ -118,7 +113,6 @@ class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
             this.meme = meme;
             configureAuthorContainer(meme);
             setMemeText(meme.getText());
-            setLongTextExpand();
             setLikeButtonImage(meme);
             loadImages(meme);
         }
@@ -144,8 +138,9 @@ class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
         }
 
         private void loadImages(Meme meme){
-            memeImage.setVisibility(View.VISIBLE);
+
             if(!FieldsValidator.isStringEmpty(meme.getImage())){
+                memeImage.setVisibility(View.VISIBLE);
                 GlideApp.with(view.getContext())
                         .load(meme.getImage())
                         .centerCrop()
@@ -171,19 +166,6 @@ class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
             }
         }
 
-        private void setLongTextExpand(){
-            Log.d(TESTING_TAG, "memeText line count in FeedAdapter = " + memeText.getLineCount());
-            memeText.setMaxLines(Integer.MAX_VALUE);
-            if(memeText.getLineCount() > 5){
-                textExpandButton.setVisibility(View.VISIBLE);
-                memeText.setMaxLines(5);
-                Log.d(TESTING_TAG, "(memeText.getLineCount() > 5 in FeedAdapter");
-            }else{
-                Log.d(TESTING_TAG, "(memeText.getLineCount() < 5 in FeedAdapter");
-                textExpandButton.setVisibility(GONE);
-            }
-
-        }
 
         ViewHolder(View view, AdapterEventListener adapterEventListener){
             super(view);

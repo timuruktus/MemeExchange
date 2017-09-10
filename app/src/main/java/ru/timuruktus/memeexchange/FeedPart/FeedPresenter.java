@@ -138,7 +138,6 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
             loadFeed(true, 0);
         }
         currentTag = newTag;
-        EventBus.getDefault().post(new OpenFragment(FEED_FRAGMENT_TAG));
     }
 
     @Override

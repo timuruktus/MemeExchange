@@ -21,7 +21,6 @@
         android:layout_height="@dimen/bottom_menu_height"
         android:layout_weight="0"
         android:background="@drawable/menu_tabs_background"
-        android:divider="@drawable/horizontal_divider"
         android:elevation="3dp"
         android:orientation="horizontal"
         android:showDividers="middle">
