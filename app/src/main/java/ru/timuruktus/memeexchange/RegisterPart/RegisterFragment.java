@@ -16,12 +16,18 @@ import android.widget.Toast;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import ru.timuruktus.memeexchange.Events.OpenFragment;
 import ru.timuruktus.memeexchange.R;
+
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.REGISTER_FRAGMENT_TAG;
 
 public class RegisterFragment extends MvpAppCompatFragment implements IRegisterView{
 
@@ -56,6 +62,7 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
         unbinder = ButterKnife.bind(this, view);
         context = view.getContext();
         registerPresenter.onCreateView();
+        EventBus.getDefault().post(new OpenFragment(REGISTER_FRAGMENT_TAG));
         return view;
     }
 

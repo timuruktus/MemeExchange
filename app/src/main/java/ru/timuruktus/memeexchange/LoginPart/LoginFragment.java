@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.appolica.flubber.Flubber;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Random;
 
 import butterknife.BindString;
@@ -26,7 +29,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import ru.timuruktus.memeexchange.Events.OpenFragment;
 import ru.timuruktus.memeexchange.R;
+
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
 
 public class LoginFragment extends MvpAppCompatFragment implements ILoginView{
 
@@ -69,6 +76,7 @@ public class LoginFragment extends MvpAppCompatFragment implements ILoginView{
                 R.layout.login_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         context = view.getContext();
+        EventBus.getDefault().post(new OpenFragment(LOGIN_FRAGMENT_TAG));
         return view;
     }
 

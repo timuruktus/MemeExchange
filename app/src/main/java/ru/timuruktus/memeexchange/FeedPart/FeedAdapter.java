@@ -2,6 +2,7 @@ package ru.timuruktus.memeexchange.FeedPart;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,21 +22,18 @@ import ru.timuruktus.memeexchange.Model.DatabaseHelper;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.FieldsValidator;
-import ru.timuruktus.memeexchange.Utils.SoundUtils;
 
 import static android.view.View.GONE;
-import static ru.timuruktus.memeexchange.Utils.SoundUtils.MEDIUM_PRIORITY_SOUND;
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
 /**
  * We should retrieve User (author) and get author username and image
  * separately with meme retrieving
  */
-public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
+class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
 
-    private static final int DONT_LOOP = 0;
-    private static final int USUAL_RATE = 1;
 
-    public FeedAdapter(Activity activity, ArrayList<Meme> itemList, AdapterEventListener adapterEventListener){
+    FeedAdapter(Activity activity, ArrayList<Meme> itemList, AdapterEventListener adapterEventListener){
         this.activity = activity;
         this.itemList = itemList;
         this.adapterEventListener = adapterEventListener;
@@ -47,7 +45,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
     private AdapterEventListener adapterEventListener;
 
 
-    public interface AdapterEventListener{
+    interface AdapterEventListener{
         void onLiked(Meme meme);
     }
 
@@ -156,11 +154,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
                 memeImage.setVisibility(GONE);
             }
 
-                GlideApp.with(view.getContext())
-                        .load(meme.getAuthor().getAvatar())
-                        .circleCrop()
-                        .placeholder(R.drawable.ic_author_placeholder)
-                        .into(authorImage);
+            GlideApp.with(view.getContext())
+                    .load(meme.getAuthor().getAvatar())
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_author_placeholder)
+                    .into(authorImage);
+
 
         }
 
@@ -173,11 +172,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder>{
         }
 
         private void setLongTextExpand(){
+            Log.d(TESTING_TAG, "memeText line count in FeedAdapter = " + memeText.getLineCount());
             memeText.setMaxLines(Integer.MAX_VALUE);
             if(memeText.getLineCount() > 5){
                 textExpandButton.setVisibility(View.VISIBLE);
                 memeText.setMaxLines(5);
+                Log.d(TESTING_TAG, "(memeText.getLineCount() > 5 in FeedAdapter");
             }else{
+                Log.d(TESTING_TAG, "(memeText.getLineCount() < 5 in FeedAdapter");
                 textExpandButton.setVisibility(GONE);
             }
 

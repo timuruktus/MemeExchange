@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import ru.timuruktus.memeexchange.RegisterPart.RegisterFragment;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.REGISTER_FRAGMENT_TAG;
@@ -51,6 +53,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
             mainPresenter.setCurrentFragmentTag(fragmentTag);
             switch(fragmentTag){
                 case FEED_FRAGMENT_TAG:
+                    menuTabs.setVisibility(VISIBLE);
                     return FeedFragment.getInstance((String) data);
                 case LOGIN_FRAGMENT_TAG:
                     menuTabs.setVisibility(GONE);
@@ -79,12 +82,12 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        EventBus.getDefault().register(this);
         MyApp.INSTANCE.getNavigatorHolder().setNavigator(navigator);
     }
 
@@ -115,7 +118,14 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
         refreshAllMenuIcons();
         switch(tag){
             case FEED_FRAGMENT_TAG:
+                menuTabs.setVisibility(VISIBLE);
                 newsImage.setImageResource(R.drawable.ic_menu_news_selected);
+                break;
+            case REGISTER_FRAGMENT_TAG:
+                menuTabs.setVisibility(GONE);
+                break;
+            case LOGIN_FRAGMENT_TAG:
+                menuTabs.setVisibility(GONE);
                 break;
             default:
                 throw new RuntimeException("Unknown screen key!");
