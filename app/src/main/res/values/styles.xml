@@ -3,30 +3,30 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorAccent">@color/green</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:textColorPrimary">@color/textColor</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorAccent">@color/green</item>
     </style>
 
 
     <style name="CustomProgressBar">
         <item name="android:height">50dp</item>
         <item name="android:width">50dp</item>
-        <item name="android:src">@color/colorAccent</item>
+        <item name="android:src">@color/blue</item>
     </style>
 
 
     <style name="CustomActionButton" parent="Base.Widget.AppCompat.Button">
-        <item name="background">@color/colorAccent</item>
+        <item name="background">@color/green</item>
 
     </style>
 

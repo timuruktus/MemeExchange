@@ -21,6 +21,8 @@ public class Settings implements ISettings {
         return new Settings();
     }
 
+    private Settings(){}
+
     @Override
     public boolean isFirstOpen() {
         return getBooleanValue(FIRST_OPEN, true);

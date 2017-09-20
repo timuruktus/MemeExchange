@@ -1,7 +1,7 @@
 package ru.timuruktus.memeexchange.Events;
 
 
-public class OpenFragment{
+public class OpenFragment implements BusEvent{
 
     private String fragmentTag;
 

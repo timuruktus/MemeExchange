@@ -2,10 +2,12 @@ package ru.timuruktus.memeexchange.POJO;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Meme extends RealmObject {
+public class Meme extends RealmObject implements RecyclerItem {
 
     @SerializedName("created")
     private long timestamp;
@@ -16,12 +18,13 @@ public class Meme extends RealmObject {
     @PrimaryKey
     private String objectId;
     private User author;
+    private ArrayList<String> tags;
 
     public Meme() {
 
     }
 
-    public Meme(long timestamp, String image, long likes, String text, boolean userLiked, String objectId, User author) {
+    public Meme(long timestamp, String image, long likes, String text, boolean userLiked, String objectId, User author, ArrayList<String> tags){
         this.timestamp = timestamp;
         this.image = image;
         this.likes = likes;
@@ -29,6 +32,7 @@ public class Meme extends RealmObject {
         this.userLiked = userLiked;
         this.objectId = objectId;
         this.author = author;
+        this.tags = tags;
     }
 
 
@@ -87,6 +91,15 @@ public class Meme extends RealmObject {
     public void setAuthor(User author) {
         this.author = author;
     }
+
+    public ArrayList<String> getTags(){
+        return tags;
+    }
+
+    public void setTags(ArrayList<String> tags){
+        this.tags = tags;
+    }
+
 
 
 

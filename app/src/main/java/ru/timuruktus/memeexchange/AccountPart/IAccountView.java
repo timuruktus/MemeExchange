@@ -1,4 +1,6 @@
 package ru.timuruktus.memeexchange.AccountPart;
 
-public interface IAccountView{
+import com.arellomobile.mvp.MvpView;
+
+public interface IAccountView extends MvpView{
 }

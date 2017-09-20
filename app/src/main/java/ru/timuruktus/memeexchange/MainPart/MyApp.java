@@ -16,7 +16,7 @@ public class MyApp extends Application {
 
     public static MyApp INSTANCE;
     private Cicerone<Router> cicerone;
-    private ISettings settings;
+    private static ISettings settings;
 
 
     @Override
@@ -41,11 +41,11 @@ public class MyApp extends Application {
         return cicerone.getRouter();
     }
 
-    public ISettings getSettings(){
+    public static ISettings getSettings(){
         return settings;
     }
 
-    public void setSettings(ISettings settings){
-        this.settings = settings;
+    public static void setSettings(ISettings settings){
+        MyApp.settings = settings;
     }
 }

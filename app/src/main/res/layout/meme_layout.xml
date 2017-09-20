@@ -23,7 +23,7 @@
             android:layout_marginTop="10dp">
 
             <ImageView
-                android:id="@+id/authorImage"
+                android:id="@+id/authorImg"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="10dp"
@@ -37,7 +37,7 @@
                 android:layout_alignParentTop="false"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/authorImage"
+                android:layout_toRightOf="@+id/authorImg"
                 android:maxLines="1"
                 android:textColor="@color/textColor"
                 android:textSize="16sp"/>
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/authorName"
                 android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/authorImage"/>
+                android:layout_toRightOf="@+id/authorImg"/>
         </RelativeLayout>
 
         <RelativeLayout

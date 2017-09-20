@@ -1,4 +1,4 @@
-package ru.timuruktus.memeexchange.POJO;
+package ru.timuruktus.memeexchange.POJO.RESTBodies;
 
 public class POSTLogin{
 

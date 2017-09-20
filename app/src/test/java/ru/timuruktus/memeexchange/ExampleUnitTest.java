@@ -2,7 +2,6 @@ package ru.timuruktus.memeexchange;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Retrofit;
@@ -10,11 +9,10 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.timuruktus.memeexchange.Model.DataManager;
 import ru.timuruktus.memeexchange.POJO.Meme;
-import ru.timuruktus.memeexchange.POJO.POSTLogin;
+import ru.timuruktus.memeexchange.POJO.RESTBodies.POSTLogin;
 import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
 import rx.Observer;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static org.junit.Assert.*;

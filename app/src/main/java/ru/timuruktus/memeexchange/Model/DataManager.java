@@ -1,6 +1,7 @@
 package ru.timuruktus.memeexchange.Model;
 
 import android.util.Log;
+import android.util.Pair;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,9 +10,12 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.timuruktus.memeexchange.Errors.NullTokenException;
+import ru.timuruktus.memeexchange.MainPart.MyApp;
 import ru.timuruktus.memeexchange.POJO.Meme;
-import ru.timuruktus.memeexchange.POJO.POSTLogin;
-import ru.timuruktus.memeexchange.POJO.POSTRegister;
+import ru.timuruktus.memeexchange.POJO.RESTBodies.POSTLogin;
+import ru.timuruktus.memeexchange.POJO.RESTBodies.POSTRegister;
+import ru.timuruktus.memeexchange.POJO.RecyclerItem;
 import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.REST.BackendlessAPI;
 import ru.timuruktus.memeexchange.Utils.NewestMemeComparator;
@@ -38,12 +42,10 @@ public class DataManager implements IDataManager {
 
 
     public static DataManager getInstance(){
-        if (dataManager != null){
-            return dataManager;
-        }else{
+        if(dataManager == null){
             dataManager = new DataManager();
-            return dataManager;
         }
+        return dataManager;
     }
 
     @Override
@@ -66,7 +68,6 @@ public class DataManager implements IDataManager {
 
     @Override
     public Observable<User> loginUser(String login, String password){
-        final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
         POSTLogin body = new POSTLogin(login, password);
         return backendlessAPI.loginUser(body)
@@ -78,15 +79,13 @@ public class DataManager implements IDataManager {
 
     @Override
     public Observable<User> registerUser(String login, String password, String email){
-        final IDatabaseHelper databaseHelper = DatabaseHelper.getInstance();
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
         POSTRegister body = new POSTRegister(login, password, email);
         return backendlessAPI.registerUser(body)
                 .timeout(LOAD_SHOPS_TIMEOUT, TimeUnit.SECONDS)
                 .retry(RETRY_COUNT)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                ;
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
@@ -148,5 +147,16 @@ public class DataManager implements IDataManager {
     @Override
     public Observable<List<Meme>> loadPopularMemesToday(int pageSize, int offset) {
         return null;
+    }
+
+    @Override
+    public Observable<Pair<List<User>, List<Meme>>> loadUserPosts(int pageSize, int offset, String userId){
+        BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
+        String userToken = MyApp.getSettings().getUserToken();
+        return Observable.zip(backendlessAPI.getUserByLogin(userId, userToken),
+                backendlessAPI.getMemesFromGroup(userId, pageSize, offset, userToken),
+                (author, posts) -> new Pair<>(author, posts))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

@@ -5,17 +5,20 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.POJO.RecyclerItem;
 
 public interface IFeedPresenter {
 
     void loadFeed(boolean showLoading, int offset);
     void loadFeed(boolean showLoading, int offset, int pageSize);
+    void loadFeed(boolean showLoading, int offset, int pageSize, String userId);
     void loadMoreFeed(int offset, int pageSize);
     void loadFeedFromCache();
-    void onCreateView(String tag);
+
+    void onCreateView(String tag, String user);
     void onDestroyView();
     void onDestroyFragment();
     void refreshAllData(boolean showLoading);
-    ArrayList<Meme> getNewestMemeData();
+    ArrayList<RecyclerItem> getNewestPosts();
 
 }

@@ -4,7 +4,6 @@
 
     <string name="error_loading_shops">Отсутствует подключение к интернету.</string>
 
-    <string name="likes_count">Лайков</string>
     <string name="welcome">Добро пожаловать!</string>
     <string name="please_login_first">Пожалуйста, войдите в систему</string>
     <string name="login">Логин</string>
@@ -13,6 +12,12 @@
     <string name="join">Войти</string>
     <string name="error">Ошибка</string>
     <string name="register">Зарегистрироваться</string>
+    <string name="likes_count">Лайков</string>
+    <string name="likes">Лайков:</string>
+    <string name="owner">Владелец:</string>
+    <string name="subscribers">Подписчиков:</string>
+    <string name="subscribers_count">Подписчиков</string>
+    <string name="subscribe">Подписаться</string>
     <string name="not_yet_registered">Ещё не зарегистрированы? \nНе может быть!</string>
 
     <string name="easter_egg_1">Эта пасхалка выпадает нечасто</string>

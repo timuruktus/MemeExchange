@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="wrap_content"
+                                             android:orientation="vertical"
+                                             android:paddingBottom="5dp"
+                                             tools:layout_editor_absoluteX="0dp"
+                                             tools:layout_editor_absoluteY="25dp">
+
+    <ImageView
+        android:id="@+id/authorImg"
+        android:layout_width="123dp"
+        android:layout_height="123dp"
+        app:srcCompat="@android:color/transparent"
+        tools:layout_editor_absoluteX="131dp"
+        tools:layout_editor_absoluteY="16dp"/>
+
+    <Button
+        android:id="@+id/subBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:background="@drawable/fade_background_1"
+        android:text="@string/subscribe"
+        android:textColor="@color/textColorLight"
+        android:textSize="10sp"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="126dp"/>
+
+    <TextView
+        android:id="@+id/likesTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/likes_count"
+        android:textColor="@color/darkGray"
+        tools:layout_editor_absoluteX="32dp"
+        tools:layout_editor_absoluteY="109dp"/>
+
+    <TextView
+        android:id="@+id/likes"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="3dp"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/likesTxt"
+        tools:layout_editor_absoluteX="55dp"
+        fontPath="fonts/Roboto-Black.ttf"/>
+
+    <TextView
+        android:id="@+id/subscribesTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/subscribers_count"
+        app:layout_constraintBaseline_toBaselineOf="@+id/likesTxt"
+        tools:layout_editor_absoluteX="275dp"/>
+
+    <TextView
+        android:id="@+id/subscribers"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="3dp"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/subscribesTxt"
+        app:layout_constraintLeft_toRightOf="@+id/authorImg"
+        app:layout_constraintRight_toRightOf="parent"
+        fontPath="fonts/Roboto-Black.ttf"/>
+
+</android.support.constraint.ConstraintLayout>

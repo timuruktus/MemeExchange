@@ -23,6 +23,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import butterknife.BindView;
@@ -31,11 +32,14 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import ru.timuruktus.memeexchange.Events.OpenFragment;
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.POJO.RecyclerItem;
+import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.EndlessScrollListener;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static ru.timuruktus.memeexchange.FeedPart.FeedPresenter.BUNDLE_AUTHOR;
 import static ru.timuruktus.memeexchange.FeedPart.FeedPresenter.BUNDLE_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
@@ -68,10 +72,11 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
 
 
 
-    public static FeedFragment getInstance(String tag){
+    public static FeedFragment getInstance(String tag, String userId){
         FeedFragment feedFragment = new FeedFragment();
         Bundle bundle = new Bundle();
         bundle.putString(BUNDLE_TAG, tag);
+        bundle.putString(BUNDLE_AUTHOR, userId);
         feedFragment.setArguments(bundle);
         return feedFragment;
     }
@@ -86,7 +91,8 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         context = view.getContext();
         recyclerView.setHasFixedSize(false);
         String newTag = getArguments().getString(BUNDLE_TAG);
-        feedPresenter.onCreateView(newTag);
+        String newUser = getArguments().getString(BUNDLE_AUTHOR);
+        feedPresenter.onCreateView(newTag, newUser);
         EventBus.getDefault().post(new OpenFragment(FEED_FRAGMENT_TAG));
         return view;
 
@@ -113,21 +119,30 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     /**
      * Used ONLY on RecyclerView refresh and on first view attach
      *
-     * @param memes - data, needed to be shown
+     * @param data - data, needed to be shown
      */
     @Override
-    public void showNewPosts(List<Meme> memes){
-        Log.d(TESTING_TAG, "showNewPosts() in FeedFragment");
+    public void showNewPosts(ArrayList<RecyclerItem> data){
+        showPosts(data);
+    }
+
+    @Override
+    public void showNewUserPosts(ArrayList<RecyclerItem> data){
+        showPosts(data);
+    }
+
+    private void showPosts(ArrayList<RecyclerItem> data){
         swipeContainer.setRefreshing(false);
         swipeContainer.setVisibility(VISIBLE);
         swipeContainer.setOnRefreshListener(this);
 
-        feedAdapter = new FeedAdapter(getActivity(), (ArrayList<Meme>) memes, this);
+        feedAdapter = new FeedAdapter(getActivity(), data, this);
         recyclerView.setAdapter(feedAdapter);
         recyclerView.clearOnScrollListeners();
         recyclerView.addOnScrollListener(getRecyclerViewScrollListener());
         recyclerView.setLayoutManager(llm);
     }
+
 
     /**
      * Shows an error
@@ -158,9 +173,9 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     }
 
     @Override
-    public void showMorePosts(List<Meme> memeList, int offset){
+    public void showMorePosts(ArrayList<Meme> data, int offset){
         swipeContainer.setVisibility(VISIBLE);
-        feedAdapter.notifyItemRangeChanged(offset, memeList.size());
+        feedAdapter.notifyItemRangeChanged(offset, data.size());
 
     }
 
@@ -228,6 +243,11 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
 
     @Override
     public void onLiked(Meme meme){
+
+    }
+
+    @Override
+    public void onSubscribe(User user){
 
     }
 

@@ -2,13 +2,18 @@ package ru.timuruktus.memeexchange.POJO;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 import io.realm.RealmObject;
 
-public class User extends RealmObject {
+public class User extends RealmObject implements RecyclerItem {
 
     private String login;
     private String vkId;
     private String name;
+    private long likes;
+    private long subscribers;
+    private ArrayList<LikeOperation> lastOperations;
     private String objectId;
     private String email;
     private String avatar; // Image URL
@@ -19,10 +24,13 @@ public class User extends RealmObject {
     public User() {
     }
 
-    public User(String login, String vkId, String name, String objectId, String email, String avatar, String token){
+    public User(String login, String vkId, String name, long likes, long subscribers, ArrayList<LikeOperation> lastOperations, String objectId, String email, String avatar, String token){
         this.login = login;
         this.vkId = vkId;
         this.name = name;
+        this.likes = likes;
+        this.subscribers = subscribers;
+        this.lastOperations = lastOperations;
         this.objectId = objectId;
         this.email = email;
         this.avatar = avatar;
@@ -85,6 +93,32 @@ public class User extends RealmObject {
     public void setToken(String token){
         this.token = token;
     }
+
+    public long getLikes(){
+        return likes;
+    }
+
+    public void setLikes(long likes){
+        this.likes = likes;
+    }
+
+    public ArrayList<LikeOperation> getLastOperations(){
+        return lastOperations;
+    }
+
+    public void setLastOperations(ArrayList<LikeOperation> lastOperations){
+        this.lastOperations = lastOperations;
+    }
+
+    public long getSubscribers(){
+        return subscribers;
+    }
+
+    public void setSubscribers(long subscribers){
+        this.subscribers = subscribers;
+    }
+
+
 
 
 
