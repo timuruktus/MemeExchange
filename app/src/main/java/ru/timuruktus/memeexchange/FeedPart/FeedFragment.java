@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
@@ -52,10 +53,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
 
     @Nullable @BindView(R.id.feedList) RecyclerView recyclerView;
     @Nullable @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
-    @Nullable @BindView(R.id.progressBar) ProgressBar progressBar;
     @Nullable @BindView(R.id.loadingLayout) RelativeLayout loadingLayout;
-    @Nullable @BindView(R.id.errorIcon) ImageView errorIcon;
-    @Nullable @BindView(R.id.errorText) TextView errorText;
     @Nullable @BindView(R.id.refreshIcon) ImageView refreshIcon;
     @Nullable @BindView(R.id.errorLayout) RelativeLayout errorLayout;
 
@@ -66,7 +64,6 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     private Context context;
     private static final String RECYCLER_VIEW_STATE = "recyclerViewState";
     private FeedAdapter feedAdapter;
-
     Parcelable layoutManagerState;
     private LinearLayoutManager llm = new LinearLayoutManager(context);
 
@@ -93,7 +90,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         String newTag = getArguments().getString(BUNDLE_TAG);
         String newUser = getArguments().getString(BUNDLE_AUTHOR);
         feedPresenter.onCreateView(newTag, newUser);
-        EventBus.getDefault().post(new OpenFragment(FEED_FRAGMENT_TAG));
+        EventBus.getDefault().post(new OpenFragment(newTag));
         return view;
 
     }
@@ -193,11 +190,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Override
     public void onDestroyView(){
         super.onDestroyView();
-        refreshIcon = null;
-        errorLayout = null;
-        loadingLayout = null;
         unbinder.unbind();
-        feedPresenter.onDestroyView();
     }
 
 

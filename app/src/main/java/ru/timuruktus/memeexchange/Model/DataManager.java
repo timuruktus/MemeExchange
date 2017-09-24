@@ -149,8 +149,9 @@ public class DataManager implements IDataManager {
         return null;
     }
 
+
     @Override
-    public Observable<Pair<List<User>, List<Meme>>> loadUserPosts(int pageSize, int offset, String userId){
+    public Observable<Pair<List<User>, List<Meme>>> loadUserPosts(String userId, int pageSize, int offset){
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
         String userToken = MyApp.getSettings().getUserToken();
         return Observable.zip(backendlessAPI.getUserByLogin(userId, userToken),

@@ -16,7 +16,6 @@ public interface IFeedPresenter {
     void loadFeedFromCache();
 
     void onCreateView(String tag, String user);
-    void onDestroyView();
     void onDestroyFragment();
     void refreshAllData(boolean showLoading);
     ArrayList<RecyclerItem> getNewestPosts();

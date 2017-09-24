@@ -21,7 +21,7 @@ public interface IRegisterView extends MvpView{
     @StateStrategyType(OneExecutionStateStrategy.class)
     void showSomeError();
     @StateStrategyType(OneExecutionStateStrategy.class)
-    void showConfirmEmailMessage();
+    void showDoneView();
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showLoadingIndicator(boolean show);

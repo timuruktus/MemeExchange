@@ -2,7 +2,9 @@ package ru.timuruktus.memeexchange.MainPart;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.android.SupportFragmentNavigator;
+import ru.terrakok.cicerone.commands.Command;
 import ru.timuruktus.memeexchange.Events.OpenFragment;
 import ru.timuruktus.memeexchange.FeedPart.FeedFragment;
 import ru.timuruktus.memeexchange.LoginPart.LoginFragment;
@@ -31,6 +34,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.NEWEST_FEED_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.REGISTER_FRAGMENT_TAG;
 
 public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
@@ -44,7 +48,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
     @BindView(R.id.profileImage) ImageView profileImage;
     @BindView(R.id.exchangeImage) ImageView exchangeImage;
     @BindView(R.id.moreImage) ImageView moreImage;
-    @BindView(R.id.menuTabs) LinearLayout menuTabs;
+    @BindView(R.id.menuTabs) ConstraintLayout menuTabs;
 
     private Navigator navigator = new SupportFragmentNavigator(getSupportFragmentManager(),
             R.id.container){
@@ -53,17 +57,21 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
             mainPresenter.setCurrentFragmentTag(fragmentTag);
             switch(fragmentTag){
                 case FEED_FRAGMENT_TAG:
-                    menuTabs.setVisibility(VISIBLE);
-                    return FeedFragment.getInstance((String) data);
+                case NEWEST_FEED_TAG:
+                    return FeedFragment.getInstance(fragmentTag, (String) data);
                 case LOGIN_FRAGMENT_TAG:
-                    menuTabs.setVisibility(GONE);
                     return LoginFragment.getInstance();
                 case REGISTER_FRAGMENT_TAG:
-                    menuTabs.setVisibility(GONE);
                     return RegisterFragment.getInstance();
                 default:
                     throw new RuntimeException("Unknown screen key!");
             }
+        }
+
+        @Override
+        protected void setupFragmentTransactionAnimation(Command command, Fragment currentFragment, Fragment nextFragment, FragmentTransaction fragmentTransaction){
+            super.setupFragmentTransactionAnimation(command, currentFragment, nextFragment, fragmentTransaction);
+            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
 
         @Override
@@ -94,7 +102,6 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
     @Override
     protected void onPause(){
         super.onPause();
-
         MyApp.INSTANCE.getNavigatorHolder().removeNavigator();
     }
 
@@ -113,13 +120,17 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
 
 
     @Subscribe
-    public void setActiveMenuTab(OpenFragment event){
+    public void fragmentOpenListener(OpenFragment event){
         String tag = event.getFragmentTag();
         refreshAllMenuIcons();
         switch(tag){
             case FEED_FRAGMENT_TAG:
                 menuTabs.setVisibility(VISIBLE);
                 newsImage.setImageResource(R.drawable.ic_menu_news_selected);
+                break;
+            case NEWEST_FEED_TAG:
+                menuTabs.setVisibility(VISIBLE);
+                profileImage.setImageResource(R.drawable.ic_menu_my_account_selected);
                 break;
             case REGISTER_FRAGMENT_TAG:
                 menuTabs.setVisibility(GONE);
@@ -150,7 +161,8 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
 
     @OnClick(R.id.profileImage)
     public void onProfileImageClicked(){
-
+        String userId = MyApp.getSettings().getUserObjectId();
+        MyApp.INSTANCE.getRouter().newRootScreen(NEWEST_FEED_TAG, userId);
     }
 
     @OnClick(R.id.exchangeImage)

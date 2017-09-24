@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -18,13 +19,13 @@ public class Meme extends RealmObject implements RecyclerItem {
     @PrimaryKey
     private String objectId;
     private User author;
-    private ArrayList<String> tags;
+    private RealmList<RealmString> tags;
 
     public Meme() {
 
     }
 
-    public Meme(long timestamp, String image, long likes, String text, boolean userLiked, String objectId, User author, ArrayList<String> tags){
+    public Meme(long timestamp, String image, long likes, String text, boolean userLiked, String objectId, User author, RealmList<RealmString> tags){
         this.timestamp = timestamp;
         this.image = image;
         this.likes = likes;
@@ -92,11 +93,11 @@ public class Meme extends RealmObject implements RecyclerItem {
         this.author = author;
     }
 
-    public ArrayList<String> getTags(){
+    public RealmList<RealmString> getTags(){
         return tags;
     }
 
-    public void setTags(ArrayList<String> tags){
+    public void setTags(RealmList<RealmString> tags){
         this.tags = tags;
     }
 

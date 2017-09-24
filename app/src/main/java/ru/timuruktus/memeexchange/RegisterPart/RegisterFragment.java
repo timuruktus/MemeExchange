@@ -1,6 +1,7 @@
 package ru.timuruktus.memeexchange.RegisterPart;
 
 
+import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.appolica.flubber.Flubber;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
@@ -24,8 +28,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import ru.timuruktus.memeexchange.Events.OpenFragment;
+import ru.timuruktus.memeexchange.MainPart.MyApp;
 import ru.timuruktus.memeexchange.R;
 
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.REGISTER_FRAGMENT_TAG;
 
@@ -39,6 +45,9 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
     @BindView(R.id.emailEditText) EditText emailEditText;
     @BindView(R.id.registerButton) Button registerButton;
     @BindView(R.id.registerProgressBar) ProgressBar registerProgressBar;
+    @BindView(R.id.doneView) LottieAnimationView doneView;
+    @BindView(R.id.doneLayout) RelativeLayout doneLayout;
+    @BindView(R.id.registerContainer) RelativeLayout registerContainer;
 
     @BindString(R.string.password_error) String passwordErrorText;
     @BindString(R.string.login_error) String loginErrorText;
@@ -113,9 +122,60 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
         Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
     }
 
+
     @Override
-    public void showConfirmEmailMessage(){
-        Toast.makeText(context, R.string.confirm_email, Toast.LENGTH_SHORT).show();
+    public void showDoneView(){
+        Animator animator = Flubber.with()
+                .animation(Flubber.AnimationPreset.FADE_IN)
+                .duration(1000)
+                .createFor(doneLayout);
+
+        animator.addListener(new Animator.AnimatorListener(){
+            @Override
+            public void onAnimationStart(Animator animation){
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation){
+                doneView.setAlpha(1f);
+                doneView.setSpeed(0.7f);
+                doneView.playAnimation();
+                doneView.addAnimatorListener(new Animator.AnimatorListener(){
+                    @Override
+                    public void onAnimationStart(Animator animation){
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation){
+                        MyApp.INSTANCE.getRouter().backTo(null);
+                        Toast.makeText(context, R.string.confirm_email, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation){
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation){
+
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation){
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation){
+
+            }
+        });
+        animator.start();
+
     }
 
     @Override

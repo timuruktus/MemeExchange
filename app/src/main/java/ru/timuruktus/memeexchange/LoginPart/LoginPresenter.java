@@ -56,7 +56,6 @@ public class LoginPresenter extends MvpPresenter<ILoginView> implements ILoginPr
             @Override
             public void onError(Throwable e){
                 e.printStackTrace();
-                Log.d(TESTING_TAG, "" + e.getMessage());
                 getViewState().showLoadingIndicator(false);
                 if(e.getMessage().equals(WRONG_LOGIN_OR_PASSWORD_MESSAGE)){
                     getViewState().clearLoginField();
@@ -73,10 +72,7 @@ public class LoginPresenter extends MvpPresenter<ILoginView> implements ILoginPr
             public void onNext(User user){
                 String token = user.getToken();
                 String objectId = user.getObjectId();
-                ISettings settings = MyApp.INSTANCE.getSettings();
-                Log.d(TESTING_TAG, "User = " + user);
-                Log.d(TESTING_TAG, "token = " + token);
-                Log.d(TESTING_TAG, "objectId = " + objectId);
+                ISettings settings = MyApp.getSettings();
                 settings.setUserObjectId(objectId);
                 settings.setUserToken(token);
             }

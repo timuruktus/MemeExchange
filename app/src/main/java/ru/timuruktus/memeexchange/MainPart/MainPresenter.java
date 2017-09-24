@@ -14,7 +14,6 @@ import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.ISettings;
 import ru.timuruktus.memeexchange.Utils.Settings;
 
-import static ru.timuruktus.memeexchange.FeedPart.FeedPresenter.NEWEST_FEED_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
 @InjectViewState
@@ -23,12 +22,13 @@ public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainP
     public static final String FEED_FRAGMENT_TAG = "feedBackStackTag";
     public static final String LOGIN_FRAGMENT_TAG = "loginTag";
     public static final String REGISTER_FRAGMENT_TAG = "registerTag";
+    public static final String NEWEST_FEED_TAG = "newestFeedTag";
     private static String currentFragmentTag;
 
     private void loadFirstFragment(){
-        ISettings settings = MyApp.INSTANCE.getSettings();
+        ISettings settings = MyApp.getSettings();
         if(settings.isUserLoggedIn()){
-            MyApp.INSTANCE.getRouter().newRootScreen(FEED_FRAGMENT_TAG, NEWEST_FEED_TAG);
+            MyApp.INSTANCE.getRouter().newRootScreen(FEED_FRAGMENT_TAG);
         }else{
             MyApp.INSTANCE.getRouter().newRootScreen(LOGIN_FRAGMENT_TAG);
         }
@@ -52,12 +52,9 @@ public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainP
 
     @Override
     public void setCurrentFragmentTag(String currentFragmentTag){
-        Log.d(TESTING_TAG, "New tag is started setted");
         if(MainPresenter.currentFragmentTag == null || !MainPresenter.currentFragmentTag.equals(currentFragmentTag)){
-            Log.d(TESTING_TAG, "New tag is setted");
             MainPresenter.currentFragmentTag = currentFragmentTag;
         }
-        Log.d(TESTING_TAG, "New tag isnt started setted");
     }
 
     @Override

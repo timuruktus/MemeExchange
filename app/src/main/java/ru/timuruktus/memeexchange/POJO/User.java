@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class User extends RealmObject implements RecyclerItem {
@@ -13,10 +14,12 @@ public class User extends RealmObject implements RecyclerItem {
     private String name;
     private long likes;
     private long subscribers;
-    private ArrayList<LikeOperation> lastOperations;
+    private RealmList<LikeOperation> lastOperations;
     private String objectId;
+    private String ownerId;
     private String email;
     private String avatar; // Image URL
+    private boolean isUserSubscribed;
 
     @SerializedName("user-token")
     private String token;
@@ -24,7 +27,7 @@ public class User extends RealmObject implements RecyclerItem {
     public User() {
     }
 
-    public User(String login, String vkId, String name, long likes, long subscribers, ArrayList<LikeOperation> lastOperations, String objectId, String email, String avatar, String token){
+    public User(String login, String vkId, String name, long likes, long subscribers, RealmList<LikeOperation> lastOperations, String objectId, String ownerId, String email, String avatar, boolean isUserSubscribed, String token){
         this.login = login;
         this.vkId = vkId;
         this.name = name;
@@ -32,8 +35,10 @@ public class User extends RealmObject implements RecyclerItem {
         this.subscribers = subscribers;
         this.lastOperations = lastOperations;
         this.objectId = objectId;
+        this.ownerId = ownerId;
         this.email = email;
         this.avatar = avatar;
+        this.isUserSubscribed = isUserSubscribed;
         this.token = token;
     }
 
@@ -102,11 +107,11 @@ public class User extends RealmObject implements RecyclerItem {
         this.likes = likes;
     }
 
-    public ArrayList<LikeOperation> getLastOperations(){
+    public RealmList<LikeOperation> getLastOperations(){
         return lastOperations;
     }
 
-    public void setLastOperations(ArrayList<LikeOperation> lastOperations){
+    public void setLastOperations(RealmList<LikeOperation> lastOperations){
         this.lastOperations = lastOperations;
     }
 
@@ -117,6 +122,23 @@ public class User extends RealmObject implements RecyclerItem {
     public void setSubscribers(long subscribers){
         this.subscribers = subscribers;
     }
+
+    public boolean isUserSubscribed(){
+        return isUserSubscribed;
+    }
+
+    public void setUserSubscribed(boolean userSubscribed){
+        isUserSubscribed = userSubscribed;
+    }
+
+    public String getOwnerId(){
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId){
+        this.ownerId = ownerId;
+    }
+
 
 
 

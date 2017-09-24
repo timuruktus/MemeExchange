@@ -1,6 +1,8 @@
 package ru.timuruktus.memeexchange.POJO;
 
-public class LikeOperation{
+import io.realm.RealmObject;
+
+public class LikeOperation extends RealmObject{
 
     private String sentToId;
     private String receiverId;

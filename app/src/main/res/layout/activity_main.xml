@@ -29,55 +29,50 @@
             android:id="@+id/newsImage"
             android:layout_width="86dp"
             android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="9dp"
             app:layout_constraintRight_toLeftOf="@+id/profileImage"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_menu_news"/>
+            app:srcCompat="@drawable/ic_menu_news"
+            app:layout_constraintLeft_toLeftOf="parent"/>
 
         <ImageView
             android:id="@+id/profileImage"
             android:layout_width="86dp"
             android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="9dp"
             app:layout_constraintBottom_toBottomOf="@+id/newsImage"
             app:layout_constraintRight_toLeftOf="@+id/exchangeImage"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_menu_my_account"/>
+            app:srcCompat="@drawable/ic_menu_my_account"
+            app:layout_constraintLeft_toRightOf="@+id/newsImage"/>
 
         <ImageView
             android:id="@+id/moreImage"
             android:layout_width="86dp"
             android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="9dp"
             app:layout_constraintBottom_toBottomOf="@+id/exchangeImage"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_menu_more"/>
+            app:srcCompat="@drawable/ic_menu_more"
+            app:layout_constraintLeft_toRightOf="@+id/exchangeImage"/>
 
         <ImageView
             android:id="@+id/exchangeImage"
             android:layout_width="86dp"
             android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="9dp"
             app:layout_constraintBottom_toBottomOf="@+id/profileImage"
             app:layout_constraintRight_toLeftOf="@+id/moreImage"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_menu_graphic"/>
+            app:srcCompat="@drawable/ic_menu_graphic"
+            app:layout_constraintLeft_toRightOf="@+id/profileImage"/>
 
         <LinearLayout
             android:id="@+id/divider"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
+            android:alpha="0.5"
             android:foreground="@color/darkGray"
             android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="parent"

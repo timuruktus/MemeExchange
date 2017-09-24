@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/registerContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -132,5 +136,23 @@
 
         </RelativeLayout>
     </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/doneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="@android:color/white">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/doneView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:alpha="0"
+            app:lottie_fileName="checked_done.json"
+            app:lottie_loop="false"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

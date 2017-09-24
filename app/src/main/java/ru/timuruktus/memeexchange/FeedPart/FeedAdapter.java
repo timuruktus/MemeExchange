@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.appolica.flubber.Flubber;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
@@ -18,7 +19,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+
 import ru.timuruktus.memeexchange.MainPart.GlideApp;
+import ru.timuruktus.memeexchange.MainPart.MyApp;
 import ru.timuruktus.memeexchange.Model.DatabaseHelper;
 import ru.timuruktus.memeexchange.POJO.Footer;
 import ru.timuruktus.memeexchange.POJO.Meme;
@@ -28,6 +32,7 @@ import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.FieldsValidator;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 
 class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -115,31 +120,19 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         @BindView(R.id.moreButton) ImageView moreButton;
         @BindView(R.id.likeButton) ImageView likeButton;
         @BindView(R.id.textContainer) RelativeLayout textContainer;
+
         private View view;
         private AdapterEventListener adapterEventListener;
         private Meme meme;
 
 
-        @OnClick(R.id.likeButton)
-        void onLikeClicked(){
-            if(meme.isUserLiked()){
-                meme.setLikes(meme.getLikes() - 1);
-            }else{
-                meme.setLikes(meme.getLikes() + 1);
-            }
-            meme.setUserLiked(!meme.isUserLiked());
+        ViewHolder(View view, AdapterEventListener adapterEventListener){
+            super(view);
+            this.adapterEventListener = adapterEventListener;
+            this.view = view;
+            ButterKnife.bind(this, view);
 
-            DatabaseHelper.getInstance().updateMeme(meme);
-            Flubber.with()
-                    .animation(Flubber.AnimationPreset.SWING)
-                    .duration(500)
-                    .createFor(likeButton)
-                    .start();
-            adapterEventListener.onLiked(meme);
-            setLikeButtonImage(meme);
-            configureAuthorContainer(meme);
         }
-
 
         public void setData(Meme meme){
             this.meme = meme;
@@ -162,7 +155,7 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         private void setMemeText(String text){
             if(!FieldsValidator.isStringEmpty(text)){
-                memeText.setVisibility(View.VISIBLE);
+                memeText.setVisibility(VISIBLE);
                 memeText.setText(text);
             }else{
                 memeText.setVisibility(GONE);
@@ -172,7 +165,7 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         private void loadImages(Meme meme){
 
             if(!FieldsValidator.isStringEmpty(meme.getImage())){
-                memeImage.setVisibility(View.VISIBLE);
+                memeImage.setVisibility(VISIBLE);
                 GlideApp.with(view.getContext())
                         .load(meme.getImage())
                         .centerCrop()
@@ -197,14 +190,26 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
         }
 
+        @OnClick(R.id.likeButton)
+        void onLikeClicked(){
+            if(meme.isUserLiked()){
+                meme.setLikes(meme.getLikes() - 1);
+            }else{
+                meme.setLikes(meme.getLikes() + 1);
+            }
+            meme.setUserLiked(!meme.isUserLiked());
 
-        ViewHolder(View view, AdapterEventListener adapterEventListener){
-            super(view);
-            this.adapterEventListener = adapterEventListener;
-            this.view = view;
-            ButterKnife.bind(this, view);
-
+            DatabaseHelper.getInstance().updateMeme(meme);
+            Flubber.with()
+                    .animation(Flubber.AnimationPreset.SWING)
+                    .duration(500)
+                    .createFor(likeButton)
+                    .start();
+            adapterEventListener.onLiked(meme);
+            setLikeButtonImage(meme);
+            configureAuthorContainer(meme);
         }
+
     }
 
 
@@ -231,6 +236,16 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             loadImages();
             loadLikesText();
             loadSubText();
+            configureSubBut();
+        }
+
+        private void configureSubBut(){
+            String userId = user.getObjectId();
+            if(userId.equals(MyApp.getSettings().getUserObjectId())){
+                subBtn.setVisibility(GONE);
+            }else{
+                subBtn.setVisibility(VISIBLE);
+            }
         }
 
         private void loadLikesText(){

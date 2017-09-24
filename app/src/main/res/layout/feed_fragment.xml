@@ -26,12 +26,14 @@
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <ProgressBar
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:theme="@style/CustomProgressBar"/>
+            app:lottie_fileName="glow_loading.json"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -42,14 +44,14 @@
         android:layout_alignParentTop="true"
         android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/errorIcon"
-            android:layout_width="@dimen/error_loading_shops_size"
-            android:layout_height="@dimen/error_loading_shops_size"
-            android:layout_above="@+id/errorText"
-            android:layout_alignParentBottom="false"
-            android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/ic_smartphone_error"/>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/errorView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:lottie_fileName="warning_sign.json"
+            app:lottie_loop="false"
+            app:lottie_autoPlay="true"/>
 
         <TextView
             android:id="@+id/errorText"

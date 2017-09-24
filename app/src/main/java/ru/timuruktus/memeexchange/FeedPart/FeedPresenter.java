@@ -27,16 +27,15 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
     private static String currentUser;
     public static final String BUNDLE_TAG = "bundleTag";
     public static final String BUNDLE_AUTHOR = "author";
-    public static final String NEWEST_FEED_TAG = "newestFeedTag";
 
     public FeedPresenter(){
     }
 
-    @Override
-    protected void onFirstViewAttach(){
-        super.onFirstViewAttach();
-        loadFeed(true, 0);
-    }
+//    @Override
+//    protected void onFirstViewAttach(){
+//        super.onFirstViewAttach();
+//        loadFeed(true, 0);
+//    }
 
     @Override
     public void loadFeed(boolean showLoading, int offset){
@@ -57,7 +56,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
         if(userId == null){
             observable = dataManager.loadMemesFromWeb(pageSize, offset);
         }else{
-            observable = dataManager.loadUserPosts(pageSize, offset, userId);
+            observable = dataManager.loadUserPosts(userId, pageSize, offset);
         }
         observable.subscribe(new Observer<Object>(){
                     @Override
@@ -150,19 +149,28 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
             dataManager = DataManager.getInstance();
         }
 
+        //First Open
+        if(currentTag == null){
+            loadFeed(true, 0);
+        }
+
+        //User should be shown after usual posts
+        if(currentUser == null && newUser != null){
+            loadFeed(true, 0, DEFAULT_PAGE_SIZE, newUser);
+        }
+
+        //New tag
         if(currentTag != null && !currentTag.equals(newTag)){
             loadFeed(true, 0);
         }
+        //New User
         if(currentUser != null && !currentUser.equals(newUser)){
-            loadFeed(true, 0);
+            loadFeed(true, 0, DEFAULT_PAGE_SIZE, newUser);
         }
         currentTag = newTag;
+        currentUser = newUser;
     }
 
-    @Override
-    public void onDestroyView(){
-
-    }
 
     @Override
     public void onDestroyFragment(){

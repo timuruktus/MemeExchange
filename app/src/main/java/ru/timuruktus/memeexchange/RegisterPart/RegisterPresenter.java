@@ -39,12 +39,11 @@ public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements I
         getViewState().showLoadingIndicator(true);
         DataManager dataManager = DataManager.getInstance();
         dataManager.registerUser(login, password, email).subscribe(new Observer<User>(){
-
             @Override
             public void onCompleted(){
                 getViewState().showLoadingIndicator(false);
-                getViewState().showConfirmEmailMessage();
-                MyApp.INSTANCE.getRouter().newRootScreen(FEED_FRAGMENT_TAG);
+                getViewState().showDoneView();
+                //TODO: save settings
             }
 
             @Override
@@ -52,6 +51,7 @@ public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements I
                 getViewState().showLoadingIndicator(false);
                 String message = e.getMessage();
                 e.printStackTrace();
+                // TODO: Custom backendless errors
                 if(message.equals(EMAIL_IS_UNAVAILABLE_MESSAGE)){
                     getViewState().showEmailTakenError();
                 }else if(message.equals(LOGIN_IS_UNAVAILABLE_MESSAGE)){
