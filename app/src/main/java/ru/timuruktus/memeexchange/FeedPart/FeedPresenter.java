@@ -58,7 +58,7 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
         }else{
             observable = dataManager.loadUserPosts(userId, pageSize, offset);
         }
-        observable.subscribe(new Observer<Object>(){
+        observable.subscribe(new Observer<List<RecyclerItem>>(){
                     @Override
                     public void onCompleted(){
                         getViewState().showLoadingIndicator(false);
@@ -72,19 +72,9 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
                     }
 
                     @Override
-                    public void onNext(Object data){
-                        if(data instanceof List){
-                            posts.addAll((ArrayList<RecyclerItem>) data);
-                            getViewState().showNewPosts(getNewestPosts());
-                        }else{
-                            Pair<List<User>, List<Meme>> pair = (Pair<List<User>, List<Meme>>) data;
-                            // User
-                            posts.addAll(pair.first);
-                            // Memes
-                            posts.addAll(pair.second);
-                            getViewState().showNewPosts(getNewestPosts());
-                        }
-
+                    public void onNext(List<RecyclerItem> data){
+                        posts.addAll(data);
+                        getViewState().showNewPosts(getNewestPosts());
                     }
                 });
     }
@@ -102,7 +92,6 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
                     @Override
                     public void onError(Throwable e){
                         e.printStackTrace();
-                        getViewState().showMessageNoInternetConnection();
                     }
 
                     @Override

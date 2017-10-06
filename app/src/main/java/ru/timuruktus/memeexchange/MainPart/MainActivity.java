@@ -1,18 +1,19 @@
 package ru.timuruktus.memeexchange.MainPart;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.View;
+import android.support.v7.widget.PopupMenu;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.yalantis.ucrop.UCrop;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,7 +35,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
-import static ru.timuruktus.memeexchange.MainPart.MainPresenter.NEWEST_FEED_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.NEWEST_FEED_FRAGMENT_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.NEW_POST_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.REGISTER_FRAGMENT_TAG;
 
 public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
@@ -57,7 +59,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
             mainPresenter.setCurrentFragmentTag(fragmentTag);
             switch(fragmentTag){
                 case FEED_FRAGMENT_TAG:
-                case NEWEST_FEED_TAG:
+                case NEWEST_FEED_FRAGMENT_TAG:
                     return FeedFragment.getInstance(fragmentTag, (String) data);
                 case LOGIN_FRAGMENT_TAG:
                     return LoginFragment.getInstance();
@@ -128,7 +130,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
                 menuTabs.setVisibility(VISIBLE);
                 newsImage.setImageResource(R.drawable.ic_menu_news_selected);
                 break;
-            case NEWEST_FEED_TAG:
+            case NEWEST_FEED_FRAGMENT_TAG:
                 menuTabs.setVisibility(VISIBLE);
                 profileImage.setImageResource(R.drawable.ic_menu_my_account_selected);
                 break;
@@ -138,6 +140,9 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
             case LOGIN_FRAGMENT_TAG:
                 menuTabs.setVisibility(GONE);
                 break;
+            case NEW_POST_FRAGMENT_TAG:
+                menuTabs.setVisibility(VISIBLE);
+                moreImage.setImageResource(R.drawable.ic_menu_more_selected);
             default:
                 throw new RuntimeException("Unknown screen key!");
         }
@@ -162,7 +167,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
     @OnClick(R.id.profileImage)
     public void onProfileImageClicked(){
         String userId = MyApp.getSettings().getUserObjectId();
-        MyApp.INSTANCE.getRouter().newRootScreen(NEWEST_FEED_TAG, userId);
+        MyApp.INSTANCE.getRouter().newRootScreen(NEWEST_FEED_FRAGMENT_TAG, userId);
     }
 
     @OnClick(R.id.exchangeImage)
@@ -172,6 +177,30 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
 
     @OnClick(R.id.moreImage)
     public void onMoreImageClicked(){
-
+        PopupMenu menu = new PopupMenu(this, moreImage);
+        menu.inflate(R.menu.bottom_nav_menu);
+        menu.setOnMenuItemClickListener(getMorePopupListener());
+        menu.show();
     }
+
+    private PopupMenu.OnMenuItemClickListener getMorePopupListener(){
+        return item -> {
+            switch(item.getItemId()){
+                case R.id.new_post:
+                    MyApp.INSTANCE.getRouter().newRootScreen(NEW_POST_FRAGMENT_TAG);
+//                    UCrop.of(sourceUri, destinationUri)
+//                            .withAspectRatio(1, 1)
+//                            .withMaxResultSize(500, 500)
+//                            .start(context);
+                    // TODO: Open NewPostFragment
+                    return true;
+                case R.id.settings:
+                    // TODO: Open SettingsFragment
+                    return true;
+                default:
+                    return false;
+            }
+        };
+    }
+
 }

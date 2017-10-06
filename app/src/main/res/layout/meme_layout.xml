@@ -70,7 +70,6 @@
 
                 <TextView
                     android:id="@id/expandable_text"
-                    fontPath="fonts/Roboto-Light.ttf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"

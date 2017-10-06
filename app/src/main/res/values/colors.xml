@@ -7,11 +7,11 @@
     <color name="gray">#c6c6c6</color>
     <color name="darkGray">#7c7c7c</color>
     <color name="textColor">#424242</color>
-    <color name="textColorLight">#e2e2e2</color>
+    <color name="textColorLight">#fdfdfd</color>
     <color name="brightGray">#f1f1f1</color>
     <!--MAIN COLORS START-->
     <color name="green">#2cc990</color>
     <color name="blue">#2c82c9</color>
     <!--MAIN COLORS END-->
-    <color name="red">#E22211</color>
+    <color name="red">#e22211</color>
 </resources>

@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [appPackageName: "${applicationId}"]
     }
     buildTypes {
         release {
@@ -32,6 +33,7 @@ dependencies {
     })
 
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile "com.andkulikov:transitionseverywhere:1.7.6"
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
@@ -49,12 +51,14 @@ dependencies {
     annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.3'
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-    compile 'com.appolica:flubber:1.0.1'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'ru.terrakok.cicerone:cicerone:2.1.0'
     compile 'com.ms-square:expandableTextView:0.1.4'
     compile ('com.airbnb.android:lottie:2.2.5'){ exclude group: 'com.android.support' }
+    compile 'com.github.yalantis:ucrop:2.2.1'
+    compile 'com.github.davidpizarro:autolabelui:1.0.1'
+
 }
 
 apply plugin: 'realm-android'

@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -111,11 +113,17 @@ public class LoginFragment extends MvpAppCompatFragment implements ILoginView{
         String login = loginEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         loginPresenter.onJoinClick(login, password);
+        hideKeyboard();
     }
 
     @OnClick(R.id.registerButton)
     void onRegisterClick(){
         loginPresenter.onRegisterClick();
+    }
+
+    private void hideKeyboard(){
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getWindow().getDecorView().getWindowToken(), 0);
     }
 
 

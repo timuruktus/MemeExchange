@@ -4,10 +4,12 @@ package ru.timuruktus.memeexchange.RegisterPart;
 import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -88,6 +90,12 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
         String password = passwordEditText.getText().toString();
         String email = emailEditText.getText().toString();
         registerPresenter.onRegisterClick(login, password, email);
+        hideKeyboard();
+    }
+
+    private void hideKeyboard(){
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getWindow().getDecorView().getWindowToken(), 0);
     }
 
     @Override
@@ -125,12 +133,18 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
 
     @Override
     public void showDoneView(){
-        Animator animator = Flubber.with()
+        Animator appearAnimation = Flubber.with()
                 .animation(Flubber.AnimationPreset.FADE_IN)
                 .duration(1000)
                 .createFor(doneLayout);
 
-        animator.addListener(new Animator.AnimatorListener(){
+        appearAnimation.addListener(getAppearAnimationListener());
+        appearAnimation.start();
+
+    }
+
+    private Animator.AnimatorListener getAppearAnimationListener(){
+        return new Animator.AnimatorListener(){
             @Override
             public void onAnimationStart(Animator animation){
 
@@ -141,27 +155,7 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
                 doneView.setAlpha(1f);
                 doneView.setSpeed(0.7f);
                 doneView.playAnimation();
-                doneView.addAnimatorListener(new Animator.AnimatorListener(){
-                    @Override
-                    public void onAnimationStart(Animator animation){
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation){
-                        MyApp.INSTANCE.getRouter().backTo(null);
-                        Toast.makeText(context, R.string.confirm_email, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation){
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation){
-
-                    }
-                });
+                doneView.addAnimatorListener(getDoneAnimationListener());
             }
 
             @Override
@@ -173,9 +167,40 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
             public void onAnimationRepeat(Animator animation){
 
             }
-        });
-        animator.start();
+        };
+    }
 
+    private Animator.AnimatorListener getDoneAnimationListener(){
+        return new Animator.AnimatorListener(){
+            @Override
+            public void onAnimationStart(Animator animation){
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation){
+                Animator appearAnimation = Flubber.with()
+                        .animation(Flubber.AnimationPreset.FADE_OUT)
+                        .duration(500)
+                        .createFor(doneView);
+                appearAnimation.start();
+                final Handler handler = new Handler();
+                final Runnable task = () -> {
+                    MyApp.INSTANCE.getRouter().backTo(null);
+                    Toast.makeText(context, R.string.confirm_email, Toast.LENGTH_SHORT).show();
+                };
+                handler.postDelayed(task, 500);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation){
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation){
+
+            }
+        };
     }
 
     @Override

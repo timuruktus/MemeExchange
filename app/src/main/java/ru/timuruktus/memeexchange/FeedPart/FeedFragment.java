@@ -87,6 +87,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         unbinder = ButterKnife.bind(this, view);
         context = view.getContext();
         recyclerView.setHasFixedSize(false);
+        recyclerView.setNestedScrollingEnabled(true);
         String newTag = getArguments().getString(BUNDLE_TAG);
         String newUser = getArguments().getString(BUNDLE_AUTHOR);
         feedPresenter.onCreateView(newTag, newUser);

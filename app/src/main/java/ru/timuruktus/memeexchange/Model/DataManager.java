@@ -3,6 +3,7 @@ package ru.timuruktus.memeexchange.Model;
 import android.util.Log;
 import android.util.Pair;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -151,12 +152,17 @@ public class DataManager implements IDataManager {
 
 
     @Override
-    public Observable<Pair<List<User>, List<Meme>>> loadUserPosts(String userId, int pageSize, int offset){
+    public Observable<List<RecyclerItem>> loadUserPosts(String userId, int pageSize, int offset){
         BackendlessAPI backendlessAPI = backendlessRetrofit.create(BackendlessAPI.class);
         String userToken = MyApp.getSettings().getUserToken();
         return Observable.zip(backendlessAPI.getUserByLogin(userId, userToken),
                 backendlessAPI.getMemesFromGroup(userId, pageSize, offset, userToken),
-                (author, posts) -> new Pair<>(author, posts))
+                (author, posts) -> {
+                    List<RecyclerItem> items = new ArrayList<>();
+                    items.addAll(author);
+                    items.addAll(posts);
+                    return items;
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

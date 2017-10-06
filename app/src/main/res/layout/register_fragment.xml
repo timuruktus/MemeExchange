@@ -122,7 +122,7 @@
                 android:layout_marginTop="25dp"
                 android:backgroundTint="@color/blue"
                 android:text="@string/register"
-                android:textColor="@color/textColorLight"/>
+                android:textColor="@android:color/white"/>
 
             <ProgressBar
                 android:id="@+id/registerProgressBar"

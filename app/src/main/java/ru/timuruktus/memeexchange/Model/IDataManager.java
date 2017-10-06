@@ -19,7 +19,7 @@ public interface IDataManager {
     Observable<List<Meme>> loadPopularMemesByMonth(int pageSize, int offset);
     Observable<List<Meme>> loadPopularMemesByWeek(int pageSize, int offset);
     Observable<List<Meme>> loadPopularMemesToday(int pageSize, int offset);
-    Observable<Pair<List<User>, List<Meme>>> loadUserPosts(String userId, int pageSize, int offset);
+    Observable<List<RecyclerItem>> loadUserPosts(String userId, int pageSize, int offset);
     String getAuthorNameByLogin(String login);
     Observable<User> loginUser(String login, String password);
     Observable<User> registerUser(String login, String password, String email);

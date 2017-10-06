@@ -22,7 +22,8 @@ public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainP
     public static final String FEED_FRAGMENT_TAG = "feedBackStackTag";
     public static final String LOGIN_FRAGMENT_TAG = "loginTag";
     public static final String REGISTER_FRAGMENT_TAG = "registerTag";
-    public static final String NEWEST_FEED_TAG = "newestFeedTag";
+    public static final String NEWEST_FEED_FRAGMENT_TAG = "newestFeedTag";
+    public static final String NEW_POST_FRAGMENT_TAG = "newPostTag";
     private static String currentFragmentTag;
 
     private void loadFirstFragment(){

@@ -1,8 +1,9 @@
 package ru.timuruktus.memeexchange.POJO;
 
 import io.realm.RealmObject;
+import ru.timuruktus.memeexchange.POJO.Queues.WebQueue;
 
-public class LikeOperation extends RealmObject{
+public class LikeOperation extends RealmObject implements WebQueue{
 
     private String sentToId;
     private String receiverId;

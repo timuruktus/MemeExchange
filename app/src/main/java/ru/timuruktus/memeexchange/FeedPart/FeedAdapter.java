@@ -2,7 +2,10 @@ package ru.timuruktus.memeexchange.FeedPart;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,8 +34,10 @@ import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.FieldsValidator;
 
+import static android.view.DragEvent.ACTION_DRAG_LOCATION;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
 
 class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -95,7 +100,10 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             headerHolder.setData(user);
         }else if(holder instanceof FeedAdapter.ViewHolder){
             FeedAdapter.ViewHolder postHolder = (FeedAdapter.ViewHolder) holder;
-            postHolder.setData((Meme) itemList.get(position));
+            Meme meme = (Meme) itemList.get(position);
+            if(meme.getAuthor() != null){
+                postHolder.setData((Meme) itemList.get(position));
+            }
         }
     }
 
@@ -179,6 +187,8 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     .circleCrop()
                     .placeholder(R.drawable.ic_author_placeholder)
                     .into(authorImage);
+
+
 
         }
 

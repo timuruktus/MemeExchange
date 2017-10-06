@@ -18,6 +18,10 @@
     <string name="subscribers">Подписчиков:</string>
     <string name="subscribers_count">Подписчиков</string>
     <string name="subscribe">Подписаться</string>
+    <string name="back">Назад</string>
+    <string name="send">Отправить</string>
+    <string name="tag">Тэг</string>
+
     <string name="not_yet_registered">Ещё не зарегистрированы? \nНе может быть!</string>
 
     <string name="easter_egg_1">Эта пасхалка выпадает нечасто</string>
@@ -43,4 +47,14 @@
     <string name="login_hint">Используйте только латинские символы и цифры</string>
     <string name="password_hint">Не менее шести символов. Только цифры и латинские символы</string>
     <string name="email_hint">Используйте настоящую почту. На неё придет подтверждение</string>
+
+    <!--BOTTOM NAV MENU MORE-->
+    <string name="more_new_post">Создать пост</string>
+    <string name="more_settings">Настройки</string>
+
+    <!--EDIT MEME FRAGMENT-->
+    <string name="meme_text">Текст для мема</string>
+    <string name="add_your_tags_here">А теперь добавьте тэгов</string>
+    <string name="tags_hint">Подсказка: чем больше тэгов добавлено, тем лучше</string>
+    <string name="add_tag">Добавить тэг</string>
 </resources>
