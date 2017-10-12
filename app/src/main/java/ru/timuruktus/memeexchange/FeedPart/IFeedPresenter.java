@@ -20,4 +20,6 @@ public interface IFeedPresenter {
     void refreshAllData(boolean showLoading);
     ArrayList<RecyclerItem> getNewestPosts();
 
+    void onResume();
+
 }

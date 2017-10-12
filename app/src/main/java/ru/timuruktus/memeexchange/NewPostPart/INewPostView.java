@@ -1,6 +1,42 @@
 package ru.timuruktus.memeexchange.NewPostPart;
 
 import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
+import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy;
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
+import com.dpizarro.autolabel.library.Label;
+
+import java.util.ArrayList;
+
+import ru.timuruktus.memeexchange.POJO.RecyclerItem;
 
 public interface INewPostView extends MvpView{
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void clearTextLabels();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void clearImage();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showLoading(boolean show);
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showLoadingError();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showLoadingSuccess();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void prepareImageForSending();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void tooManyTagsError();
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void removeAllTags();
+
+
+    @StateStrategyType(SingleStateStrategy.class)
+    void showAllTags(ArrayList<Label> tags);
 }

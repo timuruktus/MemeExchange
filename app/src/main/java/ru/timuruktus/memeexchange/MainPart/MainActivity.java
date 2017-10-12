@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import ru.terrakok.cicerone.commands.Command;
 import ru.timuruktus.memeexchange.Events.OpenFragment;
 import ru.timuruktus.memeexchange.FeedPart.FeedFragment;
 import ru.timuruktus.memeexchange.LoginPart.LoginFragment;
+import ru.timuruktus.memeexchange.NewPostPart.NewPostFragment;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.RegisterPart.RegisterFragment;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -65,6 +67,8 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
                     return LoginFragment.getInstance();
                 case REGISTER_FRAGMENT_TAG:
                     return RegisterFragment.getInstance();
+                case NEW_POST_FRAGMENT_TAG:
+                    return NewPostFragment.getInstance();
                 default:
                     throw new RuntimeException("Unknown screen key!");
             }
@@ -73,7 +77,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
         @Override
         protected void setupFragmentTransactionAnimation(Command command, Fragment currentFragment, Fragment nextFragment, FragmentTransaction fragmentTransaction){
             super.setupFragmentTransactionAnimation(command, currentFragment, nextFragment, fragmentTransaction);
-            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+//            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
 
         @Override
@@ -125,6 +129,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
     public void fragmentOpenListener(OpenFragment event){
         String tag = event.getFragmentTag();
         refreshAllMenuIcons();
+        Log.d(TESTING_TAG, "fragmentOpenListener() tag = " + tag);
         switch(tag){
             case FEED_FRAGMENT_TAG:
                 menuTabs.setVisibility(VISIBLE);
@@ -143,6 +148,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
             case NEW_POST_FRAGMENT_TAG:
                 menuTabs.setVisibility(VISIBLE);
                 moreImage.setImageResource(R.drawable.ic_menu_more_selected);
+                break;
             default:
                 throw new RuntimeException("Unknown screen key!");
         }
@@ -161,7 +167,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
         if(mainPresenter.getCurrentFragmentTag().equals(FEED_FRAGMENT_TAG)){
             return;
         }
-        MyApp.INSTANCE.getRouter().newRootScreen(FEED_FRAGMENT_TAG);
+        MyApp.INSTANCE.getRouter().backTo(FEED_FRAGMENT_TAG);
     }
 
     @OnClick(R.id.profileImage)
@@ -187,12 +193,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
         return item -> {
             switch(item.getItemId()){
                 case R.id.new_post:
-                    MyApp.INSTANCE.getRouter().newRootScreen(NEW_POST_FRAGMENT_TAG);
-//                    UCrop.of(sourceUri, destinationUri)
-//                            .withAspectRatio(1, 1)
-//                            .withMaxResultSize(500, 500)
-//                            .start(context);
-                    // TODO: Open NewPostFragment
+                    MyApp.INSTANCE.getRouter().navigateTo(NEW_POST_FRAGMENT_TAG);
                     return true;
                 case R.id.settings:
                     // TODO: Open SettingsFragment

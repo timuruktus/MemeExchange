@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appolica.flubber.AnimationBody;
 import com.appolica.flubber.Flubber;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -33,6 +36,9 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import ru.timuruktus.memeexchange.Events.OpenFragment;
 import ru.timuruktus.memeexchange.R;
+import ru.timuruktus.memeexchange.Utils.Animation.AnimationAction;
+import ru.timuruktus.memeexchange.Utils.Animation.AnimationComposer;
+import ru.timuruktus.memeexchange.Utils.Animation.DefaultAnimationComposer;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
@@ -129,23 +135,30 @@ public class LoginFragment extends MvpAppCompatFragment implements ILoginView{
 
     @Override
     public void startAnimations(){
-        // for Cloud
-        Flubber.with()
+
+        AnimationComposer animationComposer = new DefaultAnimationComposer();
+        AnimationBody.Builder builder = Flubber.with()
                 .animation(Flubber.AnimationPreset.FADE_IN_LEFT)
                 .interpolator(Flubber.Curve.BZR_EASE_OUT_SINE)
                 .force(0.5f)
-                .duration(2000)
-                .createFor(happyCloud)
-                .start();
+                .duration(2000);
+        animationComposer.addAnimation(new AnimationAction(){
+            @Override
+            public void executeAction(){
+                // for Cloud
+                builder.createFor(happyCloud)
+                        .start();
+                builder.animation(Flubber.AnimationPreset.FADE_IN_RIGHT)
+                        .createFor(memeExchange)
+                        .start();
+            }
 
-        // for app name
-        Flubber.with()
-                .animation(Flubber.AnimationPreset.FADE_IN_RIGHT)
-                .interpolator(Flubber.Curve.BZR_EASE_OUT_SINE)
-                .force(0.5f)
-                .duration(2000)
-                .createFor(memeExchange)
-                .start();
+            @Override
+            public void setDelay(){
+
+            }
+        });
+        animationComposer.start();
 
     }
 

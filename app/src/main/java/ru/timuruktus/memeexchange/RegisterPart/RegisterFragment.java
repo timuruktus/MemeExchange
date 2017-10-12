@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -22,7 +22,10 @@ import com.appolica.flubber.Flubber;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -32,15 +35,19 @@ import butterknife.Unbinder;
 import ru.timuruktus.memeexchange.Events.OpenFragment;
 import ru.timuruktus.memeexchange.MainPart.MyApp;
 import ru.timuruktus.memeexchange.R;
+import ru.timuruktus.memeexchange.Utils.Animation.AnimationAction;
+import ru.timuruktus.memeexchange.Utils.Animation.AnimationComposer;
+import ru.timuruktus.memeexchange.Utils.Animation.DefaultAnimationComposer;
+import ru.timuruktus.memeexchange.Utils.Animation.ExecuteNextAfterEndListener;
 
-import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
-import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.REGISTER_FRAGMENT_TAG;
+import static ru.timuruktus.memeexchange.Utils.Animation.DefaultAnimationComposer.START_NEW_AFTER_END;
 
 public class RegisterFragment extends MvpAppCompatFragment implements IRegisterView{
 
     @InjectPresenter
-    public RegisterPresenter registerPresenter;
+    public RegisterPresenter presenter;
     Unbinder unbinder;
     @BindView(R.id.loginEditText) EditText loginEditText;
     @BindView(R.id.passwordEditText) EditText passwordEditText;
@@ -60,6 +67,9 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
 
     private Context context;
     public final static String REGISTER_TAG = "registerTag";
+    protected static final int APPEAR_TIME = 1000; //ms
+    private AnimationComposer animationComposer = new DefaultAnimationComposer();
+
 
     public static RegisterFragment getInstance(){
         return new RegisterFragment();
@@ -72,7 +82,7 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
                 R.layout.register_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         context = view.getContext();
-        registerPresenter.onCreateView();
+        presenter.onCreateView();
         EventBus.getDefault().post(new OpenFragment(REGISTER_FRAGMENT_TAG));
         return view;
     }
@@ -89,7 +99,7 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
         String login = loginEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         String email = emailEditText.getText().toString();
-        registerPresenter.onRegisterClick(login, password, email);
+        presenter.onRegisterClick(login, password, email);
         hideKeyboard();
     }
 
@@ -130,78 +140,97 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
         Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onRegisterSuccess(){
+        animationComposer.start();
+    }
 
     @Override
-    public void showDoneView(){
-        Animator appearAnimation = Flubber.with()
-                .animation(Flubber.AnimationPreset.FADE_IN)
-                .duration(1000)
-                .createFor(doneLayout);
-
-        appearAnimation.addListener(getAppearAnimationListener());
-        appearAnimation.start();
-
-    }
-
-    private Animator.AnimatorListener getAppearAnimationListener(){
-        return new Animator.AnimatorListener(){
+    public void buildAnimations(){
+        animationComposer.addAnimation(new AnimationAction(){
             @Override
-            public void onAnimationStart(Animator animation){
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation){
-                doneView.setAlpha(1f);
-                doneView.setSpeed(0.7f);
-                doneView.playAnimation();
-                doneView.addAnimatorListener(getDoneAnimationListener());
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation){
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation){
-
-            }
-        };
-    }
-
-    private Animator.AnimatorListener getDoneAnimationListener(){
-        return new Animator.AnimatorListener(){
-            @Override
-            public void onAnimationStart(Animator animation){
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation){
+            public void executeAction() throws NullPointerException{
+                if(doneLayout == null){
+                    subject.onAnimationEnded(this);
+                    return;
+                }
                 Animator appearAnimation = Flubber.with()
-                        .animation(Flubber.AnimationPreset.FADE_OUT)
-                        .duration(500)
-                        .createFor(doneView);
+                        .animation(Flubber.AnimationPreset.FADE_IN)
+                        .duration(APPEAR_TIME)
+                        .createFor(doneLayout);
                 appearAnimation.start();
-                final Handler handler = new Handler();
-                final Runnable task = () -> {
-                    MyApp.INSTANCE.getRouter().backTo(null);
-                    Toast.makeText(context, R.string.confirm_email, Toast.LENGTH_SHORT).show();
-                };
-                handler.postDelayed(task, 500);
+                Log.d(TESTING_TAG, "executeAction()1 in RegisterFragment");
+                appearAnimation.addListener(new ExecuteNextAfterEndListener(animationComposer, this));
             }
 
             @Override
-            public void onAnimationCancel(Animator animation){
+            public void setDelay(){
+                delay = START_NEW_AFTER_END;
+            }
 
+        });
+
+        animationComposer.addAnimation(new AnimationAction(){
+            @Override
+            public void executeAction() throws NullPointerException{
+                if(doneView == null){
+                    subject.onAnimationEnded(this);
+                    return;
+                }
+                    doneView.setAlpha(1f);
+                    doneView.setSpeed(0.7f);
+                    doneView.playAnimation();
+                    Log.d(TESTING_TAG, "executeAction()2 in RegisterFragment");
+                    doneView.addAnimatorListener(new ExecuteNextAfterEndListener(animationComposer, this));
             }
 
             @Override
-            public void onAnimationRepeat(Animator animation){
+            public void setDelay(){
+                delay = 100;
+            }
+        });
+
+        animationComposer.addAnimation(new AnimationAction(){
+
+            @Override
+            public void executeAction() throws NullPointerException{
+                if(doneView == null){
+                    subject.onAnimationEnded(this);
+                    return;
+                }
+                    Animator appearAnimation = Flubber.with()
+                            .animation(Flubber.AnimationPreset.FADE_OUT)
+                            .duration(500)
+                            .createFor(doneView);
+                    appearAnimation.start();
+                    Log.d(TESTING_TAG, "executeAction()3 in RegisterFragment");
+                    appearAnimation.addListener(new ExecuteNextAfterEndListener(animationComposer, this));
+            }
+
+            @Override
+            public void setDelay(){
+                delay = 100;
+            }
+
+        });
+
+        animationComposer.addAnimation(new AnimationAction(){
+            @Override
+            public void executeAction() throws NullPointerException{
+                MyApp.INSTANCE.getRouter().backTo(null);
+                Toast.makeText(context, R.string.confirm_email, Toast.LENGTH_SHORT).show();
+                Log.d(TESTING_TAG, "executeAction()4 in RegisterFragment");
+            }
+
+            @Override
+            public void setDelay(){
 
             }
-        };
+        });
+
     }
+
+
 
     @Override
     public void showLoadingIndicator(boolean show){

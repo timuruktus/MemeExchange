@@ -179,5 +179,13 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
         return posts;
     }
 
+    @Override
+    public void onResume(){
+        ArrayList<RecyclerItem> posts = getNewestPosts();
+        if(posts != null && posts.size() != 0){
+            getViewState().showNewPosts(getNewestPosts());
+        }
+    }
+
 
 }

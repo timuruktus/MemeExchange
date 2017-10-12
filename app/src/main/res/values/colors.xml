@@ -10,8 +10,9 @@
     <color name="textColorLight">#fdfdfd</color>
     <color name="brightGray">#f1f1f1</color>
     <!--MAIN COLORS START-->
-    <color name="green">#2cc990</color>
+    <color name="green">#3dd69e</color>
     <color name="blue">#2c82c9</color>
     <!--MAIN COLORS END-->
-    <color name="red">#e22211</color>
+    <color name="red">#d24437</color>
+    <color name="transparentGray">#1c454545</color>
 </resources>

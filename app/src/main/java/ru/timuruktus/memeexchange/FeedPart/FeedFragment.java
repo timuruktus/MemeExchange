@@ -64,8 +64,8 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     private Context context;
     private static final String RECYCLER_VIEW_STATE = "recyclerViewState";
     private FeedAdapter feedAdapter;
-    Parcelable layoutManagerState;
-    private LinearLayoutManager llm = new LinearLayoutManager(context);
+    private Parcelable layoutManagerState;
+    private LinearLayoutManager llm;
 
 
 
@@ -81,7 +81,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-
+        Log.d(TESTING_TAG, "onCreateView(in FeedFragment)");
         View view = inflater.inflate(
                 R.layout.feed_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -92,6 +92,8 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         String newUser = getArguments().getString(BUNDLE_AUTHOR);
         feedPresenter.onCreateView(newTag, newUser);
         EventBus.getDefault().post(new OpenFragment(newTag));
+
+
         return view;
 
     }
@@ -122,6 +124,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Override
     public void showNewPosts(ArrayList<RecyclerItem> data){
         showPosts(data);
+        Log.d(TESTING_TAG, "showNewPosts(in FeedFragment");
     }
 
     @Override
@@ -130,6 +133,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     }
 
     private void showPosts(ArrayList<RecyclerItem> data){
+        Log.d(TESTING_TAG, "showPosts(in FeedFragment");
         swipeContainer.setRefreshing(false);
         swipeContainer.setVisibility(VISIBLE);
         swipeContainer.setOnRefreshListener(this);
@@ -138,7 +142,13 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         recyclerView.setAdapter(feedAdapter);
         recyclerView.clearOnScrollListeners();
         recyclerView.addOnScrollListener(getRecyclerViewScrollListener());
-        recyclerView.setLayoutManager(llm);
+        llm = new LinearLayoutManager(context);
+        if(layoutManagerState != null){
+            llm.onRestoreInstanceState(layoutManagerState);
+        }
+        if(recyclerView.getLayoutManager() == null){
+            recyclerView.setLayoutManager(llm);
+        }
     }
 
 
@@ -204,14 +214,16 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         } catch(Exception ex){
             ex.printStackTrace();
         }
+
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState){
         super.onViewStateRestored(savedInstanceState);
-        //If we catch an exception, it means that recyclerView is not yet created.
+        Log.d(TESTING_TAG, "onViewStateRestored(in FeedFragment");
         try{
             layoutManagerState = savedInstanceState.getParcelable(RECYCLER_VIEW_STATE);
+            Log.d(TESTING_TAG, "onViewStateRestored() inside2");
         } catch(Exception ex){
             ex.printStackTrace();
         }
@@ -220,17 +232,21 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Override
     public void onResume(){
         super.onResume();
-        if(layoutManagerState != null &&
-                recyclerView != null &&
-                recyclerView.getLayoutManager() != null){
+        Log.d(TESTING_TAG, "onResume(in FeedFragment");
+        feedPresenter.onResume();
+        if(layoutManagerState != null && recyclerView.getLayoutManager() != null){
+            Log.d(TESTING_TAG, "onResume() inside");
             recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerState);
         }
+
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        if(layoutManagerState != null && recyclerView != null){
+        Log.d(TESTING_TAG, "onPause(in FeedFragment");
+        if(recyclerView != null){
+            Log.d(TESTING_TAG, "onPause() inside");
             layoutManagerState = recyclerView.getLayoutManager().onSaveInstanceState();
         }
     }

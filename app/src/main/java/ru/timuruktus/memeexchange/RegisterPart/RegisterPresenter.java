@@ -1,10 +1,13 @@
 package ru.timuruktus.memeexchange.RegisterPart;
 
 
+import android.animation.Animator;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+
 
 import ru.timuruktus.memeexchange.LoginPart.LoginFragment;
 import ru.timuruktus.memeexchange.MainPart.MainPresenter;
@@ -15,6 +18,7 @@ import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.FieldsValidator;
 import rx.Observer;
 
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
 
 @InjectViewState
@@ -41,13 +45,15 @@ public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements I
         dataManager.registerUser(login, password, email).subscribe(new Observer<User>(){
             @Override
             public void onCompleted(){
+                Log.d(TESTING_TAG, "onRegisterClick.onCompleted() in RegisterPresenter");
                 getViewState().showLoadingIndicator(false);
-                getViewState().showDoneView();
-                //TODO: save settings
+                getViewState().buildAnimations();
+                getViewState().onRegisterSuccess();
             }
 
             @Override
             public void onError(Throwable e){
+                Log.d(TESTING_TAG, "onRegisterClick.onError() in RegisterPresenter");
                 getViewState().showLoadingIndicator(false);
                 String message = e.getMessage();
                 e.printStackTrace();
@@ -64,7 +70,8 @@ public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements I
 
             @Override
             public void onNext(User user){
-
+                Log.d(TESTING_TAG, "onRegisterClick.onNext() in RegisterPresenter");
+                //TODO: save settings
             }
         });
 
@@ -85,4 +92,7 @@ public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements I
         }
         return true;
     }
+
+
+
 }

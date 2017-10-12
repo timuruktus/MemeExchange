@@ -1,6 +1,7 @@
 package ru.timuruktus.memeexchange.FeedPart;
 
 import android.app.Activity;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.DragEvent;
@@ -128,6 +129,7 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         @BindView(R.id.moreButton) ImageView moreButton;
         @BindView(R.id.likeButton) ImageView likeButton;
         @BindView(R.id.textContainer) RelativeLayout textContainer;
+        @BindView(R.id.actionsContainer) RelativeLayout actionsContainer;
 
         private View view;
         private AdapterEventListener adapterEventListener;
@@ -210,11 +212,13 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             meme.setUserLiked(!meme.isUserLiked());
 
             DatabaseHelper.getInstance().updateMeme(meme);
+
             Flubber.with()
                     .animation(Flubber.AnimationPreset.SWING)
                     .duration(500)
                     .createFor(likeButton)
                     .start();
+
             adapterEventListener.onLiked(meme);
             setLikeButtonImage(meme);
             configureAuthorContainer(meme);
