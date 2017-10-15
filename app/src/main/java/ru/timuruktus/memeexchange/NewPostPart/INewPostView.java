@@ -1,5 +1,8 @@
 package ru.timuruktus.memeexchange.NewPostPart;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy;
@@ -14,9 +17,6 @@ public interface INewPostView extends MvpView{
 
     @StateStrategyType(OneExecutionStateStrategy.class)
     void clearTextLabels();
-
-    @StateStrategyType(OneExecutionStateStrategy.class)
-    void clearImage();
 
     @StateStrategyType(OneExecutionStateStrategy.class)
     void showLoading(boolean show);
@@ -36,7 +36,15 @@ public interface INewPostView extends MvpView{
     @StateStrategyType(OneExecutionStateStrategy.class)
     void removeAllTags();
 
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void launchUCropActivity(Uri selectedImage);
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void clearMemeTextFocuses();
 
     @StateStrategyType(SingleStateStrategy.class)
     void showAllTags(ArrayList<Label> tags);
+
+    @StateStrategyType(SingleStateStrategy.class)
+    void showImage(Uri uri);
 }

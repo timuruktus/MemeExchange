@@ -58,7 +58,6 @@ public class LoginPresenter extends MvpPresenter<ILoginView> implements ILoginPr
                 e.printStackTrace();
                 getViewState().showLoadingIndicator(false);
                 if(e.getMessage().equals(WRONG_LOGIN_OR_PASSWORD_MESSAGE)){
-                    getViewState().clearLoginField();
                     getViewState().clearPasswordField();
                     getViewState().showWrongDataError();
                 }else if(e.getMessage().equals(MAYBE_EMAIL_NOT_CONFIRMED)){

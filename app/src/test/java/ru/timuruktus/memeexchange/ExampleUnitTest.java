@@ -30,6 +30,12 @@ public class ExampleUnitTest {
     }
 
     @Test
+    public void byteTest() throws Exception{
+        byte number = (byte) 12323;
+        System.out.println(number);
+    }
+
+    @Test
     public void testApiCurrentTime() throws Exception {
         Retrofit backendlessRetrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)

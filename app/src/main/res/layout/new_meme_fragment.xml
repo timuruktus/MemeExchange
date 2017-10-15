@@ -19,57 +19,58 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/memeImageLayout"
-            android:layout_width="0dp"
-            android:layout_height="390dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintDimensionRatio="w,1:1"
+            android:layout_width="360dp"
+            android:layout_height="360dp"
+            android:layout_marginTop="244dp"
+            android:visibility="visible"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/backTextView">
+            app:layout_constraintTop_toBottomOf="@+id/backTextView"
+            app:layout_constraintHorizontal_bias="0.0">
 
             <ImageView
                 android:id="@+id/memeImage"
-                android:layout_width="390dp"
-                android:layout_height="390dp"
-                app:layout_constraintHorizontal_bias="0.444"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@color/gray"
-                tools:layout_editor_absoluteY="0dp"/>
+                />
 
             <ImageView
                 android:id="@+id/topTextSettings"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_marginTop="0dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@drawable/settings_top_icon_background"
                 android:padding="5dp"
                 android:visibility="gone"
+                app:layout_constraintRight_toRightOf="@+id/topMemeText"
                 app:layout_constraintTop_toBottomOf="@+id/topMemeText"
-                autolabel:srcCompat="@drawable/ic_settings"
-                tools:layout_editor_absoluteX="321dp"/>
+                autolabel:srcCompat="@drawable/ic_settings"/>
 
             <ImageView
                 android:id="@+id/bottomTextSettings"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_marginBottom="0dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@drawable/settings_bottom_icon_background"
                 android:padding="5dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/bottomMemeText"
-                app:layout_constraintVertical_bias="1.0"
-                autolabel:layout_constraintTop_toBottomOf="@+id/topMemeText"
-                autolabel:srcCompat="@drawable/ic_settings"
-                tools:layout_editor_absoluteX="320dp"/>
+                app:layout_constraintRight_toRightOf="@+id/bottomMemeText"
+                autolabel:srcCompat="@drawable/ic_settings"/>
 
             <EditText
                 android:id="@+id/topMemeText"
                 fontPath="fonts/Impact.ttf"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/transparentGray"
@@ -90,9 +91,11 @@
                 android:id="@+id/bottomMemeText"
                 fontPath="fonts/Impact.ttf"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:background="@color/transparentGray"
                 android:ems="10"
@@ -106,8 +109,7 @@
                 android:textSize="52sp"
                 app:layout_constraintBottom_toBottomOf="@+id/memeImage"
                 app:layout_constraintLeft_toLeftOf="@+id/memeImage"
-                app:layout_constraintRight_toRightOf="@+id/memeImage"
-                />
+                app:layout_constraintRight_toRightOf="@+id/memeImage"/>
         </android.support.constraint.ConstraintLayout>
 
         <TextView
@@ -190,13 +192,20 @@
             autolabel:icon_cross="@drawable/cross"
             autolabel:max_labels="20"
             autolabel:show_cross="true"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="1040dp"/>
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/addTagsHint"
+            android:layout_marginLeft="24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginRight="24dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"/>
 
         <Button
             android:id="@+id/addTagButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:backgroundTint="@color/blue"
             android:text="@string/add_tag"
@@ -210,13 +219,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
             android:ems="10"
             android:hint="@string/tag"
             android:inputType="textPersonName"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/addTagButton"
-            app:layout_constraintTop_toBottomOf="@+id/addTagsHint"/>
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/label_view"/>
 
         <TextView
             android:id="@+id/sendMemeButton"

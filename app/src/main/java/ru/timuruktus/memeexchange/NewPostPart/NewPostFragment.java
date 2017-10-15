@@ -32,6 +32,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
+import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,6 +71,9 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
     @BindView(R.id.topTextSettings) ImageView topTextSettings;
     @BindView(R.id.bottomTextSettings) ImageView bottomTextSettings;
     @BindView(R.id.chooseImageButton) Button chooseImageButton;
+    @BindColor(R.color.colorPrimary) int primaryColor;
+    @BindColor(R.color.colorAccent) int accentColor;
+
     private Context context;
     @InjectPresenter
     public NewPostPresenter presenter;
@@ -80,6 +84,7 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
     public static final int PERMISSION_REQUEST_CODE = 1;
     private View rootView;
     private Bitmap memeBitmap;
+    UCrop.Options ucropOptions;
 
     public static NewPostFragment getInstance(){
         return new NewPostFragment();
@@ -93,12 +98,24 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
         context = rootView.getContext();
         EventBus.getDefault().post(new OpenFragment(NEW_POST_FRAGMENT_TAG));
         setListeners();
+        configureUcropOptions();
         return rootView;
+    }
+
+    private void configureUcropOptions(){
+        ucropOptions = new UCrop.Options();
+        ucropOptions.setActiveWidgetColor(accentColor);
+        ucropOptions.setStatusBarColor(accentColor);
+        ucropOptions.setToolbarColor(accentColor);
+        ucropOptions.setToolbarTitle(" ");
     }
 
 
     private void setListeners(){
         topMemeText.setOnFocusChangeListener((view, hasFocus) -> {
+            if(view == null || topTextSettings == null){
+                return;
+            }
             if(hasFocus){
                 topTextSettings.setVisibility(View.VISIBLE);
             }else{
@@ -107,10 +124,13 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
         });
 
         bottomMemeText.setOnFocusChangeListener((view, hasFocus) -> {
+            if(view == null || bottomTextSettings == null){
+                return;
+            }
             if(hasFocus){
-                topTextSettings.setVisibility(View.VISIBLE);
+                bottomTextSettings.setVisibility(View.VISIBLE);
             }else{
-                topTextSettings.setVisibility(View.GONE);
+                bottomTextSettings.setVisibility(View.GONE);
             }
         });
     }
@@ -118,32 +138,7 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        switch(requestCode){
-            case UCrop.REQUEST_CROP:
-                if(resultCode == RESULT_OK){
-                    Uri resultUri = UCrop.getOutput(data);
-                    GlideApp.with(context)
-                            .load(resultUri)
-                            .centerCrop()
-                            .into(memeImage);
-                }else if(resultCode == UCrop.RESULT_ERROR){
-                    final Throwable cropError = UCrop.getError(data);
-                    cropError.printStackTrace();
-                }
-                break;
-
-            case GALLERY_REQUEST:
-                Uri destinationUri = Uri.parse(context.getFilesDir().getAbsolutePath() + "/" + System.currentTimeMillis());
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = data.getData();
-                    UCrop.of(selectedImage, destinationUri)
-                            .withAspectRatio(1, 1)
-                            .start(context, this);
-                }
-
-                break;
-        }
-
+        presenter.onActivityResult(requestCode, resultCode, data);
     }
 
     private boolean checkPermissions(){
@@ -184,7 +179,7 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
     @OnClick(R.id.clearImageButton)
     public void onClearImageButtonClicked(){
         clearTextLabels();
-        clearImage();
+        showImage(null);
 
     }
 
@@ -197,7 +192,7 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
             startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
         }else{
             Snackbar.make(rootView, R.string.grant_permission, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.to_settings, snackbarOnClickListener);
+                    .setAction(R.string.to_settings, snackbarOnClickListener).show();
 //            ActivityCompat.requestPermissions(getActivity(),
 //                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
 //                    PERMISSION_REQUEST_STORAGE);
@@ -239,15 +234,6 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
     }
 
     @Override
-    public void clearImage(){
-        Bitmap bitmap = null;
-        GlideApp.with(context)
-                .load(bitmap)
-                .centerCrop()
-                .into(memeImage);
-    }
-
-    @Override
     public void showLoading(boolean show){
 
     }
@@ -282,12 +268,39 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
     }
 
     @Override
+    public void launchUCropActivity(Uri selectedImage){
+        Uri destinationUri = Uri.parse(context.getFilesDir().getAbsolutePath() + "/" + System.currentTimeMillis());
+
+        UCrop.of(selectedImage, destinationUri)
+                .withAspectRatio(1, 1)
+                .withOptions(ucropOptions)
+                .start(context, this);
+    }
+
+    @Override
+    public void clearMemeTextFocuses(){
+        topMemeText.clearFocus();
+        bottomMemeText.clearFocus();
+    }
+
+
+    @Override
     public void showAllTags(ArrayList<Label> tags){
         removeAllTags();
         for(Label label : tags){
             tagsView.addLabel(label.getText());
         }
 
+    }
+
+    //null if we want to clear image
+    @Override
+    public void showImage(Uri uri){
+        Log.d(TESTING_TAG, "Uri = " + uri);
+        GlideApp.with(context)
+                .load(uri)
+                .centerCrop()
+                .into(memeImage);
     }
 
     @OnClick(R.id.topTextSettings)

@@ -32,6 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import ru.timuruktus.memeexchange.Events.OpenFragment;
+import ru.timuruktus.memeexchange.MainPart.MyApp;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.POJO.RecyclerItem;
 import ru.timuruktus.memeexchange.POJO.User;
@@ -81,7 +82,6 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-        Log.d(TESTING_TAG, "onCreateView(in FeedFragment)");
         View view = inflater.inflate(
                 R.layout.feed_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -133,7 +133,6 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     }
 
     private void showPosts(ArrayList<RecyclerItem> data){
-        Log.d(TESTING_TAG, "showPosts(in FeedFragment");
         swipeContainer.setRefreshing(false);
         swipeContainer.setVisibility(VISIBLE);
         swipeContainer.setOnRefreshListener(this);
@@ -141,7 +140,6 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         feedAdapter = new FeedAdapter(getActivity(), data, this);
         recyclerView.setAdapter(feedAdapter);
         recyclerView.clearOnScrollListeners();
-        recyclerView.addOnScrollListener(getRecyclerViewScrollListener());
         llm = new LinearLayoutManager(context);
         if(layoutManagerState != null){
             llm.onRestoreInstanceState(layoutManagerState);
@@ -149,6 +147,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         if(recyclerView.getLayoutManager() == null){
             recyclerView.setLayoutManager(llm);
         }
+        recyclerView.addOnScrollListener(getRecyclerViewScrollListener((LinearLayoutManager)recyclerView.getLayoutManager()));
     }
 
 
@@ -220,10 +219,8 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState){
         super.onViewStateRestored(savedInstanceState);
-        Log.d(TESTING_TAG, "onViewStateRestored(in FeedFragment");
         try{
             layoutManagerState = savedInstanceState.getParcelable(RECYCLER_VIEW_STATE);
-            Log.d(TESTING_TAG, "onViewStateRestored() inside2");
         } catch(Exception ex){
             ex.printStackTrace();
         }
@@ -232,10 +229,8 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Override
     public void onResume(){
         super.onResume();
-        Log.d(TESTING_TAG, "onResume(in FeedFragment");
         feedPresenter.onResume();
         if(layoutManagerState != null && recyclerView.getLayoutManager() != null){
-            Log.d(TESTING_TAG, "onResume() inside");
             recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerState);
         }
 
@@ -244,24 +239,32 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Override
     public void onPause(){
         super.onPause();
-        Log.d(TESTING_TAG, "onPause(in FeedFragment");
-        if(recyclerView != null){
-            Log.d(TESTING_TAG, "onPause() inside");
-            layoutManagerState = recyclerView.getLayoutManager().onSaveInstanceState();
+        try{
+            if(recyclerView != null && recyclerView.getLayoutManager() != null){
+                layoutManagerState = recyclerView.getLayoutManager().onSaveInstanceState();
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
         }
     }
 
     @Override
     public void onLiked(Meme meme){
-
+        feedPresenter.onMemeLiked(meme);
     }
 
     @Override
     public void onSubscribe(User user){
-
+        feedPresenter.onSubscribe(user);
     }
 
-    public EndlessScrollListener getRecyclerViewScrollListener(){
+    @Override
+    public void onAuthorClicked(User user){
+        MyApp.INSTANCE.getRouter().replaceScreen(FEED_FRAGMENT_TAG, user.getObjectId());
+//        feedPresenter.loadFeed(true, 0, DEFAULT_PAGE_SIZE, user.getObjectId());
+    }
+
+    public EndlessScrollListener getRecyclerViewScrollListener(LinearLayoutManager llm){
         return new EndlessScrollListener(llm){
             @Override
             public void onLoadMore(int offset){

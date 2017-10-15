@@ -2,6 +2,9 @@ package ru.timuruktus.memeexchange.Utils;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
 public abstract class EndlessScrollListener extends RecyclerView.OnScrollListener{
 

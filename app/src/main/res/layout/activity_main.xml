@@ -27,44 +27,54 @@
         <ImageView
             android:id="@+id/newsImage"
             android:layout_width="86dp"
-            android:layout_height="27dp"
-            android:layout_marginTop="9dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="4dp"
+            android:padding="9dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/profileImage"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_menu_news"/>
 
         <ImageView
             android:id="@+id/profileImage"
             android:layout_width="86dp"
-            android:layout_height="27dp"
-            android:layout_marginTop="9dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:padding="9dp"
             app:layout_constraintBottom_toBottomOf="@+id/newsImage"
             app:layout_constraintLeft_toRightOf="@+id/newsImage"
             app:layout_constraintRight_toLeftOf="@+id/exchangeImage"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_menu_my_account"/>
 
         <ImageView
             android:id="@+id/moreImage"
             android:layout_width="86dp"
-            android:layout_height="27dp"
-            android:layout_marginTop="9dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:padding="9dp"
             app:layout_constraintBottom_toBottomOf="@+id/exchangeImage"
             app:layout_constraintLeft_toRightOf="@+id/exchangeImage"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_menu_more"/>
 
         <ImageView
             android:id="@+id/exchangeImage"
             android:layout_width="86dp"
-            android:layout_height="27dp"
-            android:layout_marginTop="9dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:padding="9dp"
             app:layout_constraintBottom_toBottomOf="@+id/profileImage"
             app:layout_constraintLeft_toRightOf="@+id/profileImage"
             app:layout_constraintRight_toLeftOf="@+id/moreImage"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_menu_graphic"/>
 
         <LinearLayout

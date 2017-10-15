@@ -4,13 +4,11 @@ package ru.timuruktus.memeexchange.RegisterPart;
 import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -25,7 +23,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -39,6 +36,7 @@ import ru.timuruktus.memeexchange.Utils.Animation.AnimationAction;
 import ru.timuruktus.memeexchange.Utils.Animation.AnimationComposer;
 import ru.timuruktus.memeexchange.Utils.Animation.DefaultAnimationComposer;
 import ru.timuruktus.memeexchange.Utils.Animation.ExecuteNextAfterEndListener;
+import ru.timuruktus.memeexchange.Utils.WindowMethods;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.REGISTER_FRAGMENT_TAG;
@@ -100,12 +98,7 @@ public class RegisterFragment extends MvpAppCompatFragment implements IRegisterV
         String password = passwordEditText.getText().toString();
         String email = emailEditText.getText().toString();
         presenter.onRegisterClick(login, password, email);
-        hideKeyboard();
-    }
-
-    private void hideKeyboard(){
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().getWindow().getDecorView().getWindowToken(), 0);
+        WindowMethods.hideKeyboard(getActivity());
     }
 
     @Override

@@ -187,5 +187,15 @@ public class FeedPresenter extends MvpPresenter<IFeedView> implements IFeedPrese
         }
     }
 
+    @Override
+    public void onMemeLiked(Meme meme){
+
+    }
+
+    @Override
+    public void onSubscribe(User user){
+
+    }
+
 
 }

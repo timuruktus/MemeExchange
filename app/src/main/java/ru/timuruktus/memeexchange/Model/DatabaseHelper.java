@@ -7,6 +7,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import ru.timuruktus.memeexchange.POJO.Meme;
+import ru.timuruktus.memeexchange.POJO.Queues.NewMemeQueueItem;
 import ru.timuruktus.memeexchange.Utils.NewestMemeComparator;
 import rx.Observable;
 
@@ -24,7 +25,6 @@ public class DatabaseHelper implements IDatabaseHelper{
     @Override
     public void cacheMeme(final Meme meme) throws NullPointerException{
         Realm realm = Realm.getDefaultInstance();
-        Log.d(DEFAULT_TAG, "Meme is cached");
         realm.executeTransaction(bgRealm -> {
             if(getMemesSize() >= MEMES_CACHE_MAX_SIZE){
                 clearOldestMeme();
@@ -141,7 +141,6 @@ public class DatabaseHelper implements IDatabaseHelper{
         Realm realm = Realm.getDefaultInstance();
         List<Meme> memes = realm.copyFromRealm(realm.where(Meme.class).findAll());
         realm.close();
-        Log.d(DEFAULT_TAG, "Cache size is " + memes.size());
         return Observable.from(memes).toList();
     }
 
@@ -155,6 +154,33 @@ public class DatabaseHelper implements IDatabaseHelper{
         }
         realm.close();
         return Observable.just(meme);
+    }
+
+    @Override
+    public void updateMemeQueue(NewMemeQueueItem queue){
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(queue));
+        realm.close();
+    }
+
+    @Override
+    public void removeMemeQueue(NewMemeQueueItem queue){
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction(){
+            @Override
+            public void execute(Realm realm){
+                realm.where(NewMemeQueueItem.class).equalTo("objectId", queue.getObjectId()).findFirst().deleteFromRealm();
+            }
+        });
+        realm.close();
+    }
+
+    @Override
+    public Observable<List<NewMemeQueueItem>> getAllMemeQueues(){
+        Realm realm = Realm.getDefaultInstance();
+        List<NewMemeQueueItem> queues = realm.copyFromRealm(realm.where(NewMemeQueueItem.class).findAll());
+        realm.close();
+        return Observable.from(queues).toList();
     }
 
 

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.POJO.RecyclerItem;
+import ru.timuruktus.memeexchange.POJO.User;
 
 public interface IFeedPresenter {
 
@@ -21,5 +22,7 @@ public interface IFeedPresenter {
     ArrayList<RecyclerItem> getNewestPosts();
 
     void onResume();
+    void onMemeLiked(Meme meme);
+    void onSubscribe(User user);
 
 }

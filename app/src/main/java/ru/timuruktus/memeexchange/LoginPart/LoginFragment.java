@@ -39,6 +39,7 @@ import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.Animation.AnimationAction;
 import ru.timuruktus.memeexchange.Utils.Animation.AnimationComposer;
 import ru.timuruktus.memeexchange.Utils.Animation.DefaultAnimationComposer;
+import ru.timuruktus.memeexchange.Utils.WindowMethods;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
@@ -119,7 +120,7 @@ public class LoginFragment extends MvpAppCompatFragment implements ILoginView{
         String login = loginEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         loginPresenter.onJoinClick(login, password);
-        hideKeyboard();
+        WindowMethods.hideKeyboard(getActivity());
     }
 
     @OnClick(R.id.registerButton)
@@ -127,10 +128,7 @@ public class LoginFragment extends MvpAppCompatFragment implements ILoginView{
         loginPresenter.onRegisterClick();
     }
 
-    private void hideKeyboard(){
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().getWindow().getDecorView().getWindowToken(), 0);
-    }
+
 
 
     @Override

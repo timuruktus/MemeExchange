@@ -64,6 +64,8 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         void onLiked(Meme meme);
 
         void onSubscribe(User user);
+
+        void onAuthorClicked(User user);
     }
 
     @Override
@@ -153,11 +155,14 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
 
         private void configureAuthorContainer(Meme meme){
+            User author = meme.getAuthor();
             if(FieldsValidator.isStringEmpty(meme.getAuthor().getName())){
-                authorName.setText(meme.getAuthor().getLogin());
+                authorName.setText(author.getLogin());
             }else{
-                authorName.setText(meme.getAuthor().getName());
+                authorName.setText(author.getName());
             }
+            authorName.setOnClickListener(v -> adapterEventListener.onAuthorClicked(author));
+            authorImage.setOnClickListener(v -> adapterEventListener.onAuthorClicked(author));
             String likes = view.getResources().getQuantityString(R.plurals.likes,
                     (int) meme.getLikes(), meme.getLikes());
             likesCount.setText(likes);

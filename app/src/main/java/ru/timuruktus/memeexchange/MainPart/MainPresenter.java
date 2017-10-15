@@ -19,7 +19,7 @@ import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 @InjectViewState
 public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainPresenter {
 
-    public static final String FEED_FRAGMENT_TAG = "feedBackStackTag";
+    public static final String FEED_FRAGMENT_TAG = "feedTag";
     public static final String LOGIN_FRAGMENT_TAG = "loginTag";
     public static final String REGISTER_FRAGMENT_TAG = "registerTag";
     public static final String NEWEST_FEED_FRAGMENT_TAG = "newestFeedTag";
