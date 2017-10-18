@@ -12,6 +12,8 @@ import ru.timuruktus.memeexchange.Utils.ISettings;
 import ru.timuruktus.memeexchange.Utils.Settings;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
+import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
+
 public class MyApp extends Application {
 
     public static MyApp INSTANCE;
@@ -31,6 +33,12 @@ public class MyApp extends Application {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );
+    }
+
+    public void logout(){
+        getSettings().setUserObjectId(null);
+        getSettings().setUserToken(null);
+        getRouter().newRootScreen(LOGIN_FRAGMENT_TAG);
     }
 
     public NavigatorHolder getNavigatorHolder() {

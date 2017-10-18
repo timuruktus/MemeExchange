@@ -65,4 +65,12 @@
     <string name="grant_permission">Предоставьте разрешения!</string>
     <string name="success_sending">Мем успешно загружен!</string>
     <string name="too_many_tags">Слишком много тэгов!</string>
+
+    <!--MEME TEXT BOTTOM SHEET-->
+    <string name="text_size">Размер текста</string>
+    <string name="text_settings">Настройки текста</string>
+    <string name="text_centering">Центрирование текста</string>
+    <string name="text_shadow_size">Величина тени</string>
+
 </resources>
+

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="@string/text_settings"
+        android:textColor="@color/textColor"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:layout_editor_absoluteY="16dp"/>
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="344dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:alpha="0.5"
+        android:background="@color/gray"
+        app:layout_constraintTop_toBottomOf="@+id/dialogTitle"
+        tools:layout_editor_absoluteX="8dp"/>
+
+    <TextView
+        android:id="@+id/textSize"
+        fontPath="fonts/Roboto-Bold.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/text_size"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/divider1"
+        tools:layout_editor_absoluteX="16dp"/>
+
+    <SeekBar
+        android:id="@+id/textSizeSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:max="60"
+        android:progress="0"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="@+id/textSize"
+        app:layout_constraintRight_toLeftOf="@+id/currentSize"
+        app:layout_constraintTop_toBottomOf="@+id/textSize"/>
+
+    <TextView
+        android:id="@+id/currentSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="93dp"/>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="344dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:alpha="0.5"
+        android:background="@color/gray"
+        app:layout_constraintTop_toBottomOf="@+id/textSizeSeekBar"
+        tools:layout_editor_absoluteX="8dp"/>
+
+    <TextView
+        android:id="@+id/textCentering"
+        fontPath="fonts/Roboto-Bold.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/text_centering"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@+id/textSize"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"/>
+
+    <SeekBar
+        android:id="@+id/centeringSeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="10dp"
+        android:max="2"
+        android:progress="0"
+        app:layout_constraintLeft_toLeftOf="@+id/textCentering"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textCentering"/>
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="344dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:alpha="0.5"
+        android:background="@color/gray"
+        app:layout_constraintTop_toBottomOf="@+id/centeringSeekBar"
+        tools:layout_editor_absoluteX="8dp"/>
+
+    <TextView
+        android:id="@+id/textShadowSize"
+        fontPath="fonts/Roboto-Bold.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/text_shadow_size"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@+id/textCentering"
+        app:layout_constraintTop_toBottomOf="@+id/divider3"/>
+
+    <SeekBar
+        android:id="@+id/shadowSizeSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="7dp"
+        android:max="50"
+        android:progress="0"
+        app:layout_constraintLeft_toLeftOf="@+id/textShadowSize"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textShadowSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginBottom="16dp"/>
+
+</android.support.constraint.ConstraintLayout>
