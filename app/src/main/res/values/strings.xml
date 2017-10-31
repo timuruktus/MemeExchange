@@ -21,6 +21,7 @@
     <string name="back">Назад</string>
     <string name="send">Отправить</string>
     <string name="tag">Тэг</string>
+    <string name="ready">Готово</string>
 
     <string name="not_yet_registered">Ещё не зарегистрированы? \nНе может быть!</string>
 

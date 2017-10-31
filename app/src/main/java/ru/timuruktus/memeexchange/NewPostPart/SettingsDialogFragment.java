@@ -8,11 +8,19 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 
+import butterknife.ButterKnife;
 import ru.timuruktus.memeexchange.R;
 
 public class SettingsDialogFragment extends BottomSheetDialogFragment{
+
+    private SettingsDialogFragmentOptions options;
+    public SettingsDialogFragmentListener listener;
+    private SeekBar textSizeSeekBar;
+    private SeekBar centeringSeekBar;
+    private SeekBar shadowSizeSeekBar;
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
         @Override
@@ -32,8 +40,7 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
         this.options = options;
     }
 
-    private SettingsDialogFragmentOptions options;
-
+    public void setListener(SettingsDialogFragmentListener listener){ this.listener = listener;}
 
     @Override
     public void setupDialog(Dialog dialog, int style) {
@@ -42,9 +49,15 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
         dialog.setContentView(contentView);
 
 
-        SeekBar textSizeSeekBar = contentView.findViewById(R.id.textSizeSeekBar);
-        SeekBar centeringSeekBar = contentView.findViewById(R.id.centeringSeekBar);
-        SeekBar shadowSizeSeekBar = contentView.findViewById(R.id.shadowSizeSeekBar);
+        textSizeSeekBar = contentView.findViewById(R.id.textSizeSeekBar);
+        centeringSeekBar = contentView.findViewById(R.id.centeringSeekBar);
+        shadowSizeSeekBar = contentView.findViewById(R.id.shadowSizeSeekBar);
+        Button readyButton = contentView.findViewById(R.id.readyButton);
+        readyButton.setOnClickListener(v -> listener.onOptionsChanged(new SettingsDialogFragmentOptions(
+                textSizeSeekBar.getProgress(),
+                centeringSeekBar.getProgress(),
+                shadowSizeSeekBar.getProgress())));
+
         configureAllSeekBars();
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
@@ -56,7 +69,7 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
     }
 
     private void configureAllSeekBars(){
-        int gravity;
+        int gravity = 0;
         switch(options.currentGravity){
             case Gravity.LEFT:
                 gravity = 0;
@@ -68,19 +81,26 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
                 gravity = 2;
                 break;
         }
-        //TODO
+        centeringSeekBar.setProgress(gravity);
+        textSizeSeekBar.setProgress(options.currentSize);
+        shadowSizeSeekBar.setProgress(options.currentShadow);
 
     }
 
     public class SettingsDialogFragmentOptions{
-        protected float currentSize;
+        protected int currentSize;
         protected int currentGravity;
-        protected float currentShadow;
+        protected int currentShadow;
 
-        public SettingsDialogFragmentOptions(float currentSize, int currentGravity, float currentShadow){
+        public SettingsDialogFragmentOptions(int currentSize, int currentGravity, int currentShadow){
             this.currentSize = currentSize;
             this.currentGravity = currentGravity;
             this.currentShadow = currentShadow;
         }
+    }
+
+    public interface SettingsDialogFragmentListener{
+
+        void onOptionsChanged(SettingsDialogFragmentOptions options);
     }
 }

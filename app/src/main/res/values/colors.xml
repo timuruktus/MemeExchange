@@ -15,4 +15,6 @@
     <!--MAIN COLORS END-->
     <color name="red">#d24437</color>
     <color name="transparentGray">#1c454545</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
 </resources>

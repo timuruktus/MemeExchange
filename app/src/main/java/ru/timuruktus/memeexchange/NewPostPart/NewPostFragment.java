@@ -48,7 +48,7 @@ import static android.graphics.Color.TRANSPARENT;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.NEW_POST_FRAGMENT_TAG;
 
-public class NewPostFragment extends MvpAppCompatFragment implements INewPostView{
+public class NewPostFragment extends MvpAppCompatFragment implements INewPostView, SettingsDialogFragment.SettingsDialogFragmentListener{
 
 
     @BindView(R.id.memeImage) ImageView memeImage;
@@ -310,6 +310,11 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
 
     @OnClick(R.id.bottomTextSettings)
     public void onBottomTextSettingsClicked(){
+
+    }
+
+    @Override
+    public void onOptionsChanged(SettingsDialogFragment.SettingsDialogFragmentOptions options){
 
     }
 }
