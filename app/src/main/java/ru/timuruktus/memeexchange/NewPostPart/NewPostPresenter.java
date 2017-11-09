@@ -3,6 +3,7 @@ package ru.timuruktus.memeexchange.NewPostPart;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -11,6 +12,7 @@ import com.yalantis.ucrop.UCrop;
 import ru.timuruktus.memeexchange.MainPart.GlideApp;
 
 import static android.app.Activity.RESULT_OK;
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.NewPostPart.NewPostFragment.GALLERY_REQUEST;
 
 @InjectViewState
@@ -50,4 +52,17 @@ public class NewPostPresenter extends MvpPresenter<INewPostView> implements INew
     public void onSendMemeButtonClicked(){
 
     }
+
+    @Override
+    public void onTextSettingsClicked(int gravity, int textSize, int textShadow){
+        Log.d(TESTING_TAG, "onTextSettingsClicked()");
+        SettingsDialogFragment dialog = new SettingsDialogFragment();
+        SettingsDialogFragmentOptions options =
+                new SettingsDialogFragmentOptions(textSize, gravity, textShadow);
+        dialog.setOptions(options);
+        getViewState().showBottomDialog(dialog);
+    }
+
+
+
 }

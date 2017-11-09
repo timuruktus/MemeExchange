@@ -42,6 +42,7 @@ import ru.timuruktus.memeexchange.Events.OpenFragment;
 import ru.timuruktus.memeexchange.MainPart.GlideApp;
 import ru.timuruktus.memeexchange.MainPart.MyApp;
 import ru.timuruktus.memeexchange.R;
+import ru.timuruktus.memeexchange.Utils.Converter;
 
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.Color.TRANSPARENT;
@@ -73,6 +74,7 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
     @BindView(R.id.chooseImageButton) Button chooseImageButton;
     @BindColor(R.color.colorPrimary) int primaryColor;
     @BindColor(R.color.colorAccent) int accentColor;
+    @BindColor(R.color.black) int blackColor;
 
     private Context context;
     @InjectPresenter
@@ -303,18 +305,41 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
                 .into(memeImage);
     }
 
+    @Override
+    public void showBottomDialog(SettingsDialogFragment dialog){
+        dialog.setListener(this);
+        dialog.show(getChildFragmentManager(), dialog.getTag());
+    }
+
     @OnClick(R.id.topTextSettings)
     public void onTopTextSettingsClicked(){
-
+        int gravity = topMemeText.getGravity();
+        int textSize = (int) Converter.convertPixelsToDp(topMemeText.getTextSize(), context);
+        int textShadow = (int) topMemeText.getShadowRadius();
+        presenter.onTextSettingsClicked(gravity, textSize, textShadow);
     }
 
     @OnClick(R.id.bottomTextSettings)
     public void onBottomTextSettingsClicked(){
-
+        int gravity = bottomMemeText.getGravity();
+        int textSize = (int) Converter.convertPixelsToDp(bottomMemeText.getTextSize(), context);
+        int textShadow = (int) bottomMemeText.getShadowRadius();
+        presenter.onTextSettingsClicked(gravity, textSize, textShadow);
     }
 
     @Override
-    public void onOptionsChanged(SettingsDialogFragment.SettingsDialogFragmentOptions options){
-
+    public void onOptionsChanged(SettingsDialogFragmentOptions options){
+        int textSize = options.currentSize;
+        int textShadow = options.currentShadow;
+        int textGravity = options.currentGravity;
+        if(topMemeText.hasFocus()){
+            topMemeText.setTextSize(textSize);
+            topMemeText.setShadowLayer(textShadow, 1, 1, blackColor);
+            topMemeText.setGravity(textGravity);
+        }else if(bottomMemeText.hasFocus()){
+            bottomMemeText.setTextSize(textSize);
+            bottomMemeText.setShadowLayer(textShadow, 1, 1, blackColor);
+            bottomMemeText.setGravity(textGravity);
+        }
     }
 }

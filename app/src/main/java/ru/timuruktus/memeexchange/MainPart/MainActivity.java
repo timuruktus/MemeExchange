@@ -172,8 +172,8 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
 
     @OnClick(R.id.profileImage)
     public void onProfileImageClicked(){
-        String userId = MyApp.getSettings().getUserObjectId();
-        MyApp.INSTANCE.getRouter().newRootScreen(NEWEST_FEED_FRAGMENT_TAG, userId);
+//        String userId = MyApp.getSettings().getUserObjectId();
+//        MyApp.INSTANCE.getRouter().newRootScreen(NEWEST_FEED_FRAGMENT_TAG, userId);
     }
 
     @OnClick(R.id.exchangeImage)

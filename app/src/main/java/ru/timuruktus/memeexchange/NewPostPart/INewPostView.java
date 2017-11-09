@@ -47,4 +47,7 @@ public interface INewPostView extends MvpView{
 
     @StateStrategyType(SingleStateStrategy.class)
     void showImage(Uri uri);
+
+    @StateStrategyType(SingleStateStrategy.class)
+    void showBottomDialog(SettingsDialogFragment dialog);
 }

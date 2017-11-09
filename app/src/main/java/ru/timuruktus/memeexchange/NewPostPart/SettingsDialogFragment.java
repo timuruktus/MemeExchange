@@ -6,13 +6,16 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
-import butterknife.ButterKnife;
 import ru.timuruktus.memeexchange.R;
+
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
 public class SettingsDialogFragment extends BottomSheetDialogFragment{
 
@@ -21,6 +24,8 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
     private SeekBar textSizeSeekBar;
     private SeekBar centeringSeekBar;
     private SeekBar shadowSizeSeekBar;
+    private TextView currentSize;
+    private TextView currentShadow;
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
         @Override
@@ -50,13 +55,17 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
 
 
         textSizeSeekBar = contentView.findViewById(R.id.textSizeSeekBar);
+        currentSize = contentView.findViewById(R.id.currentSize);
+        textSizeSeekBar.setOnSeekBarChangeListener(getChangeListener(currentSize));
+
         centeringSeekBar = contentView.findViewById(R.id.centeringSeekBar);
+
         shadowSizeSeekBar = contentView.findViewById(R.id.shadowSizeSeekBar);
+        currentShadow = contentView.findViewById(R.id.currentShadow);
+        shadowSizeSeekBar.setOnSeekBarChangeListener(getChangeListener(currentShadow));
+
         Button readyButton = contentView.findViewById(R.id.readyButton);
-        readyButton.setOnClickListener(v -> listener.onOptionsChanged(new SettingsDialogFragmentOptions(
-                textSizeSeekBar.getProgress(),
-                centeringSeekBar.getProgress(),
-                shadowSizeSeekBar.getProgress())));
+        readyButton.setOnClickListener(getReadyClickListener());
 
         configureAllSeekBars();
 
@@ -68,8 +77,50 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
         }
     }
 
+    public SeekBar.OnSeekBarChangeListener getChangeListener(TextView textView){
+        return new SeekBar.OnSeekBarChangeListener(){
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
+                textView.setText(progress + " dp");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar){
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar){
+
+            }
+        };
+    }
+
+    public View.OnClickListener getReadyClickListener(){
+        return v -> {
+            dismiss();
+            int gravity = Gravity.LEFT;
+            switch(centeringSeekBar.getProgress()){
+                case 0:
+                    gravity = Gravity.LEFT;
+                    break;
+                case 1:
+                    gravity = Gravity.CENTER;
+                    break;
+                case 2:
+                    gravity = Gravity.RIGHT;
+                    break;
+            }
+            listener.onOptionsChanged(new SettingsDialogFragmentOptions(
+                    textSizeSeekBar.getProgress(),
+                    gravity,
+                    shadowSizeSeekBar.getProgress()));
+        };
+    }
+
     private void configureAllSeekBars(){
         int gravity = 0;
+        Log.d(TESTING_TAG, "Options = " + options);
         switch(options.currentGravity){
             case Gravity.LEFT:
                 gravity = 0;
@@ -87,17 +138,7 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
 
     }
 
-    public class SettingsDialogFragmentOptions{
-        protected int currentSize;
-        protected int currentGravity;
-        protected int currentShadow;
 
-        public SettingsDialogFragmentOptions(int currentSize, int currentGravity, int currentShadow){
-            this.currentSize = currentSize;
-            this.currentGravity = currentGravity;
-            this.currentShadow = currentShadow;
-        }
-    }
 
     public interface SettingsDialogFragmentListener{
 

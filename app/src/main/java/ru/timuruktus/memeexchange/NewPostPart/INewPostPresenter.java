@@ -6,4 +6,5 @@ public interface INewPostPresenter{
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
     void onSendMemeButtonClicked();
+    void onTextSettingsClicked(int gravity, int textSize, int textShadow);
 }
