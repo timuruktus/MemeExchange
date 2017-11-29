@@ -10,7 +10,6 @@ public class Settings implements ISettings {
     private static final String FIRST_OPEN = "firstOpen";
     private static final String USER_TOKEN = "token";
     private static final String USER_OBJECT_ID = "objectId";
-    public static final int MEMES_CACHE_MAX_SIZE = 50; //Memes
 
     private static SharedPreferences settings;
 
@@ -56,6 +55,16 @@ public class Settings implements ISettings {
     @Override
     public void setUserObjectId(String objectId){
         writeStringValue(USER_OBJECT_ID, objectId);
+    }
+
+    @Override
+    public boolean isFragmentFirstOpen(String fragmentTag){
+        return getBooleanValue(fragmentTag, true);
+    }
+
+    @Override
+    public void setFragmentFirstOpen(String fragmentTag, boolean firstOpen){
+        writeBooleanValue(fragmentTag, firstOpen);
     }
 
 

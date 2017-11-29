@@ -42,12 +42,18 @@ public interface INewPostView extends MvpView{
     @StateStrategyType(OneExecutionStateStrategy.class)
     void clearMemeTextFocuses();
 
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showFirstOpenHint();
+
     @StateStrategyType(SingleStateStrategy.class)
-    void showAllTags(ArrayList<Label> tags);
+    void showAllTags(ArrayList<String> tags);
 
     @StateStrategyType(SingleStateStrategy.class)
     void showImage(Uri uri);
 
-    @StateStrategyType(SingleStateStrategy.class)
+    @StateStrategyType(OneExecutionStateStrategy.class)
     void showBottomDialog(SettingsDialogFragment dialog);
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void onOptionsChanged(SettingsDialogFragmentOptions options);
 }

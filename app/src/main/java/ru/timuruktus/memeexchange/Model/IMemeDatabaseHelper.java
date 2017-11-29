@@ -3,10 +3,11 @@ package ru.timuruktus.memeexchange.Model;
 import java.util.List;
 
 import ru.timuruktus.memeexchange.POJO.Meme;
-import ru.timuruktus.memeexchange.POJO.Queues.NewMemeQueueItem;
+import ru.timuruktus.memeexchange.POJO.Queues.NewMemeQueue;
+import ru.timuruktus.memeexchange.POJO.Queues.SavedMemeQueue;
 import rx.Observable;
 
-public interface IDatabaseHelper {
+public interface IMemeDatabaseHelper{
 
     void cacheMeme(Meme meme);
     void cacheMemes(List<Meme> memes);
@@ -20,8 +21,14 @@ public interface IDatabaseHelper {
     Observable<List<Meme>> getMemes();
     Observable<Meme> getMemeById(String id);
 
-    void updateMemeQueue(NewMemeQueueItem queue);
-    void removeMemeQueue(NewMemeQueueItem queue);
-    Observable<List<NewMemeQueueItem>> getAllMemeQueues();
+    void updateNewMemeQueue(NewMemeQueue queue);
+    void removeNewMemeQueue(NewMemeQueue queue);
+    Observable<List<NewMemeQueue>> getAllNewMemeQueues();
+
+    void updateSavedMemeQueue(SavedMemeQueue queue);
+    void removeSavedMemeQueue(SavedMemeQueue queue);
+    Observable<List<SavedMemeQueue>> getAllSavedMemeQueues();
+
+
 
 }

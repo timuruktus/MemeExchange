@@ -2,6 +2,7 @@ package ru.timuruktus.memeexchange.NewPostPart;
 
 
 import android.app.Dialog;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -13,8 +14,11 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
 import ru.timuruktus.memeexchange.R;
 
+import static ru.timuruktus.memeexchange.MainPart.MainActivity.DEFAULT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
 public class SettingsDialogFragment extends BottomSheetDialogFragment{
@@ -26,6 +30,8 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
     private SeekBar shadowSizeSeekBar;
     private TextView currentSize;
     private TextView currentShadow;
+    public static final String OPTIONS_SERIALIZABLE_KEY = "optionsKey";
+    public static final String LISTENER_SERIALIZABLE_KEY = "listenerKey";
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
         @Override
@@ -40,6 +46,18 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
         }
     };
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState){
+        try{
+            options = (SettingsDialogFragmentOptions) savedInstanceState.getSerializable(OPTIONS_SERIALIZABLE_KEY);
+            listener = (SettingsDialogFragmentListener) savedInstanceState.getSerializable(LISTENER_SERIALIZABLE_KEY);
+        }catch(NullPointerException ex){
+            Log.e(DEFAULT_TAG, "Saved options in bottom dialog fragment is null");
+        }
+        return super.onCreateDialog(savedInstanceState);
+    }
 
     public void setOptions(SettingsDialogFragmentOptions options){
         this.options = options;
@@ -98,49 +116,58 @@ public class SettingsDialogFragment extends BottomSheetDialogFragment{
 
     public View.OnClickListener getReadyClickListener(){
         return v -> {
-            dismiss();
+
             int gravity = Gravity.LEFT;
             switch(centeringSeekBar.getProgress()){
                 case 0:
-                    gravity = Gravity.LEFT;
+                    gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
                     break;
                 case 1:
-                    gravity = Gravity.CENTER;
+                    gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
                     break;
                 case 2:
-                    gravity = Gravity.RIGHT;
+                    gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
                     break;
             }
             listener.onOptionsChanged(new SettingsDialogFragmentOptions(
                     textSizeSeekBar.getProgress(),
                     gravity,
                     shadowSizeSeekBar.getProgress()));
+            Log.d(TESTING_TAG, "getReadyClickListener() Gravity = " + gravity);
+            dismiss();
         };
     }
 
     private void configureAllSeekBars(){
         int gravity = 0;
-        Log.d(TESTING_TAG, "Options = " + options);
-        switch(options.currentGravity){
-            case Gravity.LEFT:
+        Log.d(TESTING_TAG, "configureAllSeekBars() Gravity = " + options.getCurrentGravity());
+        switch(options.getCurrentGravity()){
+            case Gravity.LEFT | Gravity.CENTER_VERTICAL:
                 gravity = 0;
                 break;
-            case Gravity.CENTER:
+            case Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL:
                 gravity = 1;
                 break;
-            case Gravity.RIGHT:
+            case Gravity.RIGHT | Gravity.CENTER_VERTICAL:
                 gravity = 2;
                 break;
         }
         centeringSeekBar.setProgress(gravity);
-        textSizeSeekBar.setProgress(options.currentSize);
-        shadowSizeSeekBar.setProgress(options.currentShadow);
+        textSizeSeekBar.setProgress(options.getCurrentSize());
+        shadowSizeSeekBar.setProgress(options.getCurrentShadow());
+
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(OPTIONS_SERIALIZABLE_KEY, options);
+        outState.putSerializable(LISTENER_SERIALIZABLE_KEY, listener);
+    }
 
 
-    public interface SettingsDialogFragmentListener{
+    public interface SettingsDialogFragmentListener extends Serializable{
 
         void onOptionsChanged(SettingsDialogFragmentOptions options);
     }

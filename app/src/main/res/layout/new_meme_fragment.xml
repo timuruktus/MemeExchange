@@ -26,7 +26,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/backTextView"
-            app:layout_constraintHorizontal_bias="0.0">
+            app:layout_constraintHorizontal_bias="0.5">
 
             <ImageView
                 android:id="@+id/memeImage"
@@ -42,8 +42,8 @@
 
             <ImageView
                 android:id="@+id/topTextSettings"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/settings_top_icon_background"
                 android:padding="5dp"
@@ -54,8 +54,8 @@
 
             <ImageView
                 android:id="@+id/bottomTextSettings"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/settings_bottom_icon_background"
                 android:padding="5dp"
@@ -76,10 +76,9 @@
                 android:layout_marginTop="8dp"
                 android:background="@color/transparentGray"
                 android:ems="10"
+                android:gravity="center_vertical"
                 android:inputType="textPersonName"
                 android:shadowColor="@android:color/black"
-                android:shadowDx="1"
-                android:shadowDy="1"
                 android:shadowRadius="2"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
@@ -100,11 +99,10 @@
                 android:layout_marginStart="8dp"
                 android:background="@color/transparentGray"
                 android:ems="10"
+                android:gravity="center_vertical"
                 android:inputType="text"
                 android:shadowColor="@android:color/black"
-                android:shadowDx="0"
-                android:shadowDy="1"
-                android:shadowRadius="20"
+                android:shadowRadius="2"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
                 android:textSize="52sp"
@@ -260,12 +258,24 @@
             android:id="@+id/chooseImageButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/green"
+            android:backgroundTint="@color/colorAccent"
             android:text="@string/choose_image"
             android:textColor="@android:color/white"
             app:layout_constraintBaseline_toBaselineOf="@+id/clearImageButton"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/clearImageButton"/>
+
+        <ImageView
+            android:id="@+id/savedMemesButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/backArrow"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/backArrow"
+            autolabel:srcCompat="@drawable/ic_saved_memes"/>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -22,6 +22,8 @@
     <string name="send">Отправить</string>
     <string name="tag">Тэг</string>
     <string name="ready">Готово</string>
+    <string name="ok">OK</string>
+    <string name="understand">Понял</string>
 
     <string name="not_yet_registered">Ещё не зарегистрированы? \nНе может быть!</string>
 
@@ -73,5 +75,10 @@
     <string name="text_centering">Центрирование текста</string>
     <string name="text_shadow_size">Величина тени</string>
 
+    <!--ONBOARDING-->
+    <string name="first_feed_open">Эта ваша лента мемов. Вы можете персонализировать её под себя.
+        Для этого необходимо зайти в настройки приложения (Находится в самой правой вкладке меню).</string>
+    <string name="first_new_post_open">Здесь вы загружаете ваши мемы. На картинки можно накладывать текст,
+    а если вы забыли все сохранить - кнопка в правом верхнем углу вам поможет</string>
 </resources>
 

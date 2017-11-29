@@ -1,28 +1,18 @@
 package ru.timuruktus.memeexchange.LoginPart;
 
-import android.content.Context;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import ru.timuruktus.memeexchange.FeedPart.FeedFragment;
-import ru.timuruktus.memeexchange.MainPart.MainPresenter;
 import ru.timuruktus.memeexchange.MainPart.MyApp;
-import ru.timuruktus.memeexchange.Model.DataManager;
+import ru.timuruktus.memeexchange.Model.MemeDataManager;
+import ru.timuruktus.memeexchange.Model.UserDataManager;
 import ru.timuruktus.memeexchange.POJO.User;
-import ru.timuruktus.memeexchange.R;
-import ru.timuruktus.memeexchange.RegisterPart.RegisterFragment;
 import ru.timuruktus.memeexchange.Utils.FieldsValidator;
 import ru.timuruktus.memeexchange.Utils.ISettings;
-import ru.timuruktus.memeexchange.Utils.Settings;
 import rx.Observer;
 
-import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.REGISTER_FRAGMENT_TAG;
-import static ru.timuruktus.memeexchange.RegisterPart.RegisterFragment.REGISTER_TAG;
 
 
 @InjectViewState
@@ -45,8 +35,8 @@ public class LoginPresenter extends MvpPresenter<ILoginView> implements ILoginPr
             return;
         }
         getViewState().showLoadingIndicator(true);
-        DataManager dataManager = DataManager.getInstance();
-        dataManager.loginUser(login, password).subscribe(new Observer<User>(){
+        UserDataManager userDataManager = UserDataManager.getInstance();
+        userDataManager.loginUser(login, password).subscribe(new Observer<User>(){
             @Override
             public void onCompleted(){
                 getViewState().showLoadingIndicator(false);

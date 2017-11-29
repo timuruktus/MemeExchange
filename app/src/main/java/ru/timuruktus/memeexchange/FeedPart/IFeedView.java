@@ -1,7 +1,5 @@
 package ru.timuruktus.memeexchange.FeedPart;
 
-import android.support.v7.widget.LinearLayoutManager;
-
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
@@ -10,7 +8,6 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.POJO.RecyclerItem;
@@ -26,6 +23,9 @@ public interface IFeedView extends MvpView{
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showError(boolean show);
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showFirstOpenHint();
 
     //Maybe OneExecutionStateStrategy
     @StateStrategyType(AddToEndSingleStrategy.class)

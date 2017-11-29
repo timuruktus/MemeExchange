@@ -9,5 +9,7 @@ public interface ISettings {
     void setUserToken(String token);
     String getUserObjectId();
     void setUserObjectId(String objectId);
+    boolean isFragmentFirstOpen(String fragmentTag);
+    void setFragmentFirstOpen(String fragmentTag, boolean firstOpen);
 
 }

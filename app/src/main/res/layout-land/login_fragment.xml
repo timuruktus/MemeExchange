@@ -66,7 +66,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="false"
                         android:layout_marginTop="10dp"
-                        android:backgroundTint="@color/green"
+                        android:backgroundTint="@color/colorAccent"
                         android:text="@string/join"
                         android:textColor="@android:color/white"/>
 

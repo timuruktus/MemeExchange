@@ -1,12 +1,8 @@
 package ru.timuruktus.memeexchange.FeedPart;
 
 import android.app.Activity;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.appolica.flubber.Flubber;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
@@ -27,7 +22,7 @@ import butterknife.OnClick;
 
 import ru.timuruktus.memeexchange.MainPart.GlideApp;
 import ru.timuruktus.memeexchange.MainPart.MyApp;
-import ru.timuruktus.memeexchange.Model.DatabaseHelper;
+import ru.timuruktus.memeexchange.Model.MemeDatabaseHelper;
 import ru.timuruktus.memeexchange.POJO.Footer;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.POJO.RecyclerItem;
@@ -35,10 +30,8 @@ import ru.timuruktus.memeexchange.POJO.User;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.FieldsValidator;
 
-import static android.view.DragEvent.ACTION_DRAG_LOCATION;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
 
 class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -75,9 +68,8 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             View view = inflater.inflate(R.layout.account_header, parent, false);
             return new HeaderViewHolder(view, adapterEventListener);
         }else if(viewType == FOOTER){
-            // TODO if we have footer
-            View view = inflater.inflate(R.layout.meme_layout, parent, false);
-            return new FeedAdapter.ViewHolder(view, adapterEventListener);
+            View view = inflater.inflate(R.layout.feed_footer, parent, false);
+            return new FooterViewHolder(view);
         }else{
             // Usual Post
             View view = inflater.inflate(R.layout.meme_layout, parent, false);
@@ -89,7 +81,7 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public int getItemViewType(int position){
         if(position == 0 && user != null){
             return HEADER;
-        }else if(position == itemList.size() -  1 && itemList.get(itemList.size() - 1) instanceof Footer){
+        }else if(position == itemList.size() -  1 && itemList.get(position) instanceof Footer){
             return FOOTER;
         }else{
             return POST;
@@ -101,6 +93,8 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         if(holder instanceof HeaderViewHolder){
             HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
             headerHolder.setData(user);
+        }else if(holder instanceof FooterViewHolder){
+            FooterViewHolder footerHolder = (FooterViewHolder) holder;
         }else if(holder instanceof FeedAdapter.ViewHolder){
             FeedAdapter.ViewHolder postHolder = (FeedAdapter.ViewHolder) holder;
             Meme meme = (Meme) itemList.get(position);
@@ -117,7 +111,12 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public int getItemCount(){
-        return itemList.size();
+        int count = itemList.size();
+        if(count == 0) return 0;
+        if(itemList.get(0) instanceof User) count--;
+        if(itemList.get(itemList.size() - 1) instanceof Footer) count--;
+
+        return count;
     }
 
 
@@ -216,7 +215,7 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
             meme.setUserLiked(!meme.isUserLiked());
 
-            DatabaseHelper.getInstance().updateMeme(meme);
+            MemeDatabaseHelper.getInstance().updateMeme(meme);
 
             Flubber.with()
                     .animation(Flubber.AnimationPreset.SWING)
@@ -229,6 +228,13 @@ class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             configureAuthorContainer(meme);
         }
 
+    }
+
+    static class FooterViewHolder extends RecyclerView.ViewHolder{
+
+        public FooterViewHolder(View itemView){
+            super(itemView);
+        }
     }
 
 

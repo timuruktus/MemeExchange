@@ -25,7 +25,6 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.dpizarro.autolabel.library.AutoLabelUI;
-import com.dpizarro.autolabel.library.Label;
 import com.yalantis.ucrop.UCrop;
 
 import org.greenrobot.eventbus.EventBus;
@@ -43,13 +42,13 @@ import ru.timuruktus.memeexchange.MainPart.GlideApp;
 import ru.timuruktus.memeexchange.MainPart.MyApp;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.Converter;
+import ru.timuruktus.memeexchange.Utils.WindowMethods;
 
-import static android.app.Activity.RESULT_OK;
 import static android.graphics.Color.TRANSPARENT;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.NEW_POST_FRAGMENT_TAG;
 
-public class NewPostFragment extends MvpAppCompatFragment implements INewPostView, SettingsDialogFragment.SettingsDialogFragmentListener{
+public class NewPostFragment extends MvpAppCompatFragment implements INewPostView{
 
 
     @BindView(R.id.memeImage) ImageView memeImage;
@@ -75,6 +74,8 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
     @BindColor(R.color.colorPrimary) int primaryColor;
     @BindColor(R.color.colorAccent) int accentColor;
     @BindColor(R.color.black) int blackColor;
+    @BindColor(R.color.transparentGray) int textBackground;
+    @BindView(R.id.savedMemesButton) ImageView savedMemesButton;
 
     private Context context;
     @InjectPresenter
@@ -182,6 +183,7 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
     public void onClearImageButtonClicked(){
         clearTextLabels();
         showImage(null);
+        setEditTextBackground(textBackground);
 
     }
 
@@ -252,11 +254,15 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
 
     @Override
     public void prepareImageForSending(){
-        topMemeText.setBackgroundColor(TRANSPARENT);
-        bottomMemeText.setBackgroundColor(TRANSPARENT);
+        setEditTextBackground(TRANSPARENT);
         memeImageLayout.setDrawingCacheEnabled(true);
         memeImageLayout.buildDrawingCache();
         memeBitmap = memeImageLayout.getDrawingCache();
+    }
+
+    public void setEditTextBackground(int color){
+        topMemeText.setBackgroundColor(color);
+        bottomMemeText.setBackgroundColor(color);
     }
 
     @Override
@@ -285,12 +291,43 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
         bottomMemeText.clearFocus();
     }
 
+    @Override
+    public void showFirstOpenHint(){
+        View view = getActivity().findViewById(R.id.container);
+        int text = R.string.first_new_post_open;
+        int buttonText = R.string.understand;
+        int duration = Snackbar.LENGTH_INDEFINITE;
+        Snackbar snackbar = Snackbar.make(view, text, duration);
+        snackbar.setAction(buttonText, v -> {
+            snackbar.dismiss();
+            MyApp.getSettings().setFragmentFirstOpen(NEW_POST_FRAGMENT_TAG, false);
+        });
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blue));
+        TextView textView = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+        textView.setMaxLines(50);
+        snackbar.show();
+    }
 
     @Override
-    public void showAllTags(ArrayList<Label> tags){
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+        presenter.onViewCreated();
+    }
+
+    //    @Override
+//    public void showAllTags(ArrayList<Label> tags){
+//        removeAllTags();
+//        for(Label label : tags){
+//            tagsView.addLabel(label.getText());
+//        }
+//
+//    }
+
+    @Override
+    public void showAllTags(ArrayList<String> tags){
         removeAllTags();
-        for(Label label : tags){
-            tagsView.addLabel(label.getText());
+        for(String text : tags){
+            tagsView.addLabel(text);
         }
 
     }
@@ -298,7 +335,6 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
     //null if we want to clear image
     @Override
     public void showImage(Uri uri){
-        Log.d(TESTING_TAG, "Uri = " + uri);
         GlideApp.with(context)
                 .load(uri)
                 .centerCrop()
@@ -307,20 +343,22 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
 
     @Override
     public void showBottomDialog(SettingsDialogFragment dialog){
-        dialog.setListener(this);
         dialog.show(getChildFragmentManager(), dialog.getTag());
     }
 
     @OnClick(R.id.topTextSettings)
     public void onTopTextSettingsClicked(){
+        WindowMethods.hideKeyboard(getActivity());
         int gravity = topMemeText.getGravity();
         int textSize = (int) Converter.convertPixelsToDp(topMemeText.getTextSize(), context);
         int textShadow = (int) topMemeText.getShadowRadius();
+        Log.d(TESTING_TAG, "onTopTextSettingsClicked() Gravity = " + gravity);
         presenter.onTextSettingsClicked(gravity, textSize, textShadow);
     }
 
     @OnClick(R.id.bottomTextSettings)
     public void onBottomTextSettingsClicked(){
+        WindowMethods.hideKeyboard(getActivity());
         int gravity = bottomMemeText.getGravity();
         int textSize = (int) Converter.convertPixelsToDp(bottomMemeText.getTextSize(), context);
         int textShadow = (int) bottomMemeText.getShadowRadius();
@@ -329,9 +367,9 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
 
     @Override
     public void onOptionsChanged(SettingsDialogFragmentOptions options){
-        int textSize = options.currentSize;
-        int textShadow = options.currentShadow;
-        int textGravity = options.currentGravity;
+        int textSize = options.getCurrentSize();
+        int textShadow = options.getCurrentShadow();
+        int textGravity = options.getCurrentGravity();
         if(topMemeText.hasFocus()){
             topMemeText.setTextSize(textSize);
             topMemeText.setShadowLayer(textShadow, 1, 1, blackColor);
@@ -341,5 +379,16 @@ public class NewPostFragment extends MvpAppCompatFragment implements INewPostVie
             bottomMemeText.setShadowLayer(textShadow, 1, 1, blackColor);
             bottomMemeText.setGravity(textGravity);
         }
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+
+    }
+
+    @OnClick(R.id.savedMemesButton)
+    public void onViewClicked(){
+
     }
 }

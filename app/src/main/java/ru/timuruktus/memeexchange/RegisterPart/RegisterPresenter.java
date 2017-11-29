@@ -1,25 +1,19 @@
 package ru.timuruktus.memeexchange.RegisterPart;
 
 
-import android.animation.Animator;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
 
-import ru.timuruktus.memeexchange.LoginPart.LoginFragment;
-import ru.timuruktus.memeexchange.MainPart.MainPresenter;
-import ru.timuruktus.memeexchange.MainPart.MyApp;
-import ru.timuruktus.memeexchange.Model.DataManager;
+import ru.timuruktus.memeexchange.Model.MemeDataManager;
+import ru.timuruktus.memeexchange.Model.UserDataManager;
 import ru.timuruktus.memeexchange.POJO.User;
-import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.FieldsValidator;
 import rx.Observer;
 
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
-import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
 
 @InjectViewState
 public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements IRegisterPresenter{
@@ -41,8 +35,8 @@ public class RegisterPresenter  extends MvpPresenter<IRegisterView> implements I
             return;
         }
         getViewState().showLoadingIndicator(true);
-        DataManager dataManager = DataManager.getInstance();
-        dataManager.registerUser(login, password, email).subscribe(new Observer<User>(){
+        UserDataManager userDataManager = UserDataManager.getInstance();
+        userDataManager.registerUser(login, password, email).subscribe(new Observer<User>(){
             @Override
             public void onCompleted(){
                 Log.d(TESTING_TAG, "onRegisterClick.onCompleted() in RegisterPresenter");

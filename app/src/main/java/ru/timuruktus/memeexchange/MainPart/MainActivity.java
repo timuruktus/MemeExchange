@@ -1,20 +1,26 @@
 package ru.timuruktus.memeexchange.MainPart;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.StringRes;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.yalantis.ucrop.UCrop;
+import com.arellomobile.mvp.presenter.PresenterType;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -53,6 +59,7 @@ public class MainActivity extends MvpAppCompatActivity implements IMainActivity{
     @BindView(R.id.exchangeImage) ImageView exchangeImage;
     @BindView(R.id.moreImage) ImageView moreImage;
     @BindView(R.id.menuTabs) ConstraintLayout menuTabs;
+    @BindView(R.id.container) FrameLayout container;
 
     private Navigator navigator = new SupportFragmentNavigator(getSupportFragmentManager(),
             R.id.container){

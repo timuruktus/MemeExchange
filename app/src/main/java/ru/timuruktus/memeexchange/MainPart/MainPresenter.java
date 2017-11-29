@@ -1,22 +1,15 @@
 package ru.timuruktus.memeexchange.MainPart;
 
 
-import android.content.Context;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import io.realm.Realm;
-import ru.timuruktus.memeexchange.LoginPart.LoginFragment;
+import butterknife.BindColor;
 import ru.timuruktus.memeexchange.R;
 import ru.timuruktus.memeexchange.Utils.ISettings;
-import ru.timuruktus.memeexchange.Utils.Settings;
 
-import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 
-@InjectViewState
+@InjectViewState()
 public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainPresenter {
 
     public static final String FEED_FRAGMENT_TAG = "feedTag";
@@ -24,6 +17,7 @@ public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainP
     public static final String REGISTER_FRAGMENT_TAG = "registerTag";
     public static final String NEWEST_FEED_FRAGMENT_TAG = "newestFeedTag";
     public static final String NEW_POST_FRAGMENT_TAG = "newPostTag";
+    public static final int SNACKBAR_BACKGROUND_COLOR = 0x2c82c9;
     private static String currentFragmentTag;
 
     private void loadFirstFragment(){
@@ -44,6 +38,7 @@ public class MainPresenter extends MvpPresenter<IMainActivity> implements IMainP
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
         loadFirstFragment();
+//        EventBus.getDefault().register(this);
     }
 
     @Override

@@ -1,25 +1,24 @@
 package ru.timuruktus.memeexchange.Model;
 
-import android.util.Log;
-
 import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
 import ru.timuruktus.memeexchange.POJO.Meme;
-import ru.timuruktus.memeexchange.POJO.Queues.NewMemeQueueItem;
+import ru.timuruktus.memeexchange.POJO.Queues.NewMemeQueue;
+import ru.timuruktus.memeexchange.POJO.Queues.SavedMemeQueue;
 import ru.timuruktus.memeexchange.Utils.NewestMemeComparator;
 import rx.Observable;
 
-import static ru.timuruktus.memeexchange.MainPart.MainActivity.DEFAULT_TAG;
-import static ru.timuruktus.memeexchange.Utils.Settings.MEMES_CACHE_MAX_SIZE;
 
-public class DatabaseHelper implements IDatabaseHelper{
+public class MemeDatabaseHelper implements IMemeDatabaseHelper{
 
     private static final String ID = "id";
+    public static final int MEMES_CACHE_MAX_SIZE = 50; //Memes
+    public static final int SAVED_MEMES_MAX_SIZE = 5; //Memes
 
-    public static IDatabaseHelper getInstance(){
-        return new DatabaseHelper();
+    public static IMemeDatabaseHelper getInstance(){
+        return new MemeDatabaseHelper();
     }
 
     @Override
@@ -157,28 +156,66 @@ public class DatabaseHelper implements IDatabaseHelper{
     }
 
     @Override
-    public void updateMemeQueue(NewMemeQueueItem queue){
+    public void updateNewMemeQueue(NewMemeQueue queue){
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> realm1.insertOrUpdate(queue));
         realm.close();
     }
 
     @Override
-    public void removeMemeQueue(NewMemeQueueItem queue){
+    public void removeNewMemeQueue(NewMemeQueue queue){
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction(){
             @Override
             public void execute(Realm realm){
-                realm.where(NewMemeQueueItem.class).equalTo("objectId", queue.getObjectId()).findFirst().deleteFromRealm();
+                realm.where(NewMemeQueue.class).equalTo("objectId", queue.getObjectId()).findFirst().deleteFromRealm();
             }
         });
         realm.close();
     }
 
     @Override
-    public Observable<List<NewMemeQueueItem>> getAllMemeQueues(){
+    public Observable<List<NewMemeQueue>> getAllNewMemeQueues(){
         Realm realm = Realm.getDefaultInstance();
-        List<NewMemeQueueItem> queues = realm.copyFromRealm(realm.where(NewMemeQueueItem.class).findAll());
+        List<NewMemeQueue> queues = realm.copyFromRealm(realm.where(NewMemeQueue.class).findAll());
+        realm.close();
+        return Observable.from(queues).toList();
+    }
+
+    @Override
+    public void updateSavedMemeQueue(SavedMemeQueue queue){
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(bgRealm -> {
+            if(getMemesSize() >= SAVED_MEMES_MAX_SIZE){
+                clearOldestSavedMeme();
+            }
+            bgRealm.copyToRealmOrUpdate(queue);
+        });
+        realm.close();
+
+    }
+
+    private void clearOldestSavedMeme(){
+        getAllSavedMemeQueues()
+                .subscribe(memeList -> removeSavedMemeQueue(memeList.get(memeList.size() - 1)));
+    }
+
+    @Override
+    public void removeSavedMemeQueue(SavedMemeQueue queue){
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction(){
+            @Override
+            public void execute(Realm realm){
+                realm.where(SavedMemeQueue.class).equalTo("id", queue.getId()).findFirst().deleteFromRealm();
+            }
+        });
+        realm.close();
+    }
+
+    @Override
+    public Observable<List<SavedMemeQueue>> getAllSavedMemeQueues(){
+        Realm realm = Realm.getDefaultInstance();
+        List<SavedMemeQueue> queues = realm.copyFromRealm(realm.where(SavedMemeQueue.class).findAll());
         realm.close();
         return Observable.from(queues).toList();
     }

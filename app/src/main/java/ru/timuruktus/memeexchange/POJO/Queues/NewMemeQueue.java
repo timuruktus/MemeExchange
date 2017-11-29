@@ -3,7 +3,7 @@ package ru.timuruktus.memeexchange.POJO.Queues;
 import io.realm.RealmObject;
 import ru.timuruktus.memeexchange.POJO.Meme;
 
-public class NewMemeQueueItem extends RealmObject implements WebQueue{
+public class NewMemeQueue extends RealmObject implements WebQueue{
 
     private boolean isImageSent;
     private boolean isMemeSent;
@@ -12,10 +12,10 @@ public class NewMemeQueueItem extends RealmObject implements WebQueue{
     private String tags;
     private Meme meme;
     private String objectId;
-    public NewMemeQueueItem(){
+    public NewMemeQueue(){
     }
 
-    public NewMemeQueueItem(boolean isImageSent, boolean isMemeSent, String imageUrl, String imageUri, String tags, Meme meme, String objectId){
+    public NewMemeQueue(boolean isImageSent, boolean isMemeSent, String imageUrl, String imageUri, String tags, Meme meme, String objectId){
         this.isImageSent = isImageSent;
         this.isMemeSent = isMemeSent;
         this.imageUrl = imageUrl;

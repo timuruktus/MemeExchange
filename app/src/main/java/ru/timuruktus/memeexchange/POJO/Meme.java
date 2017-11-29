@@ -41,64 +41,72 @@ public class Meme extends RealmObject implements RecyclerItem {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public Meme setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+        return this;
     }
 
     public String getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public Meme setImage(String image) {
         this.image = image;
+        return this;
     }
 
     public long getLikes() {
         return likes;
     }
 
-    public void setLikes(long likes) {
+    public Meme setLikes(long likes) {
         this.likes = likes;
+        return this;
     }
 
     public String getText() {
         return text;
     }
 
-    public void setText(String text) {
+    public Meme setText(String text) {
         this.text = text;
+        return this;
     }
 
     public boolean isUserLiked() {
         return userLiked;
     }
 
-    public void setUserLiked(boolean userLiked) {
+    public Meme setUserLiked(boolean userLiked) {
         this.userLiked = userLiked;
+        return this;
     }
 
     public String getObjectId() {
         return objectId;
     }
 
-    public void setObjectId(String objectId) {
+    public Meme setObjectId(String objectId) {
         this.objectId = objectId;
+        return this;
     }
 
     public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public Meme setAuthor(User author) {
         this.author = author;
+        return this;
     }
 
     public RealmList<RealmString> getTags(){
         return tags;
     }
 
-    public void setTags(RealmList<RealmString> tags){
+    public Meme setTags(RealmList<RealmString> tags){
         this.tags = tags;
+        return this;
     }
 
 

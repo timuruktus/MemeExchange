@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,20 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +43,7 @@ import static ru.timuruktus.memeexchange.FeedPart.FeedPresenter.BUNDLE_AUTHOR;
 import static ru.timuruktus.memeexchange.FeedPart.FeedPresenter.BUNDLE_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainActivity.TESTING_TAG;
 import static ru.timuruktus.memeexchange.MainPart.MainPresenter.FEED_FRAGMENT_TAG;
-import static ru.timuruktus.memeexchange.MainPart.MainPresenter.LOGIN_FRAGMENT_TAG;
-import static ru.timuruktus.memeexchange.Model.DataManager.DEFAULT_PAGE_SIZE;
+import static ru.timuruktus.memeexchange.Model.MemeDataManager.PAGE_SIZE;
 
 public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         FeedAdapter.AdapterEventListener,
@@ -58,7 +55,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Nullable @BindView(R.id.refreshIcon) ImageView refreshIcon;
     @Nullable @BindView(R.id.errorLayout) RelativeLayout errorLayout;
 
-    @InjectPresenter
+    @InjectPresenter(tag = FEED_FRAGMENT_TAG)
     public FeedPresenter feedPresenter;
 
     Unbinder unbinder;
@@ -92,6 +89,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         String newUser = getArguments().getString(BUNDLE_AUTHOR);
         feedPresenter.onCreateView(newTag, newUser);
         EventBus.getDefault().post(new OpenFragment(newTag));
+        Log.d(TESTING_TAG, "onCreateView in FeedFragment");
 
 
         return view;
@@ -123,8 +121,8 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
      */
     @Override
     public void showNewPosts(ArrayList<RecyclerItem> data){
+        Log.d(TESTING_TAG, "showNewPosts in FeedFragment");
         showPosts(data);
-        Log.d(TESTING_TAG, "showNewPosts(in FeedFragment");
     }
 
     @Override
@@ -133,6 +131,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     }
 
     private void showPosts(ArrayList<RecyclerItem> data){
+        Log.d(TESTING_TAG, "showPosts in FeedFragment");
         swipeContainer.setRefreshing(false);
         swipeContainer.setVisibility(VISIBLE);
         swipeContainer.setOnRefreshListener(this);
@@ -165,6 +164,23 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
         }
     }
 
+    @Override
+    public void showFirstOpenHint(){
+        View view = getActivity().findViewById(R.id.container);
+        int text = R.string.first_feed_open;
+        int buttonText = R.string.understand;
+        int duration = Snackbar.LENGTH_INDEFINITE;
+        Snackbar snackbar = Snackbar.make(view, text, duration);
+        snackbar.setAction(buttonText, v -> {
+            snackbar.dismiss();
+            MyApp.getSettings().setFragmentFirstOpen(FEED_FRAGMENT_TAG, false);
+        });
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blue));
+        TextView textView = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+        textView.setMaxLines(50);
+        snackbar.show();
+    }
+
     /**
      * Shows loading indicator
      *
@@ -181,6 +197,7 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
 
     @Override
     public void showMorePosts(ArrayList<Meme> data, int offset){
+        Log.d(TESTING_TAG, "showMorePosts in FeedFragment");
         swipeContainer.setVisibility(VISIBLE);
         feedAdapter.notifyItemRangeChanged(offset, data.size());
 
@@ -261,14 +278,15 @@ public class FeedFragment extends MvpAppCompatFragment implements IFeedView,
     @Override
     public void onAuthorClicked(User user){
         MyApp.INSTANCE.getRouter().replaceScreen(FEED_FRAGMENT_TAG, user.getObjectId());
-//        feedPresenter.loadFeed(true, 0, DEFAULT_PAGE_SIZE, user.getObjectId());
+//        feedPresenter.loadFeed(true, 0, PAGE_SIZE, user.getObjectId());
     }
 
     public EndlessScrollListener getRecyclerViewScrollListener(LinearLayoutManager llm){
         return new EndlessScrollListener(llm){
             @Override
             public void onLoadMore(int offset){
-                feedPresenter.loadMoreFeed(offset, DEFAULT_PAGE_SIZE);
+                Log.d(TESTING_TAG, "OnLoadMore() offset = " + offset);
+                feedPresenter.loadMoreFeed(offset, PAGE_SIZE);
             }
         };
     }

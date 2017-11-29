@@ -7,7 +7,7 @@ import java.util.List;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.timuruktus.memeexchange.Model.DataManager;
+import ru.timuruktus.memeexchange.Model.MemeDataManager;
 import ru.timuruktus.memeexchange.POJO.Meme;
 import ru.timuruktus.memeexchange.POJO.RESTBodies.POSTLogin;
 import ru.timuruktus.memeexchange.POJO.User;
@@ -134,7 +134,7 @@ public class ExampleUnitTest {
 
     @Test
     public void testLoginDataManagerApi(){
-        DataManager.getInstance().loginUser("s", "qwerty").subscribe(new Observer<User>(){
+        MemeDataManager.getInstance().loginUser("s", "qwerty").subscribe(new Observer<User>(){
             @Override
             public void onCompleted(){
 
@@ -156,8 +156,8 @@ public class ExampleUnitTest {
 
     @Test
     public void testRegisterApi(){
-        DataManager dataManager = DataManager.getInstance();
-        dataManager.registerUser("timuruktus", "qwerty", "keks@keks.keks").subscribe(new Observer<User>(){
+        MemeDataManager memeDataManager = MemeDataManager.getInstance();
+        memeDataManager.registerUser("timuruktus", "qwerty", "keks@keks.keks").subscribe(new Observer<User>(){
             @Override
             public void onCompleted(){
                 System.out.println("OnComplete");
